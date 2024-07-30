@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+  model Project {
+    id          String      @id @default(auto()) @map("_id") @db.ObjectId
+    title       String
+    oneLiner    String
+    logo        String
+    screenshot  String
+    projectType String
+    liveURL     String
+    description String
+    techStack   Json[]
+    keywords    Json[]
+  }
+ 
+  model Certification {
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  organizationName  String
+  completionDate    DateTime
+  credentialID      String
+  certificateUrl    String
+  screenshot        String
+  learned           Json[]
+  }
+ 
+  model Experience {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  positionName    String
+  companyName     String
+  companyLocation String
+  startDate       DateTime
+  endDate         DateTime
+  learned         Json[]
+  }
+
+model Techstack{
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  category      String
+  url           String
+  techstackType String
+  imageUrl      String
+}
+
+ model Admin {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  adminUserId  String
+  name         String    
+  imageUrl     String
+  position     String
+  location     String    
+  introduction String     
+  education    String    
+  skills       Json[]  
+  github       String?
+  linkedIn       String?
+  whatsapp       String?
+  facebook       String?
+  instagram       String?
+  discord       String?
+  website       String?
+  twitter       String?
+  email       String?
+}
