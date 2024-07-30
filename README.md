@@ -155,24 +155,25 @@ After setting up the application, you can start customizing your portfolio. Here
 - **Customize Design**: Modify the frontend components and styles to customize the look and feel of your portfolio.
 - **Extend Functionality**: Feel free to extend the functionality of the portfolio by adding new features or integrating with external services.
 
+
+## Support
+
+If you find this project helpful and would like to support its development, you can buy me a coffee:
+
+<a href="https://www.buymeacoffee.com/arosck1"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=arosck1&button_colour=BD5FFF&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
 ## Contributing
 
-Contributions to this open-source project are welcome! If you have any ideas for improvements, bug fixes, or new features, please submit a pull request or open an issue on GitHub.
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
----
+## Contact
 
-Thank you for using the **open-source-portfolio** repository! If you have any questions or need further assistance, feel free to reach out. Happy coding!
+For any inquiries or support, please contact [sohailkoutari@gmail.com](mailto:sohailkoutari@gmail.com).
 
----
+## Acknowledgements
 
-## 🌐 Socials: if stuck let me know here:
-
-[![Portfolio](https://img.shields.io/badge/Portfolio-%23000000.svg?style=for-the-badge&logo=Portfolio&logoColor=white)](https://squadtechinnovations.in/)
-[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:meer.uxair007@gmail.com)
-[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=Instagram&logoColor=white)](https://instagram.com/meeruzairwashere)
-[![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/meer-uzair-1b682b176)
-[![Facebook](https://img.shields.io/badge/Facebook-%231877F2.svg?style=for-the-badge&logo=Facebook&logoColor=white)](https://facebook.com/profile.php?id=100069300923731)
-[![YouTube](https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white)](https://youtube.com/@meeruzairwashere)
-[![X](https://img.shields.io/badge/X-%23000000.svg?style=for-the-badge&logo=X&logoColor=white)](https://twitter.com/miruzairwashere)
-
----
+Thank you to everyone who has supported and contributed to this project. Your feedback and assistance are invaluable.
