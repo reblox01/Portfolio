@@ -21,15 +21,15 @@ const TechStackPageContainer = () => {
       (item) => item?.techstackType === TechType.DevTools
     ) || [];
 
-  const apps =
-    data?.techstacks.filter((item) => item?.techstackType === TechType.Apps) ||
+  const platforms =
+    data?.techstacks.filter((item) => item?.techstackType === TechType.Platforms) ||
     [];
   const multimedia =
     data?.techstacks.filter((item) => item?.techstackType === TechType.Multimedia) ||
     [];
-  const hardware =
+  const system =
     data?.techstacks.filter(
-      (item) => item?.techstackType === TechType.Harware
+      (item) => item?.techstackType === TechType.System
     ) || [];
 
   if (isPending) return <h2 className="text-xl">Please wait...</h2>;
@@ -63,13 +63,13 @@ const TechStackPageContainer = () => {
           </div>
         </>
       )}
-      {apps?.length > 0 && (
+      {platforms?.length > 0 && (
         <>
           <h1 className="text-3xl md:text-5xl my-4 pl-4 font-extrabold">
-            Apps
+            Platforms
           </h1>
           <div className=" p-4  gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-            {apps?.map((techstack) => (
+            {platforms?.map((techstack) => (
               <TechstackCard key={techstack?.id} {...techstack} />
             ))}
           </div>
@@ -87,13 +87,13 @@ const TechStackPageContainer = () => {
           </div>
         </>
       )}
-      {hardware?.length > 0 && (
+      {system?.length > 0 && (
         <>
           <h1 className="text-3xl md:text-5xl my-4 pl-4 font-extrabold">
-            Hardware
+            System
           </h1>
           <div className=" p-4  gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-            {hardware?.map((techstack) => (
+            {system?.map((techstack) => (
               <TechstackCard key={techstack?.id} {...techstack} />
             ))}
           </div>

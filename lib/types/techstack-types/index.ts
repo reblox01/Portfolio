@@ -12,9 +12,9 @@ export type Techstack = {
 export enum TechType {
     Skills = 'skills',
     DevTools = 'dev-tools',
-    Apps = 'apps',
+    Platforms = 'platforms',
     Multimedia = 'multimedia',
-    Harware = 'hardware',
+    System = 'system',
 }
 
 export const createAndEditTechstackType = z.object({

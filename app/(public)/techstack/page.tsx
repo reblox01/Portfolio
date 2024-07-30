@@ -22,7 +22,7 @@ const TechstackPage = async () => {
     <>
       <SpotlightHero
         pageName="Techstack"
-        pageDescription="The skills I have, dev tools, apps, and devices I use, and the multimedia I play."
+        pageDescription="The skills I have, dev tools, platforms, and devices I use, and the multimedia I play."
       />
       <HydrationBoundary state={dehydrate(queryClient)}>
         <TechStackPageContainer />

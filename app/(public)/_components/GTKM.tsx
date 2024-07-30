@@ -22,7 +22,7 @@ export const cards = [
   {
     title: "Techstack",
     description:
-      "Discover the diverse array of tools, technologies, and platforms I leverage in my journey as a technologist. From development frameworks to productivity apps, and even the multimedia that inspire me, this section offers insights into my tech ecosystem and interests.",
+      "Discover the diverse array of tools, technologies, and platforms I leverage in my journey as a technologist. From development frameworks to productivity platforms, and even the multimedia that inspire me, this section offers insights into my tech ecosystem and interests.",
     link: "/techstack",
   },
 ];
