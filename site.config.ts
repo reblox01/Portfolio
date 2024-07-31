@@ -2,8 +2,8 @@ export const siteConfig = {
     name: "Sohail Koutari - Portfolio",
     description: "Explore the portfolio of Sohail Koutari, a skilled Full-Stack Developer with expertise in React, Next.js, Node.js, and other modern web technologies. Specializing in dynamic web applications, problem-solving, and collaborative projects.",
     logo: {
-      url: "/favicon.svg",
-      href: "/favicon.svg"
+      url: "/favicon-dark.svg", // Fallback logo if needed
+      href: "/favicon-dark.svg"  // Fallback href if needed
     },
     meta: {
       keywords: "Sohail Koutari, Web Developer, Full-Stack Developer, React, Next.js, Node.js, JavaScript, Portfolio, Front-End Development, Back-End Development, Web Design, Software Engineer, UI/UX, Agile, SEO, Professional, GitHub, Open Source",
@@ -13,11 +13,11 @@ export const siteConfig = {
       "og:description": "Explore the portfolio of Sohail Koutari, showcasing expertise in modern web technologies and collaborative projects.",
       "og:type": "website",
       "og:url": "https://sohail-koutari.vercel.app/",
-      "og:image": "/favicon.svg",
+      "og:image": "/favicon-dark.svg",
       "twitter:card": "summary_large_image",
       "twitter:title": "Sohail Koutari - Professional Web Developer Portfolio",
       "twitter:description": "Discover the professional web development projects of Sohail Koutari, specializing in React, Next.js, Node.js, and more.",
-      "twitter:image": "/favicon.svg"
+      "twitter:image": "/favicon-dark.svg"
     },
     structuredData: {
       "@context": "https://schema.org",
@@ -43,23 +43,25 @@ export const siteConfig = {
       },
       "alumniOf": "OFPPT",
       "gender": "Male",
-      "image": "/favicon.svg",
+      "image": "/favicon-dark.svg",
       "description": "Sohail Koutari is a professional Full-Stack Developer specializing in React, Next.js, Node.js, and modern web development technologies. With a passion for problem-solving and collaboration, Sohail has worked on various dynamic web projects."
     },
     favicon: {
-      light: "/favicon.png",
-      dark: "/favicon.svg",
+      light: "/favicon-light.svg",
+      dark: "/favicon-dark.svg",
     },
   };
   
   // JavaScript logic to handle dynamic favicon switching
   if (typeof window !== 'undefined') {
     const setFavicon = () => {
-      const faviconElement = document.getElementById('favicon') as HTMLLinkElement;
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        faviconElement.href = siteConfig.favicon.dark;
-      } else {
-        faviconElement.href = siteConfig.favicon.light;
+      const faviconElement = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null;
+      if (faviconElement) {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          faviconElement.href = siteConfig.favicon.dark;
+        } else {
+          faviconElement.href = siteConfig.favicon.light;
+        }
       }
     };
   
