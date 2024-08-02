@@ -23,6 +23,7 @@ export type ObjectTag = {
 export enum ProjectType {
     Frontend = 'frontend',
     Backend = 'backend',
+    CMS = 'CMS',
     FullStack = 'full-stack',
 }
 
