@@ -118,7 +118,7 @@ If you encounter any issues during setup or have any questions, feel free to rea
 
 5. **Access the Application**: Once the application is running, you can access it in your web browser at `http://localhost:3000`.
 
-   # Note: Parallax Effect on Homepage enables after adding atleast 15 projects to your portfolio
+   # Note: Parallax Effect on Homepage enables after adding atleast 4 projects to your portfolio
 
 ## Deploy on vercel
 
