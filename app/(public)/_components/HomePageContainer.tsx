@@ -32,7 +32,8 @@ const HomePageContainer = () => {
   return (
     <>
       {admin && <HeroMobile {...(adminData as AdminType)} />}
-      {projects?.length > 14 && (
+  {/* You can Change it '4' based on how much projects you have been added */}
+      {projects?.length > 4 && (
         <HeroParallax admin={admin} projects={projects} />
       )}
       <GTKM />
