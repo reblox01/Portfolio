@@ -1,8 +1,10 @@
 # Portfolio
 
-Welcome to the **Portfolio** GitHub repository! This project is designed to provide developers with a fully functional full-stack portfolio template featuring an admin login. With this repository, developers can easily set up their own portfolio websites, customize them to their liking, and manage their portfolio content through a user-friendly UI.
+![Thumbnail](https://github.com/reblox01/Koutari/blob/f13e2bf02a06d689b8dda6e88ccc6bd268070e07/public/Thumbnail.png)
 
 ## Overview
+
+Welcome to the **Portfolio** GitHub repository! This project is designed to provide developers with a fully functional full-stack portfolio template featuring an admin login. With this repository, developers can easily set up their own portfolio websites, customize them to their liking, and manage their portfolio content through a user-friendly UI.
 
 This project is aimed at developers who want to showcase their work in a professional and customizable manner. By utilizing this repository, developers can create their portfolio websites without having to start from scratch. The portfolio includes features such as:
 
