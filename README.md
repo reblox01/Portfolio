@@ -1,6 +1,6 @@
 # Portfolio
 
-![Thumbnail](https://github.com/reblox01/Koutari/blob/f13e2bf02a06d689b8dda6e88ccc6bd268070e07/public/Thumbnail.png)
+![Thumbnail](https://github.com/reblox01/Portfolio/blob/79389644b6533771271ca6bd281a82fd5ebbe595/public/Thumbnail.png)
 
 ## Overview
 
