@@ -25,7 +25,7 @@ export const Navbar = () => {
                 className="hidden md:flex"
                 size="default"
                 variant="default">
-                <Link href="/sign-in">Admin Login</Link>
+                <Link href="/sign-in">Login</Link>
               </Button>
             </SignedOut>
           </div>
