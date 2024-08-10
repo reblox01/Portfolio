@@ -63,7 +63,7 @@ export function NavbarLinks() {
             <NavigationMenuItem>
               <Link href="/admin-dashboard" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Admin Dashbord
+                  Dashboard
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
