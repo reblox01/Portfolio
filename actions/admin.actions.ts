@@ -1,7 +1,6 @@
 'use server';
 
 import prisma from "@/db";
-
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { createAndEditAdminSchema, CreateAndEditAdminType, AdminType } from '@/lib/types/admin-types';
@@ -12,9 +11,8 @@ function authenticateAndRedirect(): string {
     return userId;
 }
 
-
 export async function createAdminAction(values: CreateAndEditAdminType): Promise<AdminType | null> {
-    const adminUserId = authenticateAndRedirect()
+    const adminUserId = authenticateAndRedirect();
 
     try {
         createAndEditAdminSchema.parse(values);
@@ -23,15 +21,17 @@ export async function createAdminAction(values: CreateAndEditAdminType): Promise
             where: {
                 adminUserId
             }
-        })
+        });
 
         if (checkAdminExists.length > 0) {
-            throw new Error("Cannot add more than one admin")
+            throw new Error("Cannot add more than one admin");
         }
 
         const admin: AdminType = await prisma.admin.create({
             data: {
-                ...values, adminUserId
+                ...values,
+                adminUserId,
+                resumeUrl: values.resumeUrl || ''
             }
         });
         return admin;
@@ -44,12 +44,11 @@ export async function createAdminAction(values: CreateAndEditAdminType): Promise
 
 export async function getAdminDetail(): Promise<AdminType | null> {
     try {
-
-        const admin: AdminType[] = await prisma.admin.findMany({})
-        return admin[0]
+        const admin: AdminType[] = await prisma.admin.findMany({});
+        return admin[0];
     } catch (error) {
-        console.log(error)
-        return null
+        console.log(error);
+        return null;
     }
 }
 
@@ -68,8 +67,7 @@ export async function deleteAdmin(id: string): Promise<AdminType | null> {
     }
 }
 
-export async function updateAdminDetails(id: string, values: CreateAndEditAdminType
-): Promise<AdminType | null> {
+export async function updateAdminDetails(id: string, values: CreateAndEditAdminType): Promise<AdminType | null> {
     const adminUserId = authenticateAndRedirect();
 
     try {
@@ -79,6 +77,8 @@ export async function updateAdminDetails(id: string, values: CreateAndEditAdminT
             },
             data: {
                 ...values,
+                adminUserId,
+                resumeUrl: values.resumeUrl || ''
             },
         });
         return admin;

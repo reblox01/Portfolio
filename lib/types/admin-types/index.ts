@@ -3,27 +3,27 @@ import { JsonValue } from '@prisma/client/runtime/library';
 import * as z from 'zod';
 
 export type AdminType = {
-    id: string
-    name: string
-    adminUserId: string
-    imageUrl: string
-    position: string
-    location: string
-    introduction: string
-    education: string
-    skills: JsonValue[]
-    github?: string | null | undefined
-    linkedIn?: string | null | undefined
-    whatsapp?: string | null | undefined
-    facebook?: string | null | undefined
-    instagram?: string | null | undefined
-    discord?: string | null | undefined
-    website?: string | null | undefined
-    twitter?: string | null | undefined
-    email?: string | null | undefined
-    youtube?: string | null | undefined
-    resumeUrl: string 
-}
+    id: string;
+    name: string;
+    adminUserId: string;
+    imageUrl: string;
+    resumeUrl: string | null;
+    position: string;
+    location: string;
+    introduction: string;
+    education: string;
+    skills: JsonValue[];
+    github?: string | null;
+    linkedIn?: string | null;
+    whatsapp?: string | null;
+    facebook?: string | null;
+    instagram?: string | null;
+    discord?: string | null;
+    website?: string | null;
+    twitter?: string | null;
+    email?: string | null;
+    youtube?: string | null;
+};
 
 export type Skill = {
     id: string;
@@ -36,7 +36,7 @@ export const createAndEditAdminSchema = z.object({
     }),
 
     imageUrl: z.string(),
-    resumeUrl: z.string().optional(),
+    resumeUrl: z.string().nullable().optional(),
     position: z.string().min(1, {
         message: "Position is required!"
     }),
@@ -55,22 +55,21 @@ export const createAndEditAdminSchema = z.object({
             text: z.string(),
         })
     ).min(1, {
-        message: 'at least one skill is required',
+        message: 'At least one skill is required',
     }),
-    github: z.string().min(1, {
-        message: "github is required!"
-    }),
-    linkedIn: z.string().optional(),
-    whatsapp: z.string().optional(),
-    facebook: z.string().optional(),
-    instagram: z.string().optional(),
-    discord: z.string().optional(),
-    website: z.string().optional(),
-    twitter: z.string().optional(),
-    youtube: z.string().optional(),
+    github: z.string().optional().nullable(),
+    linkedIn: z.string().optional().nullable(),
+    whatsapp: z.string().optional().nullable(),
+    facebook: z.string().optional().nullable(),
+    instagram: z.string().optional().nullable(),
+    discord: z.string().optional().nullable(),
+    website: z.string().optional().nullable(),
+    twitter: z.string().optional().nullable(),
+    youtube: z.string().optional().nullable(),
     email: z.string().email().min(1, {
-        message: "email is required!"
+        message: "Email is required!"
     }),
-})
+});
+
 
 export type CreateAndEditAdminType = z.infer<typeof createAndEditAdminSchema>

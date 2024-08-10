@@ -60,7 +60,7 @@ model Techstack{
   adminUserId  String
   name         String    
   imageUrl     String
-  resumeUrl    String
+  resumeUrl    String?
   position     String
   location     String    
   introduction String     
