@@ -98,11 +98,11 @@ Before running the application, you need to set up environment variables and con
 5. **Change title,description,favicon**:
    To set up the title, description, and favicon/logo:
 
-6. Open `site.config.ts`.
-7. Update the `Your name` field with your name followed by " - Portfolio" for the title.
-8. Adjust the `description` field with your description.
-9. Specify the path to your logo image in the `logo` object's `url` and `href` properties.
-10. Ensure your favicon or logo image is placed in the `public` folder.
+6. **Open** `site.config.ts`.
+7. **Update** the `Your name` field with your name followed by " - Portfolio" for the title.
+8. **Adjust** the `description` field with your description.
+9. **Specify** the path to your logo image in the `logo` object's `url` and `href` properties.
+10. **Ensure** your favicon or logo image is placed in the `public` folder.
 
 These changes will reflect the title, description, and logo/favicon of your portfolio website.
 
