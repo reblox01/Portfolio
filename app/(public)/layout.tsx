@@ -8,6 +8,7 @@ import { Navbar } from "@/components/Navbar";
 import { getAdminDetail } from "@/actions/admin.actions";
 import MyContext from "../MyContext";
 import MobileNavbar from "@/components/MobileNavbar";
+import { Analytics } from "@vercel/analytics/react";
 
 export const layout = async ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ export const layout = async ({ children }: { children: React.ReactNode }) => {
           <MobileNavbar />
         </MyContext>
       </HydrationBoundary>
+      <Analytics />
     </>
   );
 };
