@@ -1,50 +1,51 @@
 export const siteConfig = {
-    name: "Sohail Koutari - Portfolio",
+    name: "Your Name - Portfolio",
     description: "Explore the portfolio of Sohail Koutari, a skilled Full-Stack Developer with expertise in React, Next.js, Node.js, and other modern web technologies. Specializing in dynamic web applications, problem-solving, and collaborative projects.",
     logo: {
       url: "/favicon-dark.svg", // Fallback logo if needed
       href: "/favicon-dark.svg"  // Fallback href if needed
     },
     meta: {
-      keywords: "Sohail Koutari, Web Developer, Full-Stack Developer, React, Next.js, Node.js, JavaScript, Portfolio, Front-End Development, Back-End Development, Web Design, Software Engineer, UI/UX, Agile, SEO, Professional, GitHub, Open Source",
-      author: "Sohail Koutari",
+      keywords: "Your Name, Your other keywords, Web Developer, Full-Stack Developer, React, Next.js, Node.js, JavaScript, Portfolio, Front-End Development, Back-End Development, Web Design, Software Engineer, UI/UX, Agile, SEO, Professional, GitHub, Open Source",
+      author: "Your Name",
       viewport: "width=device-width, initial-scale=1",
-      "og:title": "Sohail Koutari - Professional Web Developer Portfolio",
+      "og:title": "Your Name - Professional Web Developer Portfolio",
       "og:description": "Explore the portfolio of Sohail Koutari, showcasing expertise in modern web technologies and collaborative projects.",
       "og:type": "website",
-      "og:url": "https://sohail-koutari.vercel.app/",
+      "og:url": "https://Your-Name.vercel.app/",
       "og:image": "/favicon-dark.svg",
       "twitter:card": "summary_large_image",
-      "twitter:title": "Sohail Koutari - Professional Web Developer Portfolio",
+      "twitter:title": "Your Name - Professional Web Developer Portfolio",
       "twitter:description": "Discover the professional web development projects of Sohail Koutari, specializing in React, Next.js, Node.js, and more.",
       "twitter:image": "/favicon-dark.svg"
     },
     structuredData: {
       "@context": "https://schema.org",
       "@type": "Person",
-      "name": "Sohail Koutari",
-      "url": "https://sohail-koutari.vercel.app/",
+      "name": "Your Name",
+      "url": "https://Your-Name.vercel.app/",
       "sameAs": [
-        "https://www.linkedin.com/in/sohailkoutari",
-        "https://github.com/reblox01",
-        "https://gitlab.com/reblox1",
-        "https://discord.com/users/684849854010228757",
-        "https://buymeacoffee.com/arosck1",
-        "https://www.patreon.com/aroscki",
-        "https://stackoverflow.com/users/21022067/0x8d",
-        "https://www.youtube.com/@aroscki",
-        "https://x.com/arosck1",
-        "https://instagram.com/aroscki"
+        "https://www.linkedin.com/in/Your-Namei",
+        "https://github.com/your-username",
+        "https://gitlab.com/your-username",
+        "https://discord.com/users/your-id",
+        "https://buymeacoffee.com/your-username",
+        "https://www.patreon.com/your-username",
+        "https://stackoverflow.com/users/your-id",
+        "https://www.youtube.com/@your-username",
+        "https://x.com/your-username",
+        "https://instagram.com/your-username",
+        "your other links"
       ],
-      "jobTitle": "Full-Stack Developer",
+      "jobTitle": "Your Job position",
       "worksFor": {
         "@type": "Organization",
         "name": "Freelance"
       },
-      "alumniOf": "OFPPT",
-      "gender": "Male",
+      "alumniOf": "Your University",
+      "gender": "Your Gender",
       "image": "/favicon-dark.svg",
-      "description": "Sohail Koutari is a professional Full-Stack Developer specializing in React, Next.js, Node.js, and modern web development technologies. With a passion for problem-solving and collaboration, Sohail has worked on various dynamic web projects."
+      "description": "Your Name is a professional Full-Stack Developer specializing in React, Next.js, Node.js, and modern web development technologies. With a passion for problem-solving and collaboration, Sohail has worked on various dynamic web projects."
     },
     favicon: {
       light: "/favicon-light.svg",
