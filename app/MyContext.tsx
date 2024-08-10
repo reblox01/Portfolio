@@ -22,6 +22,7 @@ const MyContext = ({ children }: { children: React.ReactNode }) => {
     facebook: "",
     github: "",
     imageUrl: "",
+    resumeUrl: "",
     instagram: "",
     introduction: "",
     linkedIn: "",
@@ -32,6 +33,7 @@ const MyContext = ({ children }: { children: React.ReactNode }) => {
     twitter: "",
     website: "",
     whatsapp: "",
+    youtube: "",
   };
   return <myContext.Provider value={adminData}>{children}</myContext.Provider>;
 };

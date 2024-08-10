@@ -22,7 +22,7 @@ export type AdminType = {
     twitter?: string | null | undefined
     email?: string | null | undefined
     youtube?: string | null | undefined
-    resumeUrl?: string
+    resumeUrl: string 
 }
 
 export type Skill = {
