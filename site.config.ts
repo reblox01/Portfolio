@@ -16,7 +16,7 @@ export const siteConfig = {
       "og:image": "/favicon-dark.svg",
       "twitter:card": "summary_large_image",
       "twitter:title": "Your Name - Professional Web Developer Portfolio",
-      "twitter:description": "Discover the professional web development projects of Sohail Koutari, specializing in React, Next.js, Node.js, and more.",
+      "twitter:description": "Discover the professional web development projects of Your Name, specializing in React, Next.js, Node.js, and more.",
       "twitter:image": "/favicon-dark.svg"
     },
     structuredData: {
