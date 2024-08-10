@@ -237,7 +237,7 @@ const MobileNavbar = () => {
               onClick={() => setIsOpen(false)}
               className="cursor-pointer rounded-lg justify-center items-center font-medium transition flex w-full gap-2 bg-onyx/30 py-4 text-black dark:text-white hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20"
               href="/sign-in">
-              Admin Login
+              Login
             </Link>
           </li>
         </SignedOut>
@@ -247,7 +247,7 @@ const MobileNavbar = () => {
               onClick={() => setIsOpen(false)}
               className="cursor-pointer rounded-lg justify-center items-center font-medium transition flex w-full gap-2 bg-onyx/30 py-4 text-black dark:text-white hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20"
               href="/admin-dashboard">
-              Admin Dashboard
+              Dashboard
             </Link>
           </li>
         )}
