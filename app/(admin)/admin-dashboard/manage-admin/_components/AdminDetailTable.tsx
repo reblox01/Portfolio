@@ -176,6 +176,17 @@ export const AdminDetailTable = () => {
                           </a>
                         </li>
                       )}
+                      {data?.youtube && (
+                        <li className="capitalize font-bold">
+                          youtube:{" "}
+                          <a
+                            target="_blank"
+                            className="text-black dark:text-white lowercase hover:underline"
+                            href={data?.youtube}>
+                            {data?.youtube}
+                          </a>
+                        </li>
+                      )}
                     </ul>
                   </div>
                   <div>
