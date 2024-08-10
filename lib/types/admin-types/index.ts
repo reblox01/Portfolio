@@ -21,6 +21,8 @@ export type AdminType = {
     website?: string | null | undefined
     twitter?: string | null | undefined
     email?: string | null | undefined
+    youtube?: string | null | undefined
+    resumeUrl?: string
 }
 
 export type Skill = {
@@ -30,10 +32,11 @@ export type Skill = {
 
 export const createAndEditAdminSchema = z.object({
     name: z.string().min(1, {
-        message: "Fullname is required!"
+        message: "Full-name is required!"
     }),
 
     imageUrl: z.string(),
+    resumeUrl: z.string().optional(),
     position: z.string().min(1, {
         message: "Position is required!"
     }),
@@ -64,6 +67,7 @@ export const createAndEditAdminSchema = z.object({
     discord: z.string().optional(),
     website: z.string().optional(),
     twitter: z.string().optional(),
+    youtube: z.string().optional(),
     email: z.string().email().min(1, {
         message: "email is required!"
     }),

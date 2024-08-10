@@ -28,6 +28,7 @@ import { createAdminAction } from "@/actions/admin.actions";
 
 function AddAdminForm() {
   const [logoId, setLogoId] = useState("");
+  const [resumeId, setResumeId] = useState("");
   const [skills, setSkills] = useState<Tag[]>([]);
 
   const form = useForm<CreateAndEditAdminType>({
@@ -49,6 +50,8 @@ function AddAdminForm() {
       twitter: "",
       website: "",
       whatsapp: "",
+      resumeUrl: "",
+      youtube: "",
     },
   });
 
@@ -75,6 +78,7 @@ function AddAdminForm() {
     const data: CreateAndEditAdminType = {
       ...values,
       imageUrl: logoId,
+      resumeUrl: resumeId,
     };
     mutate(data);
   }
@@ -185,6 +189,27 @@ function AddAdminForm() {
             title="twitter"
             control={form.control}
           />
+          {/* youtube */}
+          <CustomFormField
+            name="youtube"
+            title="youtube"
+            control={form.control}
+          />
+          {/* resume */}
+          <CustomFormFieldFile
+            name="resume"
+            title="Resume"
+            value={resumeId}
+            control={form.control}
+          />
+          <Button asChild variant="outline">
+            <CldUploadButton
+              onUpload={(result: any) => {
+                setResumeId(result?.info?.secure_url);
+              }}
+              uploadPreset={process.env.NEXT_PUBLIC_UPLOAD_PRESET}
+            />
+          </Button>
 
           <Button
             type="submit"

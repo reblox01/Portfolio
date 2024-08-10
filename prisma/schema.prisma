@@ -60,6 +60,7 @@ model Techstack{
   adminUserId  String
   name         String    
   imageUrl     String
+  resumeUrl    String
   position     String
   location     String    
   introduction String     
@@ -74,4 +75,5 @@ model Techstack{
   website       String?
   twitter       String?
   email       String?
+  youtube   String?
 }

@@ -32,6 +32,7 @@ function EditAdminForm() {
     queryFn: () => getAdminDetail(),
   });
   const [logoId, setLogoId] = useState(data?.imageUrl || "");
+  const [resumeId, setResumeId] = useState(data?.resumeUrl || "");
   const [skills, setSkills] = useState<Tag[]>((data?.skills as Skill[]) || []);
 
   const form = useForm<CreateAndEditAdminType>({
@@ -53,6 +54,8 @@ function EditAdminForm() {
       twitter: data?.twitter || "",
       website: data?.website || "",
       whatsapp: data?.whatsapp || "",
+      youtube: data?.youtube || "",
+      resumeUrl: data?.resumeUrl || "",
     },
   });
 
@@ -80,6 +83,7 @@ function EditAdminForm() {
     const data: CreateAndEditAdminType = {
       ...values,
       imageUrl: logoId,
+      resumeUrl: resumeId,
     };
     mutate(data);
   }
@@ -188,6 +192,30 @@ function EditAdminForm() {
           <CustomFormField
             name="twitter"
             title="twitter"
+            control={form.control}
+          />
+          {/* resume */}
+          <div className="flex flex-col gap-3">
+            <CustomFormFieldFile
+              name="resume"
+              title="Resume"
+              value={resumeId}
+              control={form.control}
+            />
+            <Button asChild variant="outline">
+              <CldUploadButton
+                onUpload={(result: any) => {
+                  setResumeId(result?.info?.secure_url);
+                }}
+                uploadPreset={process.env.NEXT_PUBLIC_UPLOAD_PRESET}
+              />
+            </Button>
+          </div>
+          
+          {/* youtube */}
+          <CustomFormField
+            name="youtube"
+            title="youtube"
             control={form.control}
           />
 
