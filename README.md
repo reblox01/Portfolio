@@ -70,6 +70,7 @@ Before running the application, you need to set up environment variables and con
    - Go to Cloudinary settings and navigate to Upload presets.
    - Create a new upload preset and specify the folder name where you want to save your images (e.g., "My-portfolio").
    - Save the new preset and add its name to the `.env` file under the `NEXT_PUBLIC_UPLOAD_PRESET` variable.
+   - **note**: Make sure to go to `settings` and then `security` and make sure that `PDF and ZIP files delivery` is activated.
 
 3. **Clerk Configuration**:
 
