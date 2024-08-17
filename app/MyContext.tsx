@@ -31,7 +31,7 @@ const MyContext = ({ children }: { children: React.ReactNode }) => {
     position: "",
     skills: [],
     twitter: "",
-    website: "",
+    gitlab: "",
     whatsapp: "",
     youtube: "",
   };

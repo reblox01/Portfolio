@@ -77,17 +77,6 @@ export const AdminDetailTable = () => {
                   <div>
                     <h4 className="text-sm font-semibold">Socials</h4>
                     <ul className="text-sm text-gray-500  dark:text-gray-400">
-                      {data?.website && (
-                        <li className="capitalize font-bold">
-                          portfolio:{" "}
-                          <a
-                            target="_blank"
-                            className="text-black dark:text-white lowercase hover:underline"
-                            href={data?.website}>
-                            {data?.website}
-                          </a>
-                        </li>
-                      )}
                       {data?.email && (
                         <li className="capitalize font-bold">
                           email:{" "}
@@ -118,6 +107,17 @@ export const AdminDetailTable = () => {
                             className="text-black dark:text-white lowercase hover:underline"
                             href={data?.github}>
                             {data?.github}
+                          </a>
+                        </li>
+                      )}
+                      {data?.gitlab && (
+                        <li className="capitalize font-bold">
+                          Gitlab:{" "}
+                          <a
+                            target="_blank"
+                            className="text-black dark:text-white lowercase hover:underline"
+                            href={data?.gitlab}>
+                            {data?.gitlab}
                           </a>
                         </li>
                       )}

@@ -72,7 +72,7 @@ model Techstack{
   facebook       String?
   instagram       String?
   discord       String?
-  website       String?
+  gitlab       String?
   twitter       String?
   email       String?
   youtube   String?

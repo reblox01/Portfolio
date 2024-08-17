@@ -19,7 +19,7 @@ export type AdminType = {
     facebook?: string | null;
     instagram?: string | null;
     discord?: string | null;
-    website?: string | null;
+    gitlab?: string | null;
     twitter?: string | null;
     email?: string | null;
     youtube?: string | null;
@@ -63,7 +63,7 @@ export const createAndEditAdminSchema = z.object({
     facebook: z.string().optional().nullable(),
     instagram: z.string().optional().nullable(),
     discord: z.string().optional().nullable(),
-    website: z.string().optional().nullable(),
+    gitlab: z.string().optional().nullable(),
     twitter: z.string().optional().nullable(),
     youtube: z.string().optional().nullable(),
     email: z.string().email().min(1, {

@@ -52,7 +52,7 @@ function EditAdminForm() {
       position: data?.position || "",
       skills: (data?.skills as Skill[]) || [],
       twitter: data?.twitter || "",
-      website: data?.website || "",
+      gitlab: data?.gitlab || "",
       whatsapp: data?.whatsapp || "",
       youtube: data?.youtube || "",
       resumeUrl: data?.resumeUrl || "",
@@ -152,6 +152,12 @@ function EditAdminForm() {
             title="github"
             control={form.control}
           />
+          {/* gitlab */}
+          <CustomFormField
+            name="gitlab"
+            title="gitlab"
+            control={form.control}
+          />
           {/* linkedIn */}
           <CustomFormField
             name="linkedIn"
@@ -180,12 +186,6 @@ function EditAdminForm() {
           <CustomFormField
             name="discord"
             title="discord "
-            control={form.control}
-          />
-          {/* website */}
-          <CustomFormField
-            name="website"
-            title="Portfolio"
             control={form.control}
           />
           {/* twitter */}

@@ -48,7 +48,7 @@ function AddAdminForm() {
       position: "",
       skills: [],
       twitter: "",
-      website: "",
+      gitlab: "",
       whatsapp: "",
       resumeUrl: "",
       youtube: "",
@@ -177,9 +177,9 @@ function AddAdminForm() {
             title="discord "
             control={form.control}
           />
-          {/* website */}
+          {/* gitlab */}
           <CustomFormField
-            name="website"
+            name="gitlab"
             title="Portfolio"
             control={form.control}
           />
