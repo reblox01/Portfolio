@@ -32,7 +32,7 @@ const Footer = () => {
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
               href={data?.gitlab}>
               <span className="sr-only">Gitlab</span>
-              <IconBrandGitlab className="w-4 h-4 fill-current" />
+              <IconBrandGitlab className="w-6 h-4 fill-current" />
             </Link>
           )}
           {data?.github && (
