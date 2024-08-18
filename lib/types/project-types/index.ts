@@ -8,8 +8,8 @@ export type Project = {
     title: string; // Title
     oneLiner: string; // One-Liner
     projectType: string; // Project Type
-    liveURL?: string; // Live URL (Optional)
-    sourceURL?: string; // Source Code URL (Optional)
+    liveURL: string | null; // Live URL
+    sourceURL: string | null; // Source Code URL
     description: string; // Description
     keywords: Prisma.JsonValue[];
     techStack: Prisma.JsonValue[];

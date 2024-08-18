@@ -11,11 +11,15 @@ import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 
 
-function authenticateAndRedirect(): string {
+function authenticateAndRedirect(): string | null {
     const { userId } = auth();
-    if (!userId) redirect('/');
+    if (!userId) {
+        redirect('/');
+        return null;
+    }
     return userId;
 }
+
 
 
 export async function createProjectAction(values: CreateAndEditProjectType): Promise<Project | null> {
@@ -24,7 +28,9 @@ export async function createProjectAction(values: CreateAndEditProjectType): Pro
 
         const project: Project = await prisma.project.create({
             data: {
-                ...values
+                ...values,
+                liveURL: values.liveURL ?? undefined,
+                sourceURL: values.sourceURL ?? undefined,
             }
         });
 
@@ -72,13 +78,14 @@ export async function getRandomProjectsAction(): Promise<{ title: string; link: 
 
         const shuffledProjects = shuffleProjects(randomProjects);
 
-
-        // Map the random projects to the desired format
-        const projects = shuffledProjects.map(project => ({
-            title: project.title,
-            link: project.liveURL,
-            thumbnail: project.screenshot
-        }));
+        // Map and filter out projects with a null link
+        const projects = shuffledProjects
+            .filter(project => project.liveURL !== null)
+            .map(project => ({
+                title: project.title,
+                link: project.liveURL as string,
+                thumbnail: project.screenshot
+            }));
 
         return projects;
     } catch (error) {
@@ -108,6 +115,9 @@ export async function getSingleProjectAction(id: string): Promise<Project | null
 
 export async function deleteProjectAction(id: string): Promise<Project | null> {
     const userId = authenticateAndRedirect();
+    if (!userId) {
+        return null;
+    }
 
     try {
         const project: Project = await prisma.project.delete({
@@ -126,6 +136,9 @@ export async function updateProjectAction(
     values: CreateAndEditProjectType
 ): Promise<Project | null> {
     const userId = authenticateAndRedirect();
+    if (!userId) {
+        return null;
+    }
 
     try {
         const project: Project = await prisma.project.update({
@@ -134,6 +147,8 @@ export async function updateProjectAction(
             },
             data: {
                 ...values,
+                liveURL: values.liveURL ?? undefined,
+                sourceURL: values.sourceURL ?? undefined,
             },
         });
         return project;
