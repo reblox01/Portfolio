@@ -26,28 +26,36 @@ const ProjectDetailContainer = ({ projectId }: { projectId: string }) => {
                 <Badge variant="secondary" className="capitalize p-2">
                   {data?.projectType}
                 </Badge>
-                <h1 className="text-3xl   font-bold tracking-tighter capitalize sm:text-4xl">
+                <h1 className="text-3xl font-bold tracking-tighter capitalize sm:text-4xl">
                   {data?.title}
                 </h1>
                 <p className="text-gray-500 capitalize dark:text-gray-400">
                   ― {data?.oneLiner}
                 </p>
               </div>
-              <div className="space-y-4 text-gray-500 text-sm text-justify   dark:text-gray-400">
+              <div className="space-y-4 text-gray-500 text-sm text-justify dark:text-gray-400">
                 <p>{data?.description}</p>
               </div>
             </div>
             <div className="flex h-full flex-col gap-4 ">
-              <div className="md:flex hidden flex-col gap-2">
-                <Button asChild>
-                  <Link target="_blank" href={data?.liveURL || ""}>
-                    {data?.liveURL.includes("github")
-                      ? "Source Code"
-                      : "See Live"}{" "}
-                    <MoveRight size={10} className="ml-2" />
-                  </Link>
-                </Button>
-              </div>
+              {data?.liveURL && (
+                <div className="md:flex hidden flex-col gap-2">
+                  <Button asChild>
+                    <Link target="_blank" href={data?.liveURL}>
+                      {data?.liveURL.includes("github") ? "Source Code" : "See Live"} <MoveRight size={10} className="ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              )}
+              {data?.sourceURL && (
+                <div className="md:flex hidden flex-col gap-2">
+                  <Button asChild>
+                    <Link target="_blank" href={data?.sourceURL}>
+                      {data?.sourceURL.includes("github") ? "Source Code" : "Source Code"} <MoveRight size={10} className="ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              )}
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-lg font-bold">Tech Stack:</h3>
                 {data?.techStack?.map((tech: any) => (
@@ -56,7 +64,7 @@ const ProjectDetailContainer = ({ projectId }: { projectId: string }) => {
                   </Badge>
                 ))}
               </div>
-              <div className="flex flex-wrap  items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-lg font-bold">Keywords:</h3>
                 {data?.keywords?.map((key: any) => (
                   <Badge key={key?.id} className="mx-1 capitalize">
@@ -64,13 +72,15 @@ const ProjectDetailContainer = ({ projectId }: { projectId: string }) => {
                   </Badge>
                 ))}
               </div>
-              <div className="md:hidden flex flex-col gap-2">
-                <Button asChild>
-                  <Link target="_blank" href={data?.liveURL || ""}>
-                    See Live <MoveRight size={10} className="ml-2" />
-                  </Link>
-                </Button>
-              </div>
+              {data?.liveURL && (
+                <div className="md:hidden flex flex-col gap-2">
+                  <Button asChild>
+                    <Link target="_blank" href={data?.liveURL}>
+                      See Live <MoveRight size={10} className="ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              )}
               <Button className="mt-auto" asChild>
                 <Link href=".">
                   <>
@@ -85,4 +95,5 @@ const ProjectDetailContainer = ({ projectId }: { projectId: string }) => {
     </>
   );
 };
+
 export default ProjectDetailContainer;

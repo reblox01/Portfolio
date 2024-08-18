@@ -55,6 +55,7 @@ function EditProjectForm({ projectId }: { projectId: string }) {
       screenshot: data?.screenshot,
       projectType: (data?.projectType as ProjectType) || ProjectType.FullStack,
       liveURL: data?.liveURL,
+      sourceURL: data?.sourceURL,
       techStack: data?.techStack as ObjectTag[],
       keywords: data?.keywords as ObjectTag[],
       description: data?.description,
@@ -154,6 +155,12 @@ function EditProjectForm({ projectId }: { projectId: string }) {
           <CustomFormField
             name="liveURL"
             title="Project Live Url"
+            control={form.control}
+          />
+          {/* project sourceUrl */}
+          <CustomFormField
+            name="sourceURL"
+            title="Project Source Code Url"
             control={form.control}
           />
           {/* project type */}

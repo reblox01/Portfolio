@@ -44,6 +44,7 @@ function AddProjectForm() {
       screenshot: "",
       projectType: ProjectType.FullStack,
       liveURL: "",
+      sourceURL: "",
       techStack: [],
       keywords: [],
       description: "",
@@ -137,6 +138,12 @@ function AddProjectForm() {
             title="Project Live Url"
             control={form.control}
           />
+          {/* project SourceUrl */}
+          <CustomFormField
+            name="sourceURL"
+            title="Project Source Code Url"
+            control={form.control}
+          />
           {/* project type */}
           <CustomFormSelect
             name="projectType"
@@ -164,7 +171,7 @@ function AddProjectForm() {
             setTagsList={setKeywordTags}
             setValue={setValue}
           />
-          {/* project type */}
+          {/* project Description */}
           <div className="md:col-span-2">
             <CustomFormTextArea
               name="description"
