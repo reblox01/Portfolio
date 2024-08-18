@@ -19,8 +19,8 @@ datasource db {
     logo        String
     screenshot  String
     projectType String
-    liveURL     String
-    sourceURL     String
+    liveURL     String?
+    sourceURL   String?
     description String
     techStack   Json[]
     keywords    Json[]
