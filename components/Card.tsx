@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { TbSourceCode } from "react-icons/tb";
+import { VscSourceControl } from "react-icons/vsc";
 import { FaGithub } from "react-icons/fa";
 import { AiFillGitlab } from "react-icons/ai";
 
@@ -20,7 +20,7 @@ const Card = ({ OneLiner, screenshot, title, href, source }: Prop) => {
     } else if (url.includes("gitlab.com")) {
       return <AiFillGitlab size={22} />;
     } else {
-      return <TbSourceCode size={20} />;
+      return <VscSourceControl size={16} />;
     }
   };
 
