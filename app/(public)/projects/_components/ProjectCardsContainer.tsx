@@ -19,6 +19,7 @@ const ProjectCardsContainer = () => {
           key={project?.id}
           OneLiner={project?.oneLiner}
           title={project?.title}
+          source={project?.sourceURL}
           screenshot={project?.screenshot}
           href={`/projects/${project?.id}`}
         />
