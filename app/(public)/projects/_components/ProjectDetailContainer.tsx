@@ -72,6 +72,15 @@ const ProjectDetailContainer = ({ projectId }: { projectId: string }) => {
                   </Badge>
                 ))}
               </div>
+              {data?.sourceURL && (
+                <div className="md:hidden flex flex-col gap-2">
+                  <Button asChild>
+                    <Link target="_blank" href={data?.sourceURL}>
+                      {data?.sourceURL.includes("github") ? "Source Code" : "Source Code"} <MoveRight size={10} className="ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              )}
               {data?.liveURL && (
                 <div className="md:hidden flex flex-col gap-2">
                   <Button asChild>
