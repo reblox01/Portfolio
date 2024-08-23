@@ -17,20 +17,23 @@ This project is aimed at developers who want to showcase their work in a profess
 
 To get started with using this portfolio template, follow these steps:
 
-1. **Clone the Repository**: Clone this repository to your local machine using the following command:
+## 1. **Clone the Repository**: 
+Clone this repository to your local machine using the following command:
 
    ```bash
    git clone https://github.com/reblox01/Portfolio.git
    ```
 
-2. **Install Dependencies**: Navigate into the project directory and install the necessary dependencies for both the frontend and backend:
+## 2. **Install Dependencies**: 
+Navigate into the project directory and install the necessary dependencies for both the frontend and backend:
 
    ```bash
    cd Portfolio
    npm install
    ```
 
-3. **Configure Environment Variables**: Set up your environment variables for the backend. You can do this by creating a `.env` file in the root directory of the project and adding the necessary variables. Refer to the `.env` file for guidance.
+## 3. **Configure Environment Variables**: 
+Set up your environment variables for the backend. You can do this by creating a `.env` file in the root directory of the project and adding the necessary variables. Refer to the `.env` file for guidance.
 
 - .env example template
 
@@ -99,27 +102,51 @@ Before running the application, you need to set up environment variables and con
 5. **Change title,description,favicon**:
    To set up the title, description, and favicon/logo:
 
-6. **Open** `site.config.ts`.
-7. **Update** the `Your name` field with your name followed by " - Portfolio" for the title.
-8. **Adjust** the `description` field with your description.
-9. **Specify** the path to your logo image in the `logo` object's `url` and `href` properties.
-10. **Ensure** your favicon or logo image is placed in the `public` folder.
+   - **Open** `site.config.ts`.
+   - **Update** the `Your name` field with your name followed by " - Portfolio" for the title.
+   - **Adjust** the `description` field with your description.
+   - **Specify** the path to your logo image in the `logo` object's `url` and `href` properties.
+   - **Ensure** your favicon or logo image is placed in the `public` folder.
 
 These changes will reflect the title, description, and logo/favicon of your portfolio website.
 
-6. **Final Steps**:
+
+6. **Contact Configurantion SMTP**:
+- Enable Two-Factor Authentication (2FA)
+  - Go to your [Google Account](https://myaccount.google.com/).
+   - Click on **Security** in the left sidebar.
+   - Under **Signing in to Google**, enable **2-Step Verification** if it is not already enabled.
+   - Follow the prompts to set up 2FA using your preferred method (phone, app, etc.).
+
+- Generate an App Password
+   - After enabling 2FA, return to the **Security** section.
+   - Under **Signing in to Google**, click on **App passwords**.
+   - You may need to re-enter your password to access this section.
+   - Select **Mail** as the app and **Other (Custom name)** for the device. Enter a name that helps you remember the purpose (e.g., "MyApp SMTP").
+   - Click **Generate**.
+   - Google will provide a 16-character app password. **Copy this password** — you will need it for your application.
+     
+ - Config Contact in Dashboard Admin
+   - Go to you **Dashboard**
+   - **Contact** then you can just add you contact infos by **Add New Contact**
+   - Make sure that you inserted a valid **password** for the **email** the email that you used
+
+
+7. **Final Steps**:
    - Save all changes to the `.env` file.
    - Run the application again using `npm run dev`.
 
 If you encounter any issues during setup or have any questions, feel free to reach out for assistance.
 
-4. **Run the Application**: Once the dependencies are installed and the environment variables are configured, you can run the application. Run the following command from the root directory:
+## 4. **Run the Application**: 
+Once the dependencies are installed and the environment variables are configured, you can run the application. Run the following command from the root directory:
 
    ```bash
    npm run dev
    ```
 
-5. **Access the Application**: Once the application is running, you can access it in your web browser at `http://localhost:3000`.
+## 5. **Access the Application**: 
+Once the application is running, you can access it in your web browser at `http://localhost:3000`.
 
    # Note: Parallax Effect on Homepage enables after adding atleast 4 projects to your portfolio
 
