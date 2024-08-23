@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { AdminType } from "@/lib/types/admin-types";
 import Link from "next/link";
 import { motion } from "framer-motion";
-const HeroMobile = ({ name, position, location, email }: AdminType) => {
+const HeroMobile = ({ name, position, location }: AdminType) => {
   const FADE_UP_ANIMATION_VARIANTS = {
     hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0, transition: { type: "spring" } },
@@ -57,7 +57,7 @@ const HeroMobile = ({ name, position, location, email }: AdminType) => {
                 asChild
                 variant={"secondary"}
                 className="w-full min-h-[60px] px-8 py-4  rounded-lg  ">
-                <a className="font-semibold" href={`mailto:${email}`}>
+                <a className="font-semibold" href="/contact">
                   Get in touch
                 </a>
               </Button>

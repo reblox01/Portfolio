@@ -16,7 +16,7 @@ const ContactMe = () => {
         </p>
       </div>
       <Button asChild variant="default" size="xl">
-        <Link href={`mailto:${data?.email}`}>
+        <Link href="/contact">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

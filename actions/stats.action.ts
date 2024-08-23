@@ -1,6 +1,7 @@
 'use server';
 import prisma from "@/db";
 import { auth } from '@clerk/nextjs';
+import { Contact } from "lucide-react";
 import { redirect } from 'next/navigation';
 
 function authenticateAndRedirect(): string {
@@ -18,6 +19,7 @@ export async function getAllStats(): Promise<{ stats: Stats[] }> {
 
     try {
         const projects = await prisma.project.count()
+        const contacts = await prisma.contact.count()
         const certifications = await prisma.certification.count()
         const experience = await prisma.experience.count()
         const techstack = await prisma.techstack.count()
@@ -36,6 +38,10 @@ export async function getAllStats(): Promise<{ stats: Stats[] }> {
         {
             title: "techstack",
             count: techstack
+        },
+        {
+            title: "contact",
+            count: contacts
         },]
         return { stats }
     } catch (error) {

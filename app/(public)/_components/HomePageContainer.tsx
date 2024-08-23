@@ -8,6 +8,9 @@ import GTKM from "./GTKM";
 import ContactMe from "./ContactMe";
 import HeroMobile from "./HeroMobile";
 import { AdminType } from "@/lib/types/admin-types";
+// import { HomeSection } from "./HomeSection";
+import { HeroHeader } from "./HeroHeader";
+import { Spotlight } from "@/components/ui/spotlight";
 
 const HomePageContainer = () => {
   const { data: projectsData, isPending: projectsIsLoading } = useQuery({
@@ -22,6 +25,7 @@ const HomePageContainer = () => {
   const projects = projectsData || [];
   const admin = {
     name: adminData?.name || "",
+    position: adminData?.position || "",
     introduction: adminData?.introduction || "",
   };
 
@@ -31,11 +35,17 @@ const HomePageContainer = () => {
 
   return (
     <>
+      <HeroHeader />
+      <Spotlight
+        className="-top-40 left-0 md:left-60 md:-top-20"
+        fill="white"
+      />
       {admin && <HeroMobile {...(adminData as AdminType)} />}
-  {/* You can Change it '4' based on how much projects you have been added */}
-      {projects?.length > 4 && (
+      {/* You can Change it based on how much projects you have been added */}
+      {projects?.length > 10 && (
         <HeroParallax admin={admin} projects={projects} />
       )}
+      {/* <HomeSection /> */}
       <GTKM />
       <ContactMe />
     </>

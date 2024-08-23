@@ -212,7 +212,7 @@ const MobileNavbar = () => {
       </div>
       <ul
         className={cn(
-          "absolute inset-x-0 bottom-0 z-[-1] flex flex-col gap-4 rounded-t-2xl border-[1px] border-onyx/30 dark:border-card-border/60 bg-onyx/30 dark:bg-[#18181D]/60 p-4 backdrop-blur-md transition min-h-[340px] duration-300 pt-6",
+          "absolute inset-x-0 bottom-0 z-[-1] flex flex-col gap-4 rounded-t-2xl border-[1px] border-onyx/30 dark:border-card-border/60 bg-onyx/30 dark:bg-[#18181D]/60 p-4 backdrop-blur-md transition min-h-[400px] duration-300 pt-6",
           !isOpen && "translate-y-[500px]"
         )}>
         <li>
@@ -229,6 +229,14 @@ const MobileNavbar = () => {
             className="cursor-pointer rounded-lg justify-center items-center font-medium transition flex w-full gap-2 bg-onyx/30 py-4 text-black dark:text-white hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20"
             href="/experience">
             Experience
+          </Link>
+        </li>
+        <li>
+          <Link
+            onClick={() => setIsOpen(false)}
+            className="cursor-pointer rounded-lg justify-center items-center font-medium transition flex w-full gap-2 bg-onyx/30 py-4 text-black dark:text-white hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20"
+            href="/contact">
+            Contact
           </Link>
         </li>
         <SignedOut>

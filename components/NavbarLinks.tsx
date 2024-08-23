@@ -41,6 +41,10 @@ export const links: { title: string; href: string; icon?: any }[] = [
     title: "Techstack",
     href: "/techstack",
   },
+  {
+    title: "Contact",
+    href: "/contact",
+  },
 ];
 
 export function NavbarLinks() {

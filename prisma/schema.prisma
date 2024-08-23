@@ -56,6 +56,14 @@ model Techstack{
   imageUrl      String
 }
 
+model Contact{
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  email         String
+  password      String
+  phone         String
+  address       String
+}
+
  model Admin {
   id           String      @id @default(auto()) @map("_id") @db.ObjectId
   adminUserId  String

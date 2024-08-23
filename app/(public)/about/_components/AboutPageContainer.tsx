@@ -68,7 +68,7 @@ const AboutPageContainer = () => {
               Feel free to reach out via{" "}
               <Link
                 className="text-black font-semibold dark:text-white"
-                href={`mailto:${data?.email}`}>
+                href="/contact">
                 E-mail
               </Link>
               ,{" "}
@@ -122,7 +122,7 @@ const AboutPageContainer = () => {
           <Button asChild className="rounded-full">
             <Link
               className=" min-h-[60px] px-8 mx-auto md:hidden  flex gap-4 items-center w-fit"
-              href={`mailto:${data?.email}`}>
+              href="/contact">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

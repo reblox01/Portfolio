@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { FlipWords } from "./flip-words";
 
 export const HeroParallax = ({
   projects,
@@ -21,6 +22,7 @@ export const HeroParallax = ({
   }[];
   admin: {
     name: string;
+    position: string;
     introduction: string;
   };
 }) => {
@@ -63,7 +65,7 @@ export const HeroParallax = ({
     <div
       ref={ref}
       className="hidden sm:flex h-[2200px] md:h-[2500px] py-10 overflow-hidden w-full antialiased relative flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]">
-      <Header name={admin.name} introduction={admin.introduction} />
+      <Header name={admin.name} position={admin.position} introduction={admin.introduction} />
       <motion.div
         style={{
           rotateX,
@@ -103,18 +105,20 @@ export const HeroParallax = ({
     </div>
   );
 };
-
 export const Header = ({
   name,
+  position,
   introduction,
 }: {
   name: string;
+  position: string;
   introduction: string;
 }) => {
+  const adjectiveWords = [`${name.trim()}`, `${position.trim()}`, "Problem Solver", "Code Enthusiast", "Front-End Specialist", "UI/UX Designer", "Creative", "Innovator", "Technologist", "Visionary"];
   return (
-    <div className="max-w-7xl  relative mx-auto py-20 md:py-40 px-4 w-full   left-0 top-0">
-      <h1 className="text-2xl md:text-7xl font-bold  dark:text-white">
-        Hey! <br /> I'm {name}
+    <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full left-0 top-0">
+      <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
+        Hey! <br /> I'm <FlipWords words={adjectiveWords} />
       </h1>
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
         {introduction}
