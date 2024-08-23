@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     to: contact.email,
     replyTo: email,
     subject: `${subject} - ${name}`,
-    text: `By ${name} from ${email}\n${message}`,
+    text: `By ${name} from ${email}\n\n${message}`,
   };
 
   const sendMailPromise = () =>
