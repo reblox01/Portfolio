@@ -121,9 +121,7 @@ export const Header = ({
       <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
         Hey! <br /> I'm <FlipWords words={adjectiveWords} />
       </h1>
-      <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
       <TextGenerateEffect words={introduction} />
-      </p>
     </div>
   );
 };
