@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { FlipWords } from "./flip-words";
+import { TextGenerateEffect } from "./text-generate-effect";
 
 export const HeroParallax = ({
   projects,
@@ -121,7 +122,7 @@ export const Header = ({
         Hey! <br /> I'm <FlipWords words={adjectiveWords} />
       </h1>
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
-        {introduction}
+      <TextGenerateEffect words={introduction} />
       </p>
     </div>
   );
