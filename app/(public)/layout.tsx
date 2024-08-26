@@ -9,8 +9,9 @@ import { getAdminDetail } from "@/actions/admin.actions";
 import MyContext from "../MyContext";
 import MobileNavbar from "@/components/MobileNavbar";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
-export const layout = async ({ children }: { children: React.ReactNode }) => {
+const layout = async ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -35,6 +36,7 @@ export const layout = async ({ children }: { children: React.ReactNode }) => {
         </MyContext>
       </HydrationBoundary>
       <Analytics />
+      <SpeedInsights />
     </>
   );
 };
