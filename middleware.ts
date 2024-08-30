@@ -1,13 +1,24 @@
 import { authMiddleware } from "@clerk/nextjs";
 
 export default authMiddleware({
-    publicRoutes: ['/', "/about", "/projects", "/projects/(.*)", "/experience", "/experience/(.*)", "/certification", "/certification/(.*)", "/techstack", "/contact", "/api/email", "/techstack/(.*)"],
-
+    publicRoutes: [
+        '/', 
+        "/about", 
+        "/projects", 
+        "/projects/(.*)", 
+        "/experience", 
+        "/experience/(.*)", 
+        "/certification", 
+        "/certification/(.*)", 
+        "/techstack", 
+        "/contact", 
+        "/api/email", 
+        "/techstack/(.*)"
+    ],
 });
 
 export const config = {
-    // Protects all routes, including api/trpc.
-    // See https://clerk.com/docs/references/nextjs/auth-middleware
-    // for more information about configuring your Middleware
+    // Protects all routes except those specified in publicRoutes
+    // and Next.js internal routes like _next and API routes.
     matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
