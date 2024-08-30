@@ -19,6 +19,7 @@ export const HeroParallax = ({
   projects: {
     title: string;
     link: string;
+    source: string;
     thumbnail: string;
   }[];
   admin: {
@@ -133,6 +134,7 @@ export const ProductCard = ({
   product: {
     title: string;
     link: string;
+    source: string;
     thumbnail: string;
   };
   translate: MotionValue<number>;
@@ -147,10 +149,11 @@ export const ProductCard = ({
       }}
       key={product.title}
       className="group/product h-96 w-[40rem] relative flex-shrink-0">
+      
       <Link
-        href={product.link}
+        href={product.link || product.source}
         target="_blank"
-        className="block group-hover/product:shadow-2xl ">
+        className="block group-hover/product:shadow-2xl">
         <Image
           src={product.thumbnail}
           height="600"
@@ -160,6 +163,7 @@ export const ProductCard = ({
           alt={product.title}
         />
       </Link>
+
       <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-80 bg-black pointer-events-none"></div>
       <h2 className="absolute bottom-4 left-4 opacity-0 group-hover/product:opacity-100 text-white">
         {product.title}

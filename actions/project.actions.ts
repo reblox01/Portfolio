@@ -84,6 +84,7 @@ export async function getRandomProjectsAction(): Promise<{ title: string; link: 
             .map(project => ({
                 title: project.title,
                 link: project.liveURL as string,
+                source: project.sourceURL as string,
                 thumbnail: project.screenshot
             }));
 
