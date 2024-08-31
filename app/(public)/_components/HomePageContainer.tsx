@@ -22,7 +22,11 @@ const HomePageContainer = () => {
     queryFn: () => getAdminDetail(),
   });
 
-  const projects = projectsData || [];
+  const projects = projectsData?.map(project => ({
+    ...project,
+    source: project.source || project.link,
+  })) || [];
+
   const admin = {
     name: adminData?.name || "",
     position: adminData?.position || "",
