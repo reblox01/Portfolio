@@ -1,9 +1,9 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { getAdminDetail } from "@/actions/admin.actions";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 
 const AboutPageContainer = () => {
@@ -14,47 +14,82 @@ const AboutPageContainer = () => {
 
   if (isPending) return <h1>Loading...</h1>;
   if (!data) return <h1 className="text-center">Add admin details first!</h1>;
+
+  const fadeUpVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className="container max-w-6xl px-4">
       <div className="grid w-full grid-cols-1 md:grid-cols-12">
         {/* left */}
         <div className="col-span-12 flex flex-col gap-12 md:col-span-8 md:pr-12">
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold uppercase   dark:text-medium-gray">
+          {/* Who I Am */}
+          <motion.div
+            className="flex flex-col gap-2"
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            variants={fadeUpVariants}
+          >
+            <p className="font-semibold uppercase dark:text-medium-gray">
               Who I am
             </p>
-            <p className="text-[18px] leading-[160%]   text-onyx">
+            <p className="text-[18px] leading-[160%] text-onyx">
               I’m{" "}
               <span className="text-black font-semibold dark:text-white">
                 {data?.name || "Your Name"},
               </span>{" "}
               a {data?.position || "Position Name"} based in{" "}
-              {data?.location || "Location"}. I specialize in creating seamless and innovative web solutions, leveraging my skills in both front-end and back-end development to build dynamic and user-centric applications.
+              {data?.location || "Location"}. I specialize in creating seamless
+              and innovative web solutions, leveraging my skills in both
+              front-end and back-end development to build dynamic and
+              user-centric applications.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold uppercase   dark:text-medium-gray">
+          {/* What I Do */}
+          <motion.div
+            className="flex flex-col gap-2"
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.5, delay: 0.4 }}
+            variants={fadeUpVariants}
+          >
+            <p className="font-semibold uppercase dark:text-medium-gray">
               WHAT I DO
             </p>
-            <p className="text-[18px] leading-[160%]   text-onyx">
+            <p className="text-[18px] leading-[160%] text-onyx">
               As a{" "}
-              {data?.position || "position name"}, I specialize in crafting innovative web solutions that bring ideas to life. 
-              With a focus on both efficiency and creativity, I leverage my coding skills to develop dynamic, user-centric applications and websites. 
-              My expertise encompasses the full development lifecycle, from conceptualization to deployment, ensuring high-quality and impactful results.
+              {data?.position || "position name"}, I specialize in crafting
+              innovative web solutions that bring ideas to life. With a focus on
+              both efficiency and creativity, I leverage my coding skills to
+              develop dynamic, user-centric applications and websites. My
+              expertise encompasses the full development lifecycle, from
+              conceptualization to deployment, ensuring high-quality and
+              impactful results.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold uppercase  dark:text-medium-gray">
+          {/* What I Did */}
+          <motion.div
+            className="flex flex-col gap-2"
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.5, delay: 0.6 }}
+            variants={fadeUpVariants}
+          >
+            <p className="font-semibold uppercase dark:text-medium-gray">
               WHAT I DID
             </p>
-            <p className="text-[18px] leading-[160%]   text-onyx">
+            <p className="text-[18px] leading-[160%] text-onyx">
               During my {data?.education || "education"}, I honed skills in{" "}
               {data?.skills.map((skill: any, index: number) => (
                 <span
                   className="capitalize text-black font-semibold dark:text-white"
-                  key={skill?.id}>
+                  key={skill?.id}
+                >
                   {skill?.text}
                   {index !== data.skills.length - 1 ? "," : "."}{" "}
                 </span>
@@ -62,13 +97,22 @@ const AboutPageContainer = () => {
               These skills have enabled me to create seamless end-to-end and
               interactive user experiences.
             </p>
-          </div>
-          <div className="flex flex-col gap-2">
+          </motion.div>
+
+          {/* Contact Section */}
+          <motion.div
+            className="flex flex-col gap-2"
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.5, delay: 0.8 }}
+            variants={fadeUpVariants}
+          >
             <p className="text-[18px] leading-[160%] text-onyx">
               Feel free to reach out via{" "}
               <Link
                 className="text-black font-semibold dark:text-white"
-                href="/contact">
+                href={`mailto:${data?.email}`}
+              >
                 E-mail
               </Link>
               ,{" "}
@@ -79,7 +123,8 @@ const AboutPageContainer = () => {
                   <Link
                     className="text-black font-semibold dark:text-white"
                     target="_blank"
-                    href={data?.twitter}>
+                    href={data?.twitter}
+                  >
                     X
                   </Link>
                   .
@@ -92,7 +137,8 @@ const AboutPageContainer = () => {
                   <Link
                     className="text-black font-semibold dark:text-white"
                     target="_blank"
-                    href={data?.linkedIn}>
+                    href={data?.linkedIn}
+                  >
                     LinkedIn
                   </Link>
                   , or connect with me on LinkedIn.
@@ -105,46 +151,74 @@ const AboutPageContainer = () => {
                   <Link
                     className="text-black font-semibold dark:text-white"
                     target="_blank"
-                    href={data?.github}>
+                    href={data?.github}
+                  >
                     GitHub
                   </Link>{" "}
                   profile.
                 </>
               )}{" "}
             </p>
-          </div>
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold uppercase text-light-gray/50 dark:text-medium-gray"></p>
-            <p className="text-[18px] leading-[160%]  text-onyx">
+          </motion.div>
+
+          {/* Final Message */}
+          <motion.div
+            className="flex flex-col gap-2"
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.5, delay: 1.0 }}
+            variants={fadeUpVariants}
+          >
+            <p className="text-[18px] leading-[160%] text-onyx">
               Let’s build something great together!
             </p>
-          </div>
-          <Button asChild className="rounded-full">
-            <Link
-              className=" min-h-[60px] px-8 mx-auto md:hidden  flex gap-4 items-center w-fit"
-              href="/contact">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none">
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4.934 12 3.09 5.732c-.481-1.635 1.05-3.147 2.665-2.628a53.872 53.872 0 0 1 12.64 5.963C19.525 9.793 21 10.442 21 12c0 1.558-1.474 2.207-2.605 2.933a53.87 53.87 0 0 1-12.64 5.963c-1.614.519-3.146-.993-2.665-2.628L4.934 12Zm0 0h4.9"></path>
-              </svg>
-              Get in Touch
-            </Link>
-          </Button>
+          </motion.div>
+
+          {/* Get in Touch Button */}
+          <motion.div
+            className="flex justify-center mt-10"
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.5, delay: 1.2 }}
+            variants={fadeUpVariants}
+          >
+            <Button asChild className="rounded-full">
+              <Link
+                className="min-h-[60px] px-8 mx-auto md:hidden flex gap-4 items-center w-fit"
+                href="/contact"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4.934 12 3.09 5.732c-.481-1.635 1.05-3.147 2.665-2.628a53.872 53.872 0 0 1 12.64 5.963C19.525 9.793 21 10.442 21 12c0 1.558-1.474 2.207-2.605 2.933a53.87 53.87 0 0 1-12.64 5.963c-1.614.519-3.146-.993-2.665-2.628L4.934 12Zm0 0h4.9"
+                  ></path>
+                </svg>
+                Get in Touch
+              </Link>
+            </Button>
+          </motion.div>
         </div>
+
         {/* right */}
-        <div className="-order-1 col-span-12 md:order-2 md:col-span-4">
+        <motion.div
+          className="-order-1 col-span-12 md:order-2 md:col-span-4"
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.5, delay: 1 }}
+          variants={fadeUpVariants}
+        >
           <div className="group relative mb-20 flex justify-center">
-            <picture className="relative z-20 block  w-full overflow-hidden rounded-2xl border-[1px] border-card-border">
+            <picture className="relative z-20 block w-full overflow-hidden rounded-2xl border-[1px] border-card-border">
               <img
-                alt="Portrait of Sohail Koutari"
+                alt="Portrait"
                 loading="lazy"
                 width="344"
                 height="443"
@@ -155,6 +229,7 @@ const AboutPageContainer = () => {
               />
             </picture>
           </div>
+
           <Button asChild className="rounded-full">
           {data?.resumeUrl && (
             <Link
@@ -175,7 +250,7 @@ const AboutPageContainer = () => {
           <Button asChild className="rounded-full">
             <Link
               className=" min-h-[60px] px-8 mx-auto hidden md:flex gap-4 items-center w-fit"
-              href={`mailto:${data?.email}`}>
+              href="/contact">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -191,9 +266,10 @@ const AboutPageContainer = () => {
               Get in Touch
             </Link>
           </Button>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
 };
+
 export default AboutPageContainer;
