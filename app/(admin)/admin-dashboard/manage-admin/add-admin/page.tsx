@@ -13,7 +13,7 @@ const AddAdmin = () => {
   return (
     <>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <FormHeader title="Add Addmin" href="." />
+        <FormHeader title="Add Admin" href="." />
         <AddAdminForm />
       </HydrationBoundary>
     </>

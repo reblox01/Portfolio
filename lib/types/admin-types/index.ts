@@ -30,7 +30,7 @@ export type Skill = {
 }
 
 // Updated regex to handle complex domains, paths, and wa.me URLs
-const urlRegex = /^(https?:\/\/)?(www\.)?(wa\.me\/\+?\d{1,15}|web\.facebook\.com\/[\w.-]+|facebook\.com\/[\w.-]+|([\w-]+\.)+[\w-]{2,}|youtube\.com\/@[\w-]+)(\/[\w-]*)*\.?[\w-]*$/;
+const urlRegex = /^(https?:\/\/)?(www\.)?(wa\.me\/\+?\d{1,15}|web\.facebook\.com\/[\w.-]+|facebook\.com\/[\w.-]+|([\w-]+\.)+[\w-]{2,}|youtube\.com\/@[\w-]+)(\/[\w-]*)*(\?[\w=&-]*)?$/;
 
 export const createAndEditAdminSchema = z.object({
     name: z.string().min(1, {
