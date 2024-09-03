@@ -39,14 +39,14 @@ const HomePageContainer = () => {
 
   return (
     <>
-      <HeroHeader />
+     {/* <HeroHeader />*/}
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
         fill="white"
       />
       {admin && <HeroMobile {...(adminData as AdminType)} />}
       {/* You can Change it based on how much projects you have been added */}
-      {projects?.length > 4 && (
+      {projects?.length > 10 && (
         <HeroParallax admin={admin} projects={projects} />
       )}
       {/* <HomeSection /> */}
