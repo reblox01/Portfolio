@@ -176,12 +176,29 @@ const AboutPageContainer = () => {
 
           {/* Get in Touch Button */}
           <motion.div
-            className="flex justify-center mt-10"
+            className="flex flex-col items-center mt-10"
             initial="hidden"
             animate="visible"
             transition={{ duration: 0.5, delay: 1.2 }}
             variants={fadeUpVariants}
           >
+            <Button asChild className="rounded-full mb-4">
+              {data?.resumeUrl && (
+                <Link
+                  className="min-h-[60px] px-8 mx-auto md:hidden flex gap-4 items-center w-fit"
+                  href={data.resumeUrl}
+                >
+                  <svg width="24" height="24" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <g id="currentColor">
+                      <path fill="currentColor" opacity="1.00" d=" M 20.12 14.90 C 20.52 11.10 24.06 7.99 27.87 8.04 C 38.57 7.95 49.28 8.03 59.99 8.00 C 68.03 15.96 75.99 23.99 84.00 31.98 C 83.97 48.02 84.06 64.07 83.96 80.11 C 84.00 83.94 80.88 87.49 77.07 87.88 C 72.72 88.16 68.36 87.93 64.01 88.00 C 63.99 85.33 63.99 82.67 64.01 80.00 C 68.00 79.99 72.00 80.01 76.00 80.00 C 76.00 65.33 76.00 50.67 76.00 36.00 C 69.33 35.99 62.67 36.01 56.00 36.00 C 55.99 29.33 56.01 22.67 56.00 16.00 C 46.66 16.00 37.33 16.00 28.00 16.00 C 28.00 18.78 28.00 21.56 28.00 24.34 C 25.13 25.09 22.42 26.35 19.99 28.06 C 20.09 23.67 19.83 19.28 20.12 14.90 Z" />
+                      <path fill="currentColor" opacity="1.00" d=" M 28.32 32.63 C 35.29 30.06 43.47 35.59 43.91 42.94 C 44.84 50.43 37.37 57.35 29.96 55.79 C 23.35 54.75 18.54 47.58 20.40 41.08 C 21.36 37.13 24.49 33.89 28.32 32.63 M 30.30 40.36 C 27.54 41.47 27.20 45.72 29.70 47.30 C 32.17 49.17 36.16 47.15 36.00 44.03 C 36.17 41.17 32.82 39.06 30.30 40.36 Z" />
+                      <path fill="currentColor" opacity="1.00" d=" M 11.61 69.66 C 18.18 64.51 27.08 63.80 35.13 64.11 C 41.58 64.62 48.66 65.87 53.41 70.65 C 57.72 75.37 55.43 82.26 56.00 88.00 C 40.00 88.00 24.00 88.00 8.00 88.00 C 8.54 81.88 6.06 74.13 11.61 69.66 M 17.34 75.34 C 15.43 76.13 16.17 78.39 15.95 79.99 C 26.65 80.00 37.35 80.00 48.05 79.99 C 48.06 78.75 47.98 77.51 47.81 76.28 C 44.07 73.02 38.83 72.44 34.07 72.07 C 28.40 71.94 22.30 72.29 17.34 75.34 Z" />
+                    </g>
+                  </svg>
+                  Get Resume
+                </Link>
+              )}
+            </Button>
             <Button asChild className="rounded-full">
               <Link
                 className="min-h-[60px] px-8 mx-auto md:hidden flex gap-4 items-center w-fit"
@@ -249,7 +266,7 @@ const AboutPageContainer = () => {
           </Button><br/>
           <Button asChild className="rounded-full">
             <Link
-              className=" min-h-[60px] px-8 mx-auto hidden md:flex gap-4 items-center w-fit"
+              className="min-h-[60px] px-8 mx-auto hidden md:flex gap-4 items-center w-fit"
               href="/contact">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
