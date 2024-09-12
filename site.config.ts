@@ -1,29 +1,29 @@
 export const siteConfig = {
-    name: "Your Name - Portfolio",
-    description: "Explore the portfolio of Sohail Koutari, a skilled Full-Stack Developer with expertise in React, Next.js, Node.js, and other modern web technologies. Specializing in dynamic web applications, problem-solving, and collaborative projects.",
+    name: "<Your Name> - Portfolio",
+    description: "Explore the portfolio of <Your Name>, a skilled Full-Stack Developer with expertise in React, Next.js, Node.js, and other modern web technologies. Specializing in dynamic web applications, problem-solving, and collaborative projects, ... <Your Own Description>",
     logo: {
       url: "/favicon-dark.svg", // Fallback logo if needed
       href: "/favicon-dark.svg"  // Fallback href if needed
     },
     meta: {
-      keywords: "Your Name, Your other keywords, Web Developer, Full-Stack Developer, React, Next.js, Node.js, JavaScript, Portfolio, Front-End Development, Back-End Development, Web Design, Software Engineer, UI/UX, Agile, SEO, Professional, GitHub, Open Source",
-      author: "Your Name",
+      keywords: "<Your Name>, <Your other keywords>, Web Developer, Full-Stack Developer, React, Next.js, Node.js, JavaScript, Portfolio, Front-End Development, Back-End Development, Web Design, Software Engineer, UI/UX, Agile, SEO, Professional, GitHub, Open Source",
+      author: "<Your Name>",
       viewport: "width=device-width, initial-scale=1",
-      "og:title": "Your Name - Professional Web Developer Portfolio",
-      "og:description": "Explore the portfolio of Sohail Koutari, showcasing expertise in modern web technologies and collaborative projects.",
+      "og:title": "<Your Name> - Professional Web Developer Portfolio",
+      "og:description": "Explore the portfolio of <Your Name>, showcasing expertise in modern web technologies and collaborative projects.",
       "og:type": "website",
-      "og:url": "https://Your-Name.vercel.app/",
+      "og:url": "https://<YourName>.vercel.app/",
       "og:image": "/favicon-dark.svg",
       "twitter:card": "summary_large_image",
-      "twitter:title": "Your Name - Professional Web Developer Portfolio",
-      "twitter:description": "Discover the professional web development projects of Your Name, specializing in React, Next.js, Node.js, and more.",
+      "twitter:title": "<Your Name> - Professional Web Developer Portfolio",
+      "twitter:description": "Discover the professional web development projects of <Your Name>, specializing in React, Next.js, Node.js, and more.",
       "twitter:image": "/favicon-dark.svg"
     },
     structuredData: {
       "@context": "https://schema.org",
       "@type": "Person",
-      "name": "Your Name",
-      "url": "https://Your-Name.vercel.app/",
+      "name": "<Your Name>",
+      "url": "https://<YourName>.vercel.app/",
       "sameAs": [
         "https://www.linkedin.com/in/Your-Namei",
         "https://github.com/your-username",
@@ -35,17 +35,17 @@ export const siteConfig = {
         "https://www.youtube.com/@your-username",
         "https://x.com/your-username",
         "https://instagram.com/your-username",
-        "your other links"
+        "<Your other links>"
       ],
-      "jobTitle": "Your Job position",
+      "jobTitle": "<Your Job position>",
       "worksFor": {
         "@type": "Organization",
         "name": "Freelance"
       },
-      "alumniOf": "Your University",
-      "gender": "Your Gender",
+      "alumniOf": "<Your University>",
+      "gender": "<Your Gender>",
       "image": "/favicon-dark.svg",
-      "description": "Your Name is a professional Full-Stack Developer specializing in React, Next.js, Node.js, and modern web development technologies. With a passion for problem-solving and collaboration, Sohail has worked on various dynamic web projects."
+      "description": "<Your Name> is a professional Full-Stack Developer specializing in React, Next.js, Node.js, and modern web development technologies. With a passion for problem-solving and collaboration, <Your Name> has worked on various dynamic web projects."
     },
     favicon: {
       light: "/favicon-light.svg",
