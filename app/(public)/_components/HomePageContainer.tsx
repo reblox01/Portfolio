@@ -46,7 +46,7 @@ const HomePageContainer = () => {
       />
       {admin && <HeroMobile {...(adminData as AdminType)} />}
       {/* You can Change it based on how much projects you have been added */}
-      {projects?.length > 10 && (
+      {projects?.length > 1 && (
         <HeroParallax admin={admin} projects={projects} />
       )}
       {/* <HomeSection /> */}
