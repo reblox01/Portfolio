@@ -106,7 +106,7 @@ Before running the application, you need to set up environment variables and con
    - **Update** the `Your name` field with your name followed by " - Portfolio" for the title.
    - **Adjust** the `description` field with your description.
    - **Specify** the path to your logo image in the `logo` object's `url` and `href` properties.
-   - **Ensure** your favicon or logo image is placed in the `public` folder.
+   - **Ensure** your favicons(white & black) or logo image is placed in the `public` folder.
 
 These changes will reflect the title, description, and logo/favicon of your portfolio website.
 
