@@ -148,7 +148,7 @@ Once the dependencies are installed and the environment variables are configured
 ## 5. **Access the Application**: 
 Once the application is running, you can access it in your web browser at `http://localhost:3000`.
 
-   # Note: Parallax Effect on Homepage enables after adding atleast 4 projects to your portfolio
+   # Note: Parallax Effect on Homepage enables after adding atleast more than 1 project to your portfolio
 
 ## Deploy on vercel
 
