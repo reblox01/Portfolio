@@ -63,9 +63,14 @@ Before running the application, you need to set up environment variables and con
    - Add the connection URL to the `.env` file under the `DATABASE_URL` variable like so:
 
      ```
-     DATABASE_URL="mongodb+srv://your-db-url"
+     DATABASE_URL="mongodb+srv://your-db-url/collection-name"
      ```
-
+   - You can put `/test` if you don't have a collection like this:
+     
+     ```
+     DATABASE_URL="mongodb+srv://your-db-url/test"
+     ```
+   
 2. **Cloudinary Configuration**:
 
    - Sign up or login to [Cloudinary](https://cloudinary.com/).
