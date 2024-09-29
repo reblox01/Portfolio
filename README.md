@@ -63,9 +63,14 @@ Before running the application, you need to set up environment variables and con
    - Add the connection URL to the `.env` file under the `DATABASE_URL` variable like so:
 
      ```
-     DATABASE_URL="mongodb+srv://your-db-url"
+     DATABASE_URL="mongodb+srv://your-db-url/collection-name"
      ```
-
+   - You can put `/test` if you don't have a collection like this:
+     
+     ```
+     DATABASE_URL="mongodb+srv://your-db-url/test"
+     ```
+   
 2. **Cloudinary Configuration**:
 
    - Sign up or login to [Cloudinary](https://cloudinary.com/).
@@ -106,7 +111,7 @@ Before running the application, you need to set up environment variables and con
    - **Update** the `Your name` field with your name followed by " - Portfolio" for the title.
    - **Adjust** the `description` field with your description.
    - **Specify** the path to your logo image in the `logo` object's `url` and `href` properties.
-   - **Ensure** your favicon or logo image is placed in the `public` folder.
+   - **Ensure** your favicons(white & black) or logo image is placed in the `public` folder.
 
 These changes will reflect the title, description, and logo/favicon of your portfolio website.
 
@@ -148,7 +153,7 @@ Once the dependencies are installed and the environment variables are configured
 ## 5. **Access the Application**: 
 Once the application is running, you can access it in your web browser at `http://localhost:3000`.
 
-   # Note: Parallax Effect on Homepage enables after adding atleast 4 projects to your portfolio
+   # Note: Parallax Effect on Homepage enables after adding atleast more than 1 project to your portfolio
 
 ## Deploy on vercel
 
