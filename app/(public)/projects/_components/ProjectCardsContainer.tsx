@@ -3,6 +3,7 @@ import { getAllProjectsAction } from "@/actions/project.actions";
 import Card from "@/components/Card";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { Techstack } from "@/lib/types/techstack-types";
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -38,6 +39,7 @@ const ProjectCardsContainer = () => {
             source={project?.sourceURL}
             screenshot={project?.screenshot}
             href={`/projects/${project?.id}`}
+            techStack={project?.techStack as Techstack[] || []}
           />
         </motion.div>
       ))}

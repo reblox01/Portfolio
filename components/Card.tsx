@@ -3,6 +3,8 @@ import Link from "next/link";
 import { VscSourceControl } from "react-icons/vsc";
 import { FaGithub } from "react-icons/fa";
 import { AiFillGitlab } from "react-icons/ai";
+import { Techstack } from "@/lib/types/techstack-types";
+import { Badge } from "./ui/badge";
 
 type Prop = {
   title: string;
@@ -10,9 +12,10 @@ type Prop = {
   screenshot: string;
   source: string | null;
   href: string;
+  techStack: Techstack[];
 };
 
-const Card = ({ OneLiner, screenshot, title, href, source }: Prop) => {
+const Card = ({ OneLiner, screenshot, title, href, source, techStack = [] }: Prop) => {
   // Function to determine the icon based on the source URL
   const getSourceIcon = (url: string) => {
     if (url.includes("github.com")) {
@@ -41,7 +44,7 @@ const Card = ({ OneLiner, screenshot, title, href, source }: Prop) => {
             <div className="font-sans font-bold text-neutral-600 dark:text-neutral-200 mb-2">
               {title}
             </div>
-            <div className="font-sans font-normal text-neutral-600 text-xs dark:text-neutral-300 mb-6">
+            <div className="font-sans font-normal text-neutral-600 text-xs dark:text-neutral-300 mb-7">
               {OneLiner}
             </div>
           </div>
@@ -57,6 +60,19 @@ const Card = ({ OneLiner, screenshot, title, href, source }: Prop) => {
           {getSourceIcon(source)}
         </a>
       )}
+
+      {/* Tech stack tags */}
+      <div className="absolute bottom-3 left-4 flex gap-1">
+        {techStack?.slice(0, 3).map((tech) => (
+          <Badge 
+            key={tech?.id}
+            variant="outline"
+            className="text-xs"
+          >
+            {(tech as any).text}
+          </Badge>
+        ))}
+      </div>
     </div>
   );
 };

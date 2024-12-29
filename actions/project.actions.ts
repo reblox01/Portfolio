@@ -42,17 +42,24 @@ export async function createProjectAction(values: CreateAndEditProjectType): Pro
 }
 
 
-export async function getAllProjectsAction(): Promise<{
-    projects: Project[]
-}> {
+export const getAllProjectsAction = async () => {
     try {
-        const projects: Project[] = await prisma.project.findMany({})
+        const projects = await prisma.project.findMany({
+            select: {
+                id: true,
+                title: true,
+                oneLiner: true,
+                sourceURL: true,
+                screenshot: true,
+                techStack: true,
+            },
+        });
         return { projects };
     } catch (error) {
-        console.log(error);
-        return { projects: [] };
+        console.error("Error fetching projects:", error);
+        throw error;
     }
-}
+};
 
 function shuffleProjects(projects: Project[]): Project[] {
     // Deep copy the original array to avoid mutating the original array
@@ -87,7 +94,8 @@ export async function getRandomProjectsAction(): Promise<{
                 title: project.title,
                 link: project.liveURL as string,
                 source: project.sourceURL as string,
-                thumbnail: project.screenshot
+                thumbnail: project.screenshot,
+                techStack: project.techStack || []
             }));
 
         return projects;

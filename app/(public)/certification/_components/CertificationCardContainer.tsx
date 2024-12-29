@@ -33,12 +33,12 @@ const CertificationCardContainer = () => {
         transition={{ delay: index * 0.1, duration: 0.5 }}
       >
         <Card
-          key={cert?.id}
-          title={cert?.title}
-          OneLiner={cert?.organizationName}
-          source={cert?.certificateUrl}
-          screenshot={cert?.screenshot}
-          href={`/certification/${cert?.id}`}
+            key={cert?.id}
+            title={cert?.title}
+            OneLiner={cert?.organizationName}
+            source={cert?.certificateUrl}
+            screenshot={cert?.screenshot}
+            href={`/certification/${cert?.id}`} techStack={[]}
         />
       </motion.div>
       ))}
