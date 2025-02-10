@@ -43,7 +43,8 @@ datasource db {
   companyName     String
   companyLocation String
   startDate       DateTime
-  endDate         DateTime
+  endDate         DateTime?
+  isCurrentlyWorking Boolean  @default(false)
   learned         Json[]
   }
 

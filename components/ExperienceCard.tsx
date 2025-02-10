@@ -16,9 +16,10 @@ const ExperienceCard = ({
   endDate,
   positionName,
   startDate,
+  isCurrentlyWorking,
 }: ExperienceType) => {
-  const sD = formatDate(startDate, "dd-MM-yyyy");
-  const eD = formatDate(endDate, "dd-MM-yyyy");
+  const sD = formatDate(startDate, "MMM yyyy");
+  const eD = isCurrentlyWorking ? "Present" : endDate ? formatDate(endDate, "MMM yyyy") : "";
 
   return (
     <motion.div

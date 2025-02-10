@@ -8,6 +8,8 @@ import { Tag } from "@/components/ui/tag-input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 //end tags
 
 import {
@@ -38,19 +40,23 @@ function AddExperienceForm() {
 
   const defaultDate: Date = new Date(Date.now()) || "2000-05-13";
 
+  const defaultValues = {
+    positionName: "",
+    companyName: "",
+    companyLocation: "",
+    startDate: defaultDate,
+    endDate: defaultDate,
+    isCurrentlyWorking: false,
+    learned: [],
+  };
+
   const form = useForm<CreateAndEditExperienceType>({
     resolver: zodResolver(createAndEditExperienceSchema),
-    defaultValues: {
-      positionName: "",
-      companyName: "",
-      companyLocation: "",
-      startDate: defaultDate,
-      endDate: defaultDate,
-      learned: [],
-    },
+    defaultValues,
   });
 
-  const { setValue } = form;
+  const { setValue, watch } = form;
+  const isCurrentlyWorking = watch("isCurrentlyWorking");
 
   const { mutate, isPending } = useMutation({
     mutationFn: (values: CreateAndEditExperienceType) =>
@@ -91,11 +97,27 @@ function AddExperienceForm() {
             dateTitle="Start Date"
             control={form.control}
           />
-          <DatePicker
-            name="endDate"
-            dateTitle="End Date"
-            control={form.control}
-          />
+          <div className="flex flex-col gap-4">
+            <DatePicker
+              name="endDate"
+              dateTitle="End Date"
+              control={form.control}
+              disabled={isCurrentlyWorking}
+            />
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="isCurrentlyWorking"
+                checked={isCurrentlyWorking}
+                onCheckedChange={(checked) => {
+                  setValue("isCurrentlyWorking", checked as boolean);
+                  if (checked) {
+                    setValue("endDate", new Date());
+                  }
+                }}
+              />
+              <Label htmlFor="isCurrentlyWorking">I currently work here</Label>
+            </div>
+          </div>
           <CustomFormField
             name="companyLocation"
             title="Company Location"
