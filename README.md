@@ -22,7 +22,6 @@ Clone this repository to your local machine using the following command:
 
    ```bash
    git clone https://github.com/reblox01/Portfolio.git
-   cd Portfolio
    ```
 
 ## 2. **Install Dependencies**: 
