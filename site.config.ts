@@ -64,7 +64,7 @@ export const siteConfig = {
 // JavaScript logic to handle dynamic favicon switching
 if (typeof window !== 'undefined') {
   const setFavicon = () => {
-    const faviconElement = document.querySelector('link[rel="icon"]');
+    const faviconElement = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null;
     if (faviconElement) {
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         faviconElement.href = siteConfig.favicon.dark;
@@ -73,10 +73,6 @@ if (typeof window !== 'undefined') {
       }
     }
   };
-
-  // Initial favicon setting
-  setFavicon();
-
-  // Change favicon on theme change
+setFavicon();
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setFavicon);
 }
