@@ -6,6 +6,9 @@ import Providers from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 import { dark } from "@clerk/themes";
 import { siteConfig } from "@/site.config";
+import { SmoothCursor } from "@/components/ui/smooth-cursor";
+import { getSiteSettingsAction } from "@/actions/site-settings.actions";
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
 export const metadata: Metadata = {
   title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
@@ -18,11 +21,18 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Initialize query client for site settings
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["siteSettings"],
+    queryFn: () => getSiteSettingsAction(),
+  });
+  
   return (
     <ClerkProvider
       appearance={{
@@ -30,7 +40,12 @@ export default function RootLayout({
       }}>
       <html className="scrollbar" lang="en" suppressHydrationWarning>
         <body className={inter.className}>
-          <Providers>{children}</Providers>
+          <Providers>
+            <HydrationBoundary state={dehydrate(queryClient)}>
+              {children}
+              <SmoothCursor />
+            </HydrationBoundary>
+          </Providers>
         </body>
       </html>
     </ClerkProvider>

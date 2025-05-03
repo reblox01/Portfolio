@@ -65,7 +65,12 @@ model Contact{
   address       String
 }
 
- model Admin {
+model SiteSettings {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  customCursor  Boolean     @default(true)
+}
+
+model Admin {
   id           String      @id @default(auto()) @map("_id") @db.ObjectId
   adminUserId  String
   name         String    

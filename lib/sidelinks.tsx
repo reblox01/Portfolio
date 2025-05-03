@@ -7,6 +7,7 @@ import {
   Home,
   Layers,
   MailPlus,
+  Settings,
   User,
 } from "lucide-react";
 type sideLink = { text: string; href: string; icon: React.ReactNode };
@@ -51,5 +52,10 @@ export const sidelinks: sideLink[] = [
     text: "Contact",
     href: "/admin-dashboard/manage-contact",
     icon: <MailPlus />,
+  },
+  {
+    text: "Site Settings",
+    href: "/admin-dashboard/site-settings",
+    icon: <Settings />,
   },
 ];
