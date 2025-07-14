@@ -157,7 +157,7 @@ Take your portfolio to the **next level** with our powerful Site Settings featur
 ### 🖱️ Custom Cursor Magic 🪄
 > Transform your visitors' experience with a **stunning interactive cursor** that adapts as they navigate your site! When enabled, your portfolio will feature an elegant custom cursor that morphs into a stylish hand pointer when hovering over clickable elements - creating a premium, interactive feel that will impress potential clients and employers!
 
-![Cursor Demo](#)
+![Cursor Demo](https://github.com/reblox01/Portfolio/blob/master/public/demo.gif)
 
 #### How to enable these amazing features:
 1. 🔑 Log in as admin
