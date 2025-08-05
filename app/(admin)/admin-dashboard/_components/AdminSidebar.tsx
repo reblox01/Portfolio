@@ -112,38 +112,10 @@ function SidebarContent({
   onNavigate?: () => void 
 }) {
   const pathname = usePathname()
-  const { data } = useQuery({
-    queryKey: ["stats"],
-    queryFn: () => getAllStats(),
-  })
-  const stats = data?.stats || []
   
   return (
     <ScrollArea className="h-[calc(100vh-6rem)]">
       <div className="flex flex-col gap-6 p-4">
-        {!isMobile && (
-          <div>
-            <h2 className="mb-4 text-lg font-semibold">Stats</h2>
-            <div className="grid gap-2">
-              {stats.map((stat) => (
-                <div
-                  key={stat.title}
-                  className="group relative overflow-hidden rounded-lg bg-gradient-to-br from-black/[0.1] to-transparent p-4 hover:shadow-md dark:from-white/[0.1]"
-                >
-                  <div className="relative z-10">
-                    <h3 className="font-medium capitalize text-muted-foreground">
-                      {stat.title}
-                    </h3>
-                    <p className="mt-1 text-2xl font-bold">{stat.count}</p>
-                  </div>
-                  <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="space-y-1">
           {routes.map((route) => (
