@@ -60,7 +60,7 @@ export async function getSingleTechstackAction(id: string): Promise<Techstack | 
         techstack = null;
     }
     if (!techstack) {
-        redirect('/admin-dashboard/manage-techstack');
+        redirect('/dashboard/manage-techstack');
     }
     return techstack;
 }

@@ -74,7 +74,7 @@ export async function getSingleCertificationAction(id: string): Promise<Certific
         certification = null;
     }
     if (!certification) {
-        redirect('/admin-dashboard/manage-certification');
+        redirect('/dashboard/manage-certification');
     }
     return certification;
 }

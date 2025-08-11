@@ -65,7 +65,7 @@ export function NavbarLinks() {
         <SignedIn>
           {data?.adminUserId === userId && (
             <NavigationMenuItem>
-              <Link href="/admin-dashboard" legacyBehavior passHref>
+              <Link href="/dashboard" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Dashboard
                 </NavigationMenuLink>

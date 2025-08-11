@@ -6,6 +6,7 @@ export type ExperienceType = {
     positionName: string,
     companyName: string,
     companyLocation: string,
+    workMode?: 'remote' | 'hybrid' | 'onsite',
     startDate: Date,
     endDate: Date | null,
     isCurrentlyWorking: boolean,
@@ -13,23 +14,38 @@ export type ExperienceType = {
 };
 const minDate: Date = new Date("2000-01-01")
 
+// Helpers to coerce form string dates (yyyy-MM-dd) to Date/null
+const coerceDate = (val: unknown) => {
+  if (typeof val === 'string') {
+    return val ? new Date(val) : undefined
+  }
+  return val
+}
+const coerceNullableDate = (val: unknown) => {
+  if (typeof val === 'string') {
+    return val ? new Date(val) : null
+  }
+  return val
+}
+
 export const createAndEditExperienceSchema = z.object({
     positionName: z.string().min(1, {
-        message: "Position Name is required."
+        message: "Position Name is required!"
     }),
     companyName: z.string().min(1, {
-        message: "Company Name is required."
+        message: "Company Name is required!"
     }),
     companyLocation: z.string().min(1, {
-        message: "Company Name is required."
+        message: "Location is required!"
     }),
-    startDate: z.date().min(minDate, {
+    workMode: z.enum(['remote','hybrid','onsite']).optional(),
+    startDate: z.preprocess(coerceDate, z.date().min(minDate, {
         message: "Start date is required."
-    }),
+    })),
     isCurrentlyWorking: z.boolean().default(false),
-    endDate: z.date().min(minDate, {
+    endDate: z.preprocess(coerceNullableDate, z.date().min(minDate, {
         message: "End date is required."
-    }).nullable(),
+    }).nullable()),
     learned: z.array(z.object({
         id: z.string(),
         text: z.string(),

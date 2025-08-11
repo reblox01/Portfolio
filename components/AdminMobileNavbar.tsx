@@ -28,14 +28,14 @@ const AdminMobileNavbar = () => {
                         : "flex w-full  items-center justify-center py-2"
                     }
                     href={link.href}>
-                    {link?.icon}
+                    {link?.icon as unknown as React.ReactNode}
                   </Link>
                 </li>
               );
             })}
             {data?.adminUserId === userId && (
               <li>
-                <Link href="/admin-dashboard">
+                <Link href="/dashboard">
                   <Terminal />
                 </Link>
               </li>

@@ -97,7 +97,7 @@ Before running the application, you need to set up environment variables and con
    - And then go back to Clerk settings and navigate to the Users section.
    - Copy the user ID of the admin account.
    - Add the user ID to the `.env` file under the `ADMIN_USER_ID` variable.
-   - Then only first time navigate through searchbar to `/admin-dashboard/manage-admin/` as you don't have a admin added yet.
+   - Then only first time navigate through searchbar to `/dashboard/manage-admin/` as you don't have a admin added yet.
      
 5. **Change title,description,favicon**:
    To set up the title, description, and favicon/logo:
@@ -157,7 +157,7 @@ Take your portfolio to the **next level** with our powerful Site Settings featur
 ### 🖱️ Custom Cursor Magic 🪄
 > Transform your visitors' experience with a **stunning interactive cursor** that adapts as they navigate your site! When enabled, your portfolio will feature an elegant custom cursor that morphs into a stylish hand pointer when hovering over clickable elements - creating a premium, interactive feel that will impress potential clients and employers!
 
-![Cursor Demo](https://github.com/reblox01/Portfolio/blob/master/public/demo.gif)
+![Cursor Demo](https://github.com/reblox01/Portfolio/blob/main/public/cursor-demo.gif)
 
 #### How to enable these amazing features:
 1. 🔑 Log in as admin

@@ -42,6 +42,7 @@ datasource db {
   positionName    String
   companyName     String
   companyLocation String
+  workMode        String?
   startDate       DateTime
   endDate         DateTime?
   isCurrentlyWorking Boolean  @default(false)
@@ -57,12 +58,19 @@ model Techstack{
   imageUrl      String
 }
 
-model Contact{
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  email         String
-  password      String
-  phone         String
-  address       String
+model Contact {
+  id                 String      @id @default(auto()) @map("_id") @db.ObjectId
+  email              String
+  emailPassword      String?
+  phone              String
+  address            String
+  smtpServer         String?
+  smtpPort           Int?
+  smtpUsername       String?
+  smtpPassword       String?
+  emailIntegration   Boolean     @default(false)
+  emailProvider      String?     // "gmail" | "outlook" | "other"
+  mailboxSettings    Json?       // For storing provider-specific settings
 }
 
 model SiteSettings {

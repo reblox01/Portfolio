@@ -49,7 +49,7 @@ export const Navbar = () => {
                 size="default"
                 variant="default"
               >
-                <Link href="/sign-in">Login</Link>
+                <Link href="/sign-in">Access</Link>
               </Button>
             </SignedOut>
           </div>

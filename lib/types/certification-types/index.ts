@@ -14,6 +14,14 @@ export type CertificateType = {
 
 const minDate: Date = new Date("2000-01-01")
 
+// Coerce form strings to Date
+const coerceDate = (val: unknown) => {
+  if (typeof val === 'string') {
+    return val ? new Date(val) : undefined
+  }
+  return val
+}
+
 
 
 export const createAndEditCertificateSchema = z.object({
@@ -23,9 +31,9 @@ export const createAndEditCertificateSchema = z.object({
     organizationName: z.string().min(3, {
         message: "Organization name is required."
     }),
-    completionDate: z.date().min(minDate, {
+    completionDate: z.preprocess(coerceDate, z.date().min(minDate, {
         message: "Completion date is required."
-    }),
+    })),
     learned: z.array(z.object({
         id: z.string(),
         text: z.string(),

@@ -119,7 +119,7 @@ export async function getSingleProjectAction(id: string): Promise<Project | null
         project = null;
     }
     if (!project) {
-        redirect('/admin-dashboard/manage-projects');
+        redirect('/dashboard/manage-projects');
     }
     return project;
 }

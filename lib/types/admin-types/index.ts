@@ -29,8 +29,8 @@ export type Skill = {
     text: string;
 }
 
-// Updated regex to handle complex domains, paths, and wa.me URLs
-const urlRegex = /^(https?:\/\/)?(www\.)?(wa\.me\/\+?\d{1,15}|web\.facebook\.com\/[\w.-]+|facebook\.com\/[\w.-]+|([\w-]+\.)+[\w-]{2,}|youtube\.com\/@[\w-]+)(\/[\w-]*)*(\?[\w=&-]*)?$/;
+// Simple username/handle validation - allows alphanumeric, dots, underscores, hyphens
+const usernameRegex = /^[a-zA-Z0-9._-]+$/;
 
 export const createAndEditAdminSchema = z.object({
     name: z.string().min(1, {
@@ -59,32 +59,32 @@ export const createAndEditAdminSchema = z.object({
     ).min(1, {
         message: 'At least one skill is required',
     }),
-    github: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'GitHub URL must be a valid URL.',
+    github: z.string().optional().nullable().refine(value => !value || usernameRegex.test(value), {
+        message: 'GitHub username must contain only letters, numbers, dots, underscores, and hyphens.',
     }),
-    linkedIn: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'LinkedIn URL must be a valid URL.',
+    linkedIn: z.string().optional().nullable().refine(value => !value || usernameRegex.test(value), {
+        message: 'LinkedIn username must contain only letters, numbers, dots, underscores, and hyphens.',
     }),
-    whatsapp: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'WhatsApp URL must be a valid URL.',
+    whatsapp: z.string().optional().nullable().refine(value => !value || /^[\d+\-\s()]+$/.test(value), {
+        message: 'WhatsApp number must contain only numbers, +, -, spaces, and parentheses.',
     }),
-    facebook: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'Facebook URL must be a valid URL.',
+    facebook: z.string().optional().nullable().refine(value => !value || usernameRegex.test(value), {
+        message: 'Facebook username must contain only letters, numbers, dots, underscores, and hyphens.',
     }),
-    instagram: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'Instagram URL must be a valid URL.',
+    instagram: z.string().optional().nullable().refine(value => !value || usernameRegex.test(value), {
+        message: 'Instagram username must contain only letters, numbers, dots, underscores, and hyphens.',
     }),
-    discord: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'Discord URL must be a valid URL.',
+    discord: z.string().optional().nullable().refine(value => !value || /^[\w#]+$/.test(value), {
+        message: 'Discord username must contain only letters, numbers, underscores, and #.',
     }),
-    gitlab: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'GitLab URL must be a valid URL.',
+    gitlab: z.string().optional().nullable().refine(value => !value || usernameRegex.test(value), {
+        message: 'GitLab username must contain only letters, numbers, dots, underscores, and hyphens.',
     }),
-    twitter: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'Twitter URL must be a valid URL.',
+    twitter: z.string().optional().nullable().refine(value => !value || usernameRegex.test(value), {
+        message: 'Twitter username must contain only letters, numbers, dots, underscores, and hyphens.',
     }),
-    youtube: z.string().optional().nullable().refine(value => !value || urlRegex.test(value), {
-        message: 'YouTube URL must be a valid URL.',
+    youtube: z.string().optional().nullable().refine(value => !value || usernameRegex.test(value), {
+        message: 'YouTube username must contain only letters, numbers, dots, underscores, and hyphens.',
     }),
     email: z.string().email().min(1, {
         message: "Email is required!"

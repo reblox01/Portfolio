@@ -3,7 +3,7 @@
 import prisma from "@/db";
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { ContactType, createAndEditContactSchema, CreateAndEditContactType } from '@/lib/types/contact-types';
+import { ContactType, createAndEditContactSchema, CreateAndEditContactType, updateContactSchema } from '@/lib/types/contact-types';
 
 // Function to authenticate the user and redirect if not authenticated
 function authenticateAndRedirect(): string {
@@ -65,7 +65,7 @@ export async function getSingleContactAction(id: string): Promise<ContactType | 
             where: { id },
         });
         if (!contact) {
-            redirect('/admin-dashboard/manage-contact');
+            redirect('/dashboard/manage-contact');
         }
         return contact;
     } catch (error) {
@@ -77,15 +77,39 @@ export async function getSingleContactAction(id: string): Promise<ContactType | 
 // Function to update a contact by ID
 export async function updateContactAction(
     id: string,
-    values: CreateAndEditContactType
+    values: any
 ): Promise<ContactType | null> {
     const userId = authenticateAndRedirect();
     try {
-        createAndEditContactSchema.parse(values);
+        // For updates, we'll handle the password logic here
+        const existingContact = await prisma.contact.findUnique({
+            where: { id }
+        });
+        
+        if (!existingContact) {
+            throw new Error("Contact not found");
+        }
+        
+        // Use the existing emailPassword if new emailPassword is empty
+        const finalEmailPassword = values.emailPassword || existingContact.emailPassword;
+        
+        const updateData = {
+            email: values.email,
+            emailPassword: finalEmailPassword,
+            phone: values.phone || existingContact.phone,
+            address: values.address || existingContact.address,
+            smtpServer: values.smtpServer || existingContact.smtpServer,
+            smtpPort: values.smtpPort || existingContact.smtpPort,
+            smtpUsername: values.smtpUsername || existingContact.smtpUsername,
+            smtpPassword: values.smtpPassword || existingContact.smtpPassword,
+            emailIntegration: values.emailIntegration ?? existingContact.emailIntegration,
+            emailProvider: values.emailProvider || existingContact.emailProvider,
+            mailboxSettings: values.mailboxSettings || existingContact.mailboxSettings,
+        };
 
         const contact: ContactType = await prisma.contact.update({
             where: { id },
-            data: { ...values },
+            data: updateData,
         });
         return contact;
     } catch (error) {

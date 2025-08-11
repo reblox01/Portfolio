@@ -74,7 +74,7 @@ export async function getSingleExperienceAction(id: string): Promise<ExperienceT
         experience = null;
     }
     if (!experience) {
-        redirect('/admin-dashboard/manage-experience');
+        redirect('/dashboard/manage-experience');
     }
     return experience;
 }
