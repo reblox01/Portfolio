@@ -2,20 +2,43 @@
 const YOUR_NAME = "<Your Name>";
 const YOUR_POSITION = "<Your Job position>";
 const YOUR_UNIVERSITY = "<Your University>";
-const YOUR_SKILLS = "<Your Skills>, <Your Skills>, <Your Skills>";
 const YOUR_INTRODUCTION = "<Your Introduction>";
+const YOUR_SKILLS = [
+  "<Your Skills>",
+  "<Your Skills>",
+  "<Your Skills>",
+];
+const YOUR_SOFT_SKILLS = [
+  "<Your Soft Skills>",
+  "<Your Soft Skills>",
+  "<Your Soft Skills>",
+];
+const YOUR_COMPANY_NAME = "<Your Company Name>";
+const YOUR_SOCIAL_LINKS = [
+  "https://www.linkedin.com/in/Your-Namei",
+  "https://github.com/your-username",
+  "https://gitlab.com/your-username",
+  "https://discord.com/users/your-id",
+  "https://buymeacoffee.com/your-username",
+  "https://www.patreon.com/your-username",
+  "https://stackoverflow.com/users/your-id",
+  "https://www.youtube.com/@your-username",
+  "https://x.com/your-username",
+  "https://instagram.com/your-username",
+  "<Your other links>"
+];
 const YOUR_GENDER = "<Your Gender>"; // Optional: Delete or leave blank if you prefer not to specify
 const YOUR_SITE_URL = "https://yourdomain.com"; // Update this with your actual site URL
 
 export const siteConfig = {
-  name: `${YOUR_NAME} - Portfolio`,
-  description: `${YOUR_INTRODUCTION}, Specializing in ${YOUR_SKILLS}`,
+  name: `${YOUR_NAME} - ${YOUR_POSITION}`,
+  description: `${YOUR_INTRODUCTION}, Specializing in ${YOUR_SKILLS.join(", ")} and ${YOUR_SOFT_SKILLS.join(", ")}`,
   logo: {
     url: "/favicon-dark.svg", // Fallback logo if needed
     href: "/favicon-dark.svg" // Fallback href if needed
   },
   meta: {
-    keywords: `${YOUR_NAME}, <Your other keywords>, ${YOUR_POSITION}, ${YOUR_SKILLS}, ${YOUR_UNIVERSITY}, ${YOUR_GENDER}, ${YOUR_SITE_URL}`,
+    keywords: `${YOUR_NAME}, <Your other keywords>, ${YOUR_POSITION}, ${YOUR_SKILLS}, ${YOUR_SOFT_SKILLS}, ${YOUR_UNIVERSITY}, ${YOUR_GENDER}, ${YOUR_SITE_URL}`,
     author: YOUR_NAME,
     viewport: "width=device-width, initial-scale=1",
     "og:title": `${YOUR_NAME} - ${YOUR_POSITION}`,
@@ -25,7 +48,7 @@ export const siteConfig = {
     "og:image": "/favicon-dark.svg",
     "twitter:card": "summary_large_image",
     "twitter:title": `${YOUR_NAME} - ${YOUR_POSITION}`,
-    "twitter:description": `${YOUR_INTRODUCTION}, Specializing in ${YOUR_SKILLS}`,
+    "twitter:description": `${YOUR_INTRODUCTION}, Specializing in ${YOUR_SKILLS.join(", ")} and ${YOUR_SOFT_SKILLS.join(", ")}`,
     "twitter:image": "/favicon-dark.svg"
   },
   structuredData: {
@@ -33,29 +56,17 @@ export const siteConfig = {
     "@type": "Person",
     "name": YOUR_NAME,
     "url": YOUR_SITE_URL,
-    "sameAs": [
-      "https://www.linkedin.com/in/Your-Namei",
-      "https://github.com/your-username",
-      "https://gitlab.com/your-username",
-      "https://discord.com/users/your-id",
-      "https://buymeacoffee.com/your-username",
-      "https://www.patreon.com/your-username",
-      "https://stackoverflow.com/users/your-id",
-      "https://www.youtube.com/@your-username",
-      "https://x.com/your-username",
-      "https://instagram.com/your-username",
-      "<Your other links>"
-    ],
+    "sameAs": YOUR_SOCIAL_LINKS,
     "jobTitle": YOUR_POSITION,
     "worksFor": {
       "@type": "Organization",
-      "name": "Freelance"
+      "name": YOUR_COMPANY_NAME
     },
     "alumniOf": YOUR_UNIVERSITY,
     // Optional: Delete or leave blank if you prefer not to specify your gender
     "gender": YOUR_GENDER,
     "image": "/favicon-dark.svg",
-    "description": `${YOUR_INTRODUCTION}, Specializing in ${YOUR_SKILLS}`
+    "description": `${YOUR_INTRODUCTION}, Specializing in ${YOUR_SKILLS.join(", ")} and ${YOUR_SOFT_SKILLS.join(", ")}`
   },
   favicon: {
     light: "/favicon-light.svg",
