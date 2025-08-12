@@ -1,8 +1,9 @@
 // Define your core values in variables for quick Setup
 const YOUR_NAME = "<Your Name>";
+const YOUR_INTRODUCTION = "<Your Introduction>";
 const YOUR_POSITION = "<Your Job position>";
 const YOUR_UNIVERSITY = "<Your University>";
-const YOUR_INTRODUCTION = "<Your Introduction>";
+const YOUR_COMPANY_NAME = "<Your Company Name>";
 const YOUR_SKILLS = [
   "<Your Skills>",
   "<Your Skills>",
@@ -13,7 +14,11 @@ const YOUR_SOFT_SKILLS = [
   "<Your Soft Skills>",
   "<Your Soft Skills>",
 ];
-const YOUR_COMPANY_NAME = "<Your Company Name>";
+const MORE_KEYWORDS = [
+  "<Your Keywords>",
+  "<Your Keywords>",
+  "<Your Keywords>",
+];
 const YOUR_SOCIAL_LINKS = [
   "https://www.linkedin.com/in/Your-Namei",
   "https://github.com/your-username",
@@ -25,10 +30,12 @@ const YOUR_SOCIAL_LINKS = [
   "https://www.youtube.com/@your-username",
   "https://x.com/your-username",
   "https://instagram.com/your-username",
-  "<Your other links>"
+  "<Your other links>",
 ];
 const YOUR_GENDER = "<Your Gender>"; // Optional: Delete or leave blank if you prefer not to specify
 const YOUR_SITE_URL = "https://yourdomain.com"; // Update this with your actual site URL
+
+
 
 export const siteConfig = {
   name: `${YOUR_NAME} - ${YOUR_POSITION}`,
@@ -38,7 +45,7 @@ export const siteConfig = {
     href: "/favicon-dark.svg" // Fallback href if needed
   },
   meta: {
-    keywords: `${YOUR_NAME}, <Your other keywords>, ${YOUR_POSITION}, ${YOUR_SKILLS}, ${YOUR_SOFT_SKILLS}, ${YOUR_UNIVERSITY}, ${YOUR_GENDER}, ${YOUR_SITE_URL}`,
+    keywords: `${YOUR_NAME}, ${MORE_KEYWORDS}, ${YOUR_POSITION}, ${YOUR_SKILLS}, ${YOUR_SOFT_SKILLS}, ${YOUR_UNIVERSITY}, ${YOUR_GENDER}, ${YOUR_SITE_URL}`,
     author: YOUR_NAME,
     viewport: "width=device-width, initial-scale=1",
     "og:title": `${YOUR_NAME} - ${YOUR_POSITION}`,
