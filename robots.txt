@@ -1,4 +1,4 @@
-# robots.txt file for [Your Portfolio Name]
+# robots.txt file for My Portfolio
 # This file is used to manage and optimize the crawl behavior of search engines.
 
 User-agent: *
@@ -11,9 +11,10 @@ Disallow: /private/
 Disallow: /tmp/
 Disallow: /search
 Disallow: /404.html
+Disallow: /dashboard/
 
 # Allow all other content to be crawled
 Allow: /
 
-# Sitemap: Directs crawlers to the sitemap for better indexing
-Sitemap: https://yourportfolio.com/sitemap.xml
+# Sitemap: Use a relative path so the project can be deployed to any domain
+Sitemap: /sitemap.xml

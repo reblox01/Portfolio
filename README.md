@@ -54,6 +54,16 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 ADMIN_USER_ID=
 ```
 
+### SEO / Runtime configuration
+
+- Set `SITE_URL` or `NEXT_PUBLIC_SITE_URL` to your deployed site root (e.g. `https://example.com`). The app will use this for sitemap generation, Open Graph canonical URLs and absolute image URLs. If not set, values from `site.config.ts` are used as defaults.
+
+Example (Vercel):
+
+```
+SITE_URL=https://your-domain.com
+```
+
 Before running the application, you need to set up environment variables and configure external services. Follow these steps:
 
 1. **MongoDB Configuration**:
