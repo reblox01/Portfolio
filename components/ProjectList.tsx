@@ -50,14 +50,14 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
 
       <div className="space-y-4">
         {sorted.slice(0, 6).map((p) => (
-          <div key={p.title} className="flex gap-4 items-center rounded-lg border p-3">
-            <div className="w-56 h-28 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+          <div key={p.title} className="flex flex-col sm:flex-row gap-4 items-start rounded-lg border p-3">
+            <div className="w-full sm:w-56 h-40 sm:h-28 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
               <Link href={p.link} target="_blank" className="block w-full h-full">
                 <Image src={p.thumbnail || "/placeholder.png"} alt={p.title} width={560} height={280} className="object-cover w-full h-full" />
               </Link>
             </div>
 
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               <div>
                 <h4 className="font-semibold text-lg">{p.title}</h4>
                 {p.oneLiner && <div className="text-sm text-muted-foreground mt-1 truncate">{p.oneLiner}</div>}

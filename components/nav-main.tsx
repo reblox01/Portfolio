@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,6 +23,7 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
   const isActive = (path: string) => {
     // Check if current pathname starts with the path (for sub-pages like edit)
     return pathname === path || pathname.startsWith(path + '/')
@@ -34,7 +36,7 @@ export function NavMain({
           {items.map((item) => (
             <SidebarMenuItem key={item.url}>
               <SidebarMenuButton tooltip={item.title} asChild className={isActive(item.url) ? "bg-muted" : ""}>
-                <Link href={item.url} className="flex items-center gap-2">
+                <Link href={item.url} className="flex items-center gap-2" onClick={() => { if (isMobile) setOpenMobile(false) }}>
                   {item.icon ? <item.icon /> : null}
                   <span>{item.title}</span>
                 </Link>

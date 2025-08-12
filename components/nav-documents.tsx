@@ -47,7 +47,7 @@ export function NavDocuments({
     children?: { name: string; url: string; icon: LucideIcon }[]
   }[]
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile, setOpenMobile } = useSidebar()
   const pathname = usePathname()
   const [showMore, setShowMore] = useState(false)
 
@@ -119,7 +119,7 @@ export function NavDocuments({
                         return (
                           <SidebarMenuSubItem key={child.url}>
                             <SidebarMenuSubButton asChild isActive={childIsActive}>
-                              <Link href={child.url} className="flex items-center gap-2">
+                                <Link href={child.url} className="flex items-center gap-2" onClick={() => { if (isMobile) setOpenMobile(false) }}>
                                 <child.icon />
                                 <span>{child.name}</span>
                               </Link>
@@ -138,12 +138,12 @@ export function NavDocuments({
         // default single item
         return (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild className={isActive(item.url) ? "bg-muted" : ""}>
-              <Link href={item.url}>
-                <item.icon />
-                <span>{item.name}</span>
-              </Link>
-            </SidebarMenuButton>
+              <SidebarMenuButton asChild className={isActive(item.url) ? "bg-muted" : ""}>
+                <Link href={item.url} onClick={() => { if (isMobile) setOpenMobile(false) }}>
+                  <item.icon />
+                  <span>{item.name}</span>
+                </Link>
+              </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction
@@ -159,52 +159,54 @@ export function NavDocuments({
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
               >
-                <DropdownMenuItem
-                  onClick={() => {
-                    window.location.href = item.url
-                  }}
-                >
+                  <DropdownMenuItem
+                    onClick={() => {
+                      if (isMobile) setOpenMobile(false)
+                      window.location.href = item.url
+                    }}
+                  >
                   <FolderIcon />
                   <span>Open</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={async () => {
-                    const full = window.location.origin + item.url
-                    if ((navigator as any).share) {
-                      try {
-                        await (navigator as any).share({ title: item.name, url: full })
-                        toast.success("Shared")
-                        return
-                      } catch (err) {
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      if (isMobile) setOpenMobile(false)
+                      const full = window.location.origin + item.url
+                      if ((navigator as any).share) {
+                        try {
+                          await (navigator as any).share({ title: item.name, url: full })
+                          toast.success("Shared")
+                          return
+                        } catch (err) {
+                        }
                       }
-                    }
 
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                      if (navigator.clipboard && navigator.clipboard.writeText) {
+                        try {
+                          await navigator.clipboard.writeText(full)
+                          toast.success("Link copied to clipboard")
+                          return
+                        } catch (e) {
+                        }
+                      }
+
                       try {
-                        await navigator.clipboard.writeText(full)
+                        const ta = document.createElement("textarea")
+                        ta.value = full
+                        ta.setAttribute("readonly", "")
+                        ta.style.position = "absolute"
+                        ta.style.left = "-9999px"
+                        document.body.appendChild(ta)
+                        ta.select()
+                        document.execCommand("copy")
+                        document.body.removeChild(ta)
                         toast.success("Link copied to clipboard")
-                        return
-                      } catch (e) {
+                      } catch (err) {
+                        console.error("Share/copy failed", err)
+                        toast.error("Could not copy or share the link")
                       }
-                    }
-
-                    try {
-                      const ta = document.createElement("textarea")
-                      ta.value = full
-                      ta.setAttribute("readonly", "")
-                      ta.style.position = "absolute"
-                      ta.style.left = "-9999px"
-                      document.body.appendChild(ta)
-                      ta.select()
-                      document.execCommand("copy")
-                      document.body.removeChild(ta)
-                      toast.success("Link copied to clipboard")
-                    } catch (err) {
-                      console.error("Share/copy failed", err)
-                      toast.error("Could not copy or share the link")
-                    }
-                  }}
-                >
+                    }}
+                  >
                   <ShareIcon />
                   <span>Share</span>
                 </DropdownMenuItem>

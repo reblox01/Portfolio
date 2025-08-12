@@ -29,7 +29,7 @@ import Link from "next/link"
 
 export function HelpContent() {
   return (
-    <div className="flex-1 space-y-8 p-8">
+    <div className="flex-1 space-y-8 p-8 pb-32 md:pb-8">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
           <BookOpen className="h-8 w-8" />
@@ -404,20 +404,20 @@ export function HelpContent() {
           <p className="text-sm">
             If you encounter any issues or need assistance with setup, feel free to reach out for help.
           </p>
-          <div className="flex gap-3">
-            <Button variant="outline" size="sm" asChild>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
               <a href="https://github.com/reblox01/Portfolio" target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4 mr-2" />
                 View Documentation
               </a>
             </Button>
-            <Button variant="outline" size="sm" asChild>
+            <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
               <Link href="/dashboard">
                 <Eye className="h-4 w-4 mr-2" />
                 Back to Dashboard
               </Link>
             </Button>
-            <Button variant="outline" size="sm" asChild>
+            <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
               <Link href="https://sohailkoutari.com/contact" target="_blank" rel="noopener noreferrer">
                 <MailIcon className="h-4 w-4 mr-2" />
                 Contact Developer
