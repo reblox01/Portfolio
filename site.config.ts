@@ -7,7 +7,7 @@ const YOUR_SITE_URL = "https://yourdomain.com"; // Update this with your actual 
 
 export const siteConfig = {
   name: `${YOUR_NAME} - Portfolio`,
-  description: `Explore the portfolio of ${YOUR_NAME}, a skilled Full-Stack Developer with expertise in React, Next.js, Node.js, and other modern web technologies. Specializing in dynamic web applications, problem-solving, and collaborative projects, ... <Your Own Description>`,
+  description: `Explore the portfolio of ${YOUR_NAME}, a skilled ${YOUR_POSITION} with expertise in React, Next.js, Node.js, and other modern web technologies. Specializing in dynamic web applications, problem-solving, and collaborative projects, ... <Your Own Description>`,
   logo: {
     url: "/favicon-dark.svg", // Fallback logo if needed
     href: "/favicon-dark.svg" // Fallback href if needed
@@ -16,13 +16,13 @@ export const siteConfig = {
     keywords: `${YOUR_NAME}, <Your other keywords>, Web Developer, ${YOUR_POSITION}, React, Next.js, Node.js, JavaScript, Portfolio, Front-End Development, Back-End Development, Web Design, Software Engineer, UI/UX, Agile, SEO, Professional, GitHub, Open Source`,
     author: YOUR_NAME,
     viewport: "width=device-width, initial-scale=1",
-    "og:title": `${YOUR_NAME} - Professional Web Developer Portfolio`,
+    "og:title": `${YOUR_NAME} - ${YOUR_POSITION}`,
     "og:description": `Explore the portfolio of ${YOUR_NAME}, showcasing expertise in modern web technologies and collaborative projects.`,
     "og:type": "website",
     "og:url": YOUR_SITE_URL,
     "og:image": "/favicon-dark.svg",
     "twitter:card": "summary_large_image",
-    "twitter:title": `${YOUR_NAME} - Professional Web Developer Portfolio`,
+    "twitter:title": `${YOUR_NAME} - ${YOUR_POSITION}`,
     "twitter:description": `Discover the professional web development projects of ${YOUR_NAME}, specializing in React, Next.js, Node.js, and more.`,
     "twitter:image": "/favicon-dark.svg"
   },
@@ -53,7 +53,7 @@ export const siteConfig = {
     // Optional: Delete or leave blank if you prefer not to specify your gender
     "gender": YOUR_GENDER,
     "image": "/favicon-dark.svg",
-    "description": `${YOUR_NAME} is a professional Full-Stack Developer specializing in React, Next.js, Node.js, and modern web development technologies. With a passion for problem-solving and collaboration, ${YOUR_NAME} has worked on various dynamic web projects.`
+    "description": `${YOUR_NAME} is a professional ${YOUR_POSITION} specializing in React, Next.js, Node.js, and modern web development technologies. With a passion for problem-solving and collaboration, ${YOUR_NAME} has worked on various dynamic web projects.`
   },
   favicon: {
     light: "/favicon-light.svg",
