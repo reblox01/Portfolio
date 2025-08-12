@@ -46,12 +46,14 @@ export function CollapsibleTrigger({ children, asChild }: { children: React.Reac
 
   // If asChild, clone element and attach onClick
   if (React.isValidElement(children)) {
-    return React.cloneElement(children, {
+    // Cast to any to allow adding event handler props to arbitrary child elements
+    return React.cloneElement(children as React.ReactElement<any>, {
       onClick: (e: any) => {
-        children.props.onClick?.(e)
+        // preserve original handler if present
+        ;(children as any).props.onClick?.(e)
         toggle()
       },
-    })
+    } as any)
   }
 
   return <button onClick={toggle}>{children}</button>
