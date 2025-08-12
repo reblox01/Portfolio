@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
+import ImageUpload from "@/components/image-upload"
+import FileUpload from "@/components/file-upload"
+import { TagInput } from "@/components/ui/tag-input"
 
 type Props = {
   initialData?: (AdminType & { id: string }) | null
@@ -55,10 +58,13 @@ export function AdminForm({ initialData }: Props) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  // Convert skills array to comma-separated string for editing
-  const initialSkills = Array.isArray(initialData?.skills)
-    ? (initialData!.skills as any[]).map((s: any) => s?.text ?? String(s)).join(", ")
-    : ""
+  // Convert skills array to comma-separated string for editing and to an array for TagInput
+  const initialSkillsArray = Array.isArray(initialData?.skills)
+    ? (initialData!.skills as any[]).map((s: any) => s?.text ?? String(s))
+    : [] as string[]
+
+  const [imageValue, setImageValue] = useState<string>(initialData?.imageUrl || "")
+  const [skillsValue, setSkillsValue] = useState<string[]>(initialSkillsArray)
 
   async function onSubmit(formData: FormData) {
     setError(null)
@@ -130,12 +136,33 @@ export function AdminForm({ initialData }: Props) {
           <Input id="email" name="email" type="email" defaultValue={(initialData as any)?.email || ""} />
         </div>
         <div>
-          <Label htmlFor="imageUrl">Image URL</Label>
-          <Input id="imageUrl" name="imageUrl" defaultValue={initialData?.imageUrl || ""} />
+          <Label htmlFor="imageUrl">Image</Label>
+          <div>
+            <ImageUpload
+              value={imageValue}
+              onChange={(v: string) => setImageValue(v)}
+              onRemove={() => setImageValue("")}
+            />
+            {/* Hidden field so server-side FormData gets the image URL */}
+            <input type="hidden" name="imageUrl" value={imageValue} readOnly />
+          </div>
         </div>
         <div>
-          <Label htmlFor="resumeUrl">Resume URL</Label>
-          <Input id="resumeUrl" name="resumeUrl" defaultValue={initialData?.resumeUrl || ""} />
+          <Label htmlFor="resumeUrl">Resume</Label>
+          <div>
+            <FileUpload
+              value={(initialData as any)?.resumeUrl || null}
+              onChange={(v: string) => {
+                const hidden = document.querySelector('input[name="resumeUrl"]') as HTMLInputElement | null
+                if (hidden) hidden.value = v
+              }}
+              onRemove={() => {
+                const hidden = document.querySelector('input[name="resumeUrl"]') as HTMLInputElement | null
+                if (hidden) hidden.value = ""
+              }}
+            />
+            <input type="hidden" name="resumeUrl" defaultValue={(initialData as any)?.resumeUrl || ""} readOnly />
+          </div>
         </div>
       </div>
 
@@ -150,8 +177,12 @@ export function AdminForm({ initialData }: Props) {
           defaultValue={initialData?.education || ""} required />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="skills">Skills (comma separated)</Label>
-        <Input id="skills" name="skills" defaultValue={initialSkills} />
+        <Label htmlFor="skills">Skills</Label>
+        <div>
+          <TagInput value={skillsValue} onChange={setSkillsValue} placeholder="Type and press Enter" />
+          {/* Hidden field so server-side FormData gets the skills as comma-separated string */}
+          <input type="hidden" name="skills" value={skillsValue.join(", ")} readOnly />
+        </div>
       </div>
 
       <div className="space-y-4">
