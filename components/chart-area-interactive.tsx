@@ -136,7 +136,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartAreaInteractive() {
+export function ChartAreaInteractive({ initialData }: { initialData?: { date: string; desktop: number; mobile: number; total?: number }[] }) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("30d")
 
@@ -146,19 +146,26 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile])
 
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date("2024-06-30")
+  const sourceData = React.useMemo(() => {
+    return initialData && initialData.length > 0 ? initialData : chartData
+  }, [initialData])
+
+  const filteredData = React.useMemo(() => {
+    if (!sourceData || sourceData.length === 0) return []
+
+    const lastDate = new Date(sourceData[sourceData.length - 1].date)
     let daysToSubtract = 90
-    if (timeRange === "30d") {
-      daysToSubtract = 30
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7
-    }
-    const startDate = new Date(referenceDate)
+    if (timeRange === "30d") daysToSubtract = 30
+    if (timeRange === "7d") daysToSubtract = 7
+
+    const startDate = new Date(lastDate)
     startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+
+    return sourceData.filter((item) => {
+      const d = new Date(item.date)
+      return d >= startDate
+    })
+  }, [sourceData, timeRange])
 
   return (
     <Card className="@container/card">
@@ -166,9 +173,9 @@ export function ChartAreaInteractive() {
         <CardTitle>Total Visitors</CardTitle>
         <CardDescription>
           <span className="@[540px]/card:block hidden">
-            Total for the last 3 months
+            Total for the last {timeRange}
           </span>
-          <span className="@[540px]/card:hidden">Last 3 months</span>
+          <span className="@[540px]/card:hidden">Last {timeRange}</span>
         </CardDescription>
         <div className="absolute right-4 top-4">
           <ToggleGroup

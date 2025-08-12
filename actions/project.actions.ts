@@ -75,7 +75,7 @@ function shuffleProjects(projects: Project[]): Project[] {
 }
 
 export async function getRandomProjectsAction(): Promise<{
-  source: string; title: string; link: string; thumbnail: string 
+  source: string; title: string; link: string; thumbnail: string; oneLiner?: string
 }[]> {
     try {
         const randomProjects = await prisma.project.findMany({
@@ -95,6 +95,7 @@ export async function getRandomProjectsAction(): Promise<{
                 link: project.liveURL as string,
                 source: project.sourceURL as string,
                 thumbnail: project.screenshot,
+                oneLiner: (project as any).oneLiner || project.oneLiner || project.oneLiner === undefined ? (project as any).oneLiner ?? project.oneLiner ?? "" : "",
                 techStack: project.techStack || []
             }));
 
