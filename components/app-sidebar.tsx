@@ -13,6 +13,7 @@ import {
   FolderIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
+  Home,
   ListIcon,
   Mail,
   MailCheck,
@@ -136,9 +137,9 @@ const data = {
       icon: HelpCircleIcon,
     },
     {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
+      title: "Home",
+      url: "/",
+      icon: Home,
     },
   ],
   documents: [

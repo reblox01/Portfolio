@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { type LucideIcon } from "lucide-react"
 
 import {
@@ -24,10 +25,19 @@ export function NavMain({
 }) {
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
-  const isActive = (path: string) => {
-    // Check if current pathname starts with the path (for sub-pages like edit)
-    return pathname === path || pathname.startsWith(path + '/')
-  }
+  // Determine the single best-matching active item (longest matching path wins)
+  const activeUrl = React.useMemo(() => {
+    let best: string | null = null
+    for (const item of items) {
+      const path = item.url
+      if (pathname === path || pathname.startsWith(path + "/")) {
+        if (!best || path.length > best.length) {
+          best = path
+        }
+      }
+    }
+    return best
+  }, [items, pathname])
 
   return (
     <SidebarGroup>
@@ -35,7 +45,7 @@ export function NavMain({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.url}>
-              <SidebarMenuButton tooltip={item.title} asChild className={isActive(item.url) ? "bg-muted" : ""}>
+              <SidebarMenuButton tooltip={item.title} asChild className={activeUrl === item.url ? "bg-muted" : ""}>
                 <Link href={item.url} className="flex items-center gap-2" onClick={() => { if (isMobile) setOpenMobile(false) }}>
                   {item.icon ? <item.icon /> : null}
                   <span>{item.title}</span>
