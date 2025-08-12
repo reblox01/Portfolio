@@ -35,7 +35,9 @@ export const Navbar = () => {
           animate="visible"
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <NavbarLinks />
+          <nav aria-label="Main navigation" className="flex justify-center">
+            <NavbarLinks />
+          </nav>
         </motion.div>
         <div className="flex items-center justify-between space-x-4 md:block md:w-auto">
           <div className="flex gap-2 items-center">

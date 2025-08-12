@@ -24,6 +24,29 @@ export const metadata: Metadata = {
 // Prepare JSON-LD structured data and OG meta defaults
 const jsonLd = JSON.stringify(siteConfig.structuredData || {});
 
+// Build site URL and additional JSON-LD for navigation and site search
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || siteConfig.structuredData?.url || siteConfig.meta?.["og:url"] || "").replace(/\/$/, "")
+const navItems = ["", "projects", "about", "experience", "certifications", "contact"]
+const navUrls = navItems.map((p) => SITE_URL ? `${SITE_URL}/${p}`.replace(/\/$/, "") : `/${p}`)
+const navJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "SiteNavigationElement",
+  "name": "Main navigation",
+  "url": navUrls,
+})
+
+const websiteJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "url": SITE_URL || siteConfig.structuredData?.url || siteConfig.meta?.["og:url"] || "",
+  "name": siteConfig.name,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": `${SITE_URL || ""}/search?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+})
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -45,6 +68,9 @@ export default async function RootLayout({
         <head>
           {/* JSON-LD structured data */}
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+          {/* Site navigation and website/search structured data */}
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: navJsonLd }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJsonLd }} />
           {/* Open Graph / Twitter meta (defaults from siteConfig.meta) */}
           {/* Use process.env.SITE_URL at runtime when available to build full URLs */}
           {(() => {
