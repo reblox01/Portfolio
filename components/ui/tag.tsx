@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
-import { TagInputProps, type Tag as TagType } from "./tag-input";
+import { TagStyleProps, type Tag as TagType } from "./tag-input";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 
@@ -69,16 +69,16 @@ export const tagVariants = cva(
 
 export type TagProps = {
   tagObj: TagType;
-  variant: TagInputProps["variant"];
-  size: TagInputProps["size"];
-  shape: TagInputProps["shape"];
-  borderStyle: TagInputProps["borderStyle"];
-  textCase: TagInputProps["textCase"];
-  interaction: TagInputProps["interaction"];
-  animation: TagInputProps["animation"];
-  textStyle: TagInputProps["textStyle"];
+  variant: TagStyleProps["variant"];
+  size: TagStyleProps["size"];
+  shape: TagStyleProps["shape"];
+  borderStyle: TagStyleProps["borderStyle"];
+  textCase: TagStyleProps["textCase"];
+  interaction: TagStyleProps["interaction"];
+  animation: TagStyleProps["animation"];
+  textStyle: TagStyleProps["textStyle"];
   onRemoveTag: (id: string) => void;
-} & Pick<TagInputProps, "direction" | "onTagClick" | "draggable">;
+} & Pick<TagStyleProps, "direction" | "onTagClick" | "draggable">;
 
 export const Tag: React.FC<TagProps> = ({
   tagObj,

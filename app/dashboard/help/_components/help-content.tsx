@@ -70,8 +70,8 @@ export function HelpContent() {
               <span>Document your work experience and achievements</span>
             </div>
             <div className="flex items-center gap-3">
-              <Badge className="bg-green-600">5</Badge>
-              <span>Configure site settings and contact information</span>
+                <Badge className="bg-green-600">5</Badge>
+               <span>Configure site settings, contact information, and (required for contact form emails) Contact SMTP</span>
             </div>
           </div>
         </CardContent>
@@ -364,7 +364,7 @@ export function HelpContent() {
                 <li>• MongoDB Database</li>
                 <li>• Cloudinary (Image Storage)</li>
                 <li>• Clerk (Authentication)</li>
-                <li>• Gmail SMTP (Contact Forms)</li>
+                <li>• Contact SMTP (Contact form email sending) — configure in <strong>/dashboard/manage-contact-smtp</strong></li>
               </ul>
             </div>
             <div className="space-y-3">

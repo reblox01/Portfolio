@@ -18,11 +18,40 @@ export async function createContactAction(values: CreateAndEditContactType): Pro
     try {
         createAndEditContactSchema.parse(values);
 
-        const contact: ContactType = await prisma.contact.create({
+        const contactRaw = await prisma.contact.create({
             data: {
-                ...values
+                // allow creating with only public contact fields or full SMTP fields
+                email: values.email,
+                smtpEmail: (values as any).smtpEmail || undefined,
+                emailPassword: (values as any).emailPassword || undefined,
+                phone: values.phone,
+                address: values.address,
+                smtpServer: (values as any).smtpServer || undefined,
+                smtpPort: (values as any).smtpPort || undefined,
+                smtpUsername: (values as any).smtpUsername || undefined,
+                smtpPassword: (values as any).smtpPassword || undefined,
+                emailIntegration: (values as any).emailIntegration ?? false,
+                emailProvider: (values as any).emailProvider || undefined,
+                mailboxSettings: (values as any).mailboxSettings || undefined,
             }
         });
+
+        // Normalize null values from Prisma to undefined for our ContactType
+        const contact: ContactType = {
+            id: (contactRaw as any).id,
+            email: (contactRaw as any).email,
+            smtpEmail: (contactRaw as any).smtpEmail ?? undefined,
+            emailPassword: (contactRaw as any).emailPassword ?? undefined,
+            phone: (contactRaw as any).phone,
+            address: (contactRaw as any).address,
+            smtpServer: (contactRaw as any).smtpServer ?? undefined,
+            smtpPort: (contactRaw as any).smtpPort ?? undefined,
+            smtpUsername: (contactRaw as any).smtpUsername ?? undefined,
+            smtpPassword: (contactRaw as any).smtpPassword ?? undefined,
+            emailIntegration: (contactRaw as any).emailIntegration,
+            emailProvider: (contactRaw as any).emailProvider ?? undefined,
+            mailboxSettings: (contactRaw as any).mailboxSettings ?? undefined,
+        };
 
         return contact;
     } catch (error) {
@@ -36,7 +65,22 @@ export async function getAllContactsAction(): Promise<{
     contacts: ContactType[]
 }> {
     try {
-        const contacts: ContactType[] = await prisma.contact.findMany({});
+        const contactsRaw = await prisma.contact.findMany({});
+        const contacts: ContactType[] = (contactsRaw as any[]).map((c) => ({
+            id: c.id,
+            email: c.email,
+            smtpEmail: c.smtpEmail ?? undefined,
+            emailPassword: c.emailPassword ?? undefined,
+            phone: c.phone,
+            address: c.address,
+            smtpServer: c.smtpServer ?? undefined,
+            smtpPort: c.smtpPort ?? undefined,
+            smtpUsername: c.smtpUsername ?? undefined,
+            smtpPassword: c.smtpPassword ?? undefined,
+            emailIntegration: c.emailIntegration,
+            emailProvider: c.emailProvider ?? undefined,
+            mailboxSettings: c.mailboxSettings ?? undefined,
+        }));
         return { contacts };
     } catch (error) {
         console.log(error);
@@ -61,9 +105,24 @@ export async function deleteContactAction(id: string): Promise<ContactType | nul
 // Function to get a single contact by ID
 export async function getSingleContactAction(id: string): Promise<ContactType | null> {
     try {
-        const contact = await prisma.contact.findUnique({
+        const contactRaw = await prisma.contact.findUnique({
             where: { id },
         });
+        const contact = contactRaw ? {
+            id: (contactRaw as any).id,
+            email: (contactRaw as any).email,
+            smtpEmail: (contactRaw as any).smtpEmail ?? undefined,
+            emailPassword: (contactRaw as any).emailPassword ?? undefined,
+            phone: (contactRaw as any).phone,
+            address: (contactRaw as any).address,
+            smtpServer: (contactRaw as any).smtpServer ?? undefined,
+            smtpPort: (contactRaw as any).smtpPort ?? undefined,
+            smtpUsername: (contactRaw as any).smtpUsername ?? undefined,
+            smtpPassword: (contactRaw as any).smtpPassword ?? undefined,
+            emailIntegration: (contactRaw as any).emailIntegration,
+            emailProvider: (contactRaw as any).emailProvider ?? undefined,
+            mailboxSettings: (contactRaw as any).mailboxSettings ?? undefined,
+        } : null;
         if (!contact) {
             redirect('/dashboard/manage-contact');
         }
@@ -94,7 +153,8 @@ export async function updateContactAction(
         const finalEmailPassword = values.emailPassword || existingContact.emailPassword;
         
         const updateData = {
-            email: values.email,
+            email: values.email || existingContact.email,
+            smtpEmail: (values as any).smtpEmail || existingContact.smtpEmail,
             emailPassword: finalEmailPassword,
             phone: values.phone || existingContact.phone,
             address: values.address || existingContact.address,
@@ -107,11 +167,27 @@ export async function updateContactAction(
             mailboxSettings: values.mailboxSettings || existingContact.mailboxSettings,
         };
 
-        const contact: ContactType = await prisma.contact.update({
+        const contactRaw = await prisma.contact.update({
             where: { id },
             data: updateData,
         });
-        return contact;
+
+        const updatedContact: ContactType = {
+            id: (contactRaw as any).id,
+            email: (contactRaw as any).email,
+            smtpEmail: (contactRaw as any).smtpEmail ?? undefined,
+            emailPassword: (contactRaw as any).emailPassword ?? undefined,
+            phone: (contactRaw as any).phone,
+            address: (contactRaw as any).address,
+            smtpServer: (contactRaw as any).smtpServer ?? undefined,
+            smtpPort: (contactRaw as any).smtpPort ?? undefined,
+            smtpUsername: (contactRaw as any).smtpUsername ?? undefined,
+            smtpPassword: (contactRaw as any).smtpPassword ?? undefined,
+            emailIntegration: (contactRaw as any).emailIntegration,
+            emailProvider: (contactRaw as any).emailProvider ?? undefined,
+            mailboxSettings: (contactRaw as any).mailboxSettings ?? undefined,
+        };
+        return updatedContact;
     } catch (error) {
         console.log(error);
         return null;

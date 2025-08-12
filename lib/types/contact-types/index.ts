@@ -4,16 +4,17 @@ import * as z from 'zod';
 export type ContactType = {
     id: string;
     email: string;
-    emailPassword?: string;
+    smtpEmail?: string | null;
+    emailPassword?: string | null;
     phone: string;
     address: string;
-    smtpServer?: string;
-    smtpPort?: number;
-    smtpUsername?: string;
-    smtpPassword?: string;
+    smtpServer?: string | null;
+    smtpPort?: number | null;
+    smtpUsername?: string | null;
+    smtpPassword?: string | null;
     emailIntegration: boolean;
-    emailProvider?: string;
-    mailboxSettings?: any;
+    emailProvider?: string | null;
+    mailboxSettings?: any | null;
 };
 
 // Define the schema for creating and editing a contact
@@ -21,6 +22,7 @@ export const createAndEditContactSchema = z.object({
     email: z.string()
         .min(1, { message: "Email is required." })
         .email({ message: "Invalid email address." }),
+    smtpEmail: z.string().email({ message: "Invalid SMTP email address." }).optional().default("") ,
     phone: z.string().min(3, {
         message: "Phone number is required and must be at least 3 characters.",
     }),

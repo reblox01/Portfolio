@@ -49,7 +49,7 @@ export function ContactForm({ initialData, mode }: Props) {
   async function onSubmit(values: any) {
     const payload = {
       ...values,
-      password: initialData?.password || "", // Preserve existing password
+      // Do not modify SMTP fields here; updateContactAction will preserve them
     }
     
     try {

@@ -7,7 +7,15 @@ import {
   MoreVerticalIcon,
   UserCircleIcon,
 } from "lucide-react"
-import { useUser, SignOutButton } from "@clerk/nextjs"
+import { toast } from "sonner"
+import { useUser, useClerk, SignOutButton } from "@clerk/nextjs"
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 
 import {
   Avatar,
@@ -40,7 +48,9 @@ export function NavUser({
   }
 }) {
     const { user: clerkUser } = useUser();
+    const { openUserProfile } = useClerk();
   const { isMobile } = useSidebar()
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
 
   return (
     <SidebarMenu>
@@ -51,7 +61,7 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={clerkUser?.imageUrl} alt={clerkUser?.fullName || "User"} />
                 <AvatarFallback className="rounded-lg">{clerkUser?.fullName?.charAt(0) || "CN"}</AvatarFallback>
               </Avatar>
@@ -85,20 +95,40 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <UserCircleIcon />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCardIcon />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => {
+                    // open Clerk's user profile modal
+                    try {
+                      openUserProfile?.()
+                    } catch (e) {
+                      // fallback to account page
+                      window.location.href = "#"
+                    }
+                  }}
+                >
+                  <UserCircleIcon />
+                  Account
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    // open Clerk dashboard in a new tab for account/billing management
+                    window.open("https://dashboard.clerk.com/", "_blank")
+                  }}
+                >
+                  <CreditCardIcon />
+                  Clerk Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    // open in-place notifications dialog
+                    setNotificationsOpen(true)
+                  }}
+                >
+                  <BellIcon />
+                  Notifications
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <SignOutButton>
             <DropdownMenuItem>
@@ -109,6 +139,20 @@ export function NavUser({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      <Dialog open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+        <DialogContent>
+          <DialogTitle>Notifications</DialogTitle>
+          <DialogDescription>
+            <div className="flex flex-col items-center justify-center gap-2 py-8">
+              <div className="inline-flex h-10 w-10 animate-pulse items-center justify-center rounded-full bg-muted/40 text-muted-foreground">
+                <BellIcon />
+              </div>
+              <div className="text-lg font-medium">Coming soon</div>
+              <div className="text-sm text-muted-foreground">Notifications will appear here in future updates.</div>
+            </div>
+          </DialogDescription>
+        </DialogContent>
+      </Dialog>
     </SidebarMenu>
   )
 }

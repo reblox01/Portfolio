@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Certification } from "@/lib/types/certification-types"
+import { CertificateType as Certification } from "@/lib/types/certification-types"
 import { Button } from "@/components/ui/button"
 import { deleteCertificationAction } from "@/actions/certification.actions"
 import Link from "next/link"

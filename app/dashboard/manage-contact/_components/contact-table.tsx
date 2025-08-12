@@ -50,6 +50,9 @@ export function ContactTable({ data }: ContactTableProps) {
             </CardTitle>
             <CardDescription className="text-sm">
               Contact information displayed on portfolio
+              <div className="mt-2 text-xs text-muted-foreground">
+                <strong className="font-medium">Note:</strong> The email shown here is public and will appear on your portfolio. To configure the email account used to send messages (SMTP app password), use <em>Manage SMTP</em>.
+              </div>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

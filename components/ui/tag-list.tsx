@@ -9,6 +9,7 @@ export type TagListProps = {
   customTagRenderer?: (tag: TagType) => React.ReactNode;
   direction?: TagProps["direction"];
   onSortEnd: (oldIndex: number, newIndex: number) => void;
+  draggable?: boolean;
 } & Omit<TagProps, "tagObj">;
 
 const DropTarget: React.FC = () => {

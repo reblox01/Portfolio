@@ -1,4 +1,5 @@
 import { Project } from "@/lib/types/project-types";
+import { ColumnDef } from "@tanstack/react-table";
 import { getAllProjectsAction } from "@/actions/project.actions";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
@@ -18,7 +19,7 @@ export default async function ManageProjectsPage() {
           </Button>
         </div>
       </div>
-      <DataTable columns={columns} data={projects || []} />
+      <DataTable columns={columns as ColumnDef<any, any>[]} data={projects || []} />
     </div>
   );
 }

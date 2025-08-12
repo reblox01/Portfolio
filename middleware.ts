@@ -20,5 +20,6 @@ export default authMiddleware({
 export const config = {
     // Protects all routes except those specified in publicRoutes
     // and Next.js internal routes like _next and API routes.
-    matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+    // Do not run the auth middleware on API routes to allow public API endpoints like /api/email
+    matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/"],
 };

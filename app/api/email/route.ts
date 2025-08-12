@@ -8,21 +8,33 @@ const prisma = new PrismaClient();
 export async function POST(request: NextRequest) {
   const { email, name, subject, message } = await request.json();
 
-  // Fetch email and password from the database
-  const contact = await prisma.contact.findFirst(); // Adjust this query according to your actual schema
+  // Fetch SMTP config from the database
+  const contact = await prisma.contact.findFirst(); // you may want to scope this for multi-tenant apps
 
-  if (!contact || !contact.email || !contact.password) {
-    return NextResponse.json({ error: 'Email or password not found in database or incorrect' }, { status: 500 });
+  // Require explicit SMTP fields (smtpEmail + emailPassword)
+  if (!contact || !contact.smtpEmail || !contact.emailPassword) {
+    return NextResponse.json({ error: 'SMTP configuration not found. Please configure SMTP in the dashboard.' }, { status: 500 });
   }
 
-  // Set up the transporter using fetched credentials
+  // Set up the transporter using fetched SMTP credentials
+  // Use explicit SMTP host/port to get better error reporting
   const transport = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      user: contact.email,
-      pass: contact.password,
+      user: contact.smtpEmail,
+      pass: contact.emailPassword,
     },
   });
+
+  // Verify transport (helps catch auth/connect issues early)
+  try {
+    await transport.verify();
+  } catch (err) {
+    console.error('SMTP verify failed', err);
+    return NextResponse.json({ error: 'SMTP verify failed. Check SMTP credentials.' }, { status: 500 });
+  }
 
   // Create an HTML template for the email
   const htmlContent = `
@@ -141,15 +153,6 @@ export async function POST(request: NextRequest) {
 													</td>
 													<td class="column column-2" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
 														<div class="spacer_block block-1" style="height:30px;line-height:30px;font-size:1px;">&#8202;</div>
-														<table class="image_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-															<tr>
-																<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-																	<div class="alignment" align="center" style="line-height:10px">
-																		<div style="max-width: 147px;"><img src="https://1a1d8b230f.imgdist.com/pub/bfra/wg5b4okt/1fl/zyd/wti/animal-anthropomorphized-bird-1320792.jpg" style="display: block; height: auto; border: 0; width: 100%;" width="147" alt="logo" title="logo" height="auto"></div>
-																	</div>
-																</td>
-															</tr>
-														</table>
 													</td>
 													<td class="column column-3" width="33.333333333333336%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
 														<div class="spacer_block block-1 mobile_hide" style="height:20px;line-height:20px;font-size:1px;">&#8202;</div>
@@ -502,28 +505,33 @@ export async function POST(request: NextRequest) {
   `;
 
   const mailOptions: Mail.Options = {
-    from: email,
-    to: contact.email,
-    replyTo: email,
+    // Use a dedicated no-reply or contact email From so Gmail won't replace it with "me" when delivered to the same account
+    from: `"Portfolio" <${contact.email}>`,
+    to: contact.smtpEmail,
+    replyTo: `${name} <${email}>`,
     subject: `${subject} - ${name}`,
-    html: htmlContent,  // Use the HTML content instead of plain text
+    html: htmlContent, // Use the HTML content instead of plain text
   };
 
   const sendMailPromise = () =>
-    new Promise<string>((resolve, reject) => {
-      transport.sendMail(mailOptions, function (err) {
+    new Promise<any>((resolve, reject) => {
+      transport.sendMail(mailOptions, function (err, info) {
         if (!err) {
-          resolve('Email sent');
+          console.log('Email sent info:', info);
+          resolve(info);
         } else {
-          reject(err.message);
+          console.error('sendMail error:', err);
+          reject(err);
         }
       });
     });
 
   try {
-    await sendMailPromise();
-    return NextResponse.json({ message: 'Email sent' });
+    const info = await sendMailPromise();
+    // Return a lightweight success response including messageId
+    return NextResponse.json({ message: 'Email sent', messageId: info?.messageId || null });
   } catch (err) {
-    return NextResponse.json({ error: err }, { status: 500 });
+    console.error('Failed to send email:', err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }

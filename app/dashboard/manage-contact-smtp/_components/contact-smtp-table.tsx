@@ -7,6 +7,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Mail, Key, Edit, Trash2, MailCheck } from "lucide-react"
+import { toast } from "sonner"
 
 interface ContactSMTPTableProps {
   data: ContactType[]
@@ -66,8 +67,8 @@ export function ContactSMTPTable({ data }: ContactSMTPTableProps) {
                 <Key className="h-4 w-4 mt-1 text-muted-foreground" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">App Password</p>
-                  <Badge variant={contact.password ? "default" : "secondary"} className="text-xs">
-                    {contact.password ? "Configured" : "Not Set"}
+                  <Badge variant={contact.emailPassword ? "default" : "secondary"} className="text-xs">
+                    {contact.emailPassword ? "Configured" : "Not Set"}
                   </Badge>
                 </div>
               </div>
@@ -76,8 +77,8 @@ export function ContactSMTPTable({ data }: ContactSMTPTableProps) {
                 <MailCheck className="h-4 w-4 mt-1 text-muted-foreground" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">Status</p>
-                  <Badge variant={contact.password ? "default" : "destructive"} className="text-xs">
-                    {contact.password ? "Ready" : "Incomplete"}
+                  <Badge variant={contact.emailPassword ? "default" : "destructive"} className="text-xs">
+                    {contact.emailPassword ? "Ready" : "Incomplete"}
                   </Badge>
                 </div>
               </div>
@@ -90,6 +91,26 @@ export function ContactSMTPTable({ data }: ContactSMTPTableProps) {
                   Edit
                 </Link>
               </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const res = await fetch('/api/email/test', { method: 'POST' })
+                      const data = await res.json()
+                      if (res.ok) {
+                        toast.success('Test email sent — check inbox')
+                      } else {
+                        toast.error(data?.error || 'Test send failed')
+                      }
+                    } catch (err) {
+                      console.error(err)
+                      toast.error('Test send failed')
+                    }
+                  }}
+                >
+                  Test
+                </Button>
               <Button 
                 variant="destructive" 
                 size="sm"

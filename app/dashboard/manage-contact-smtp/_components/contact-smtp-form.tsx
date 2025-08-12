@@ -22,8 +22,8 @@ type Props = {
   mode: "create" | "edit"
 }
 
-const formSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  const formSchema = z.object({
+  smtpEmail: z.string().min(1, "SMTP Email is required").email("Invalid SMTP email address"),
   emailPassword: z.string().optional().refine((val) => {
     if (!val) return true
     // Remove dots and spaces for validation
@@ -57,13 +57,14 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
-          email: initialData.email,
+          // Do NOT fallback to public contact email here; SMTP email must be explicit
+          smtpEmail: initialData.smtpEmail || "",
           emailPassword: initialData.emailPassword || "",
           phone: initialData.phone || "",
           address: initialData.address || "",
         }
       : {
-          email: "",
+          smtpEmail: "",
           emailPassword: "",
           phone: "",
           address: "",
@@ -90,8 +91,14 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
     console.log("Submitting payload:", { ...payload, emailPassword: payload.emailPassword ? "[REDACTED]" : "empty" })
     
     try {
+      // Prefer updating existing contact for SMTP config. Creating SMTP without a contact
+      // would require setting the required `email` field; ask the user to create contact first.
       if (mode === "create") {
-        const result = await createContactAction(payload)
+        if (!initialData?.id) {
+          toast.error("Create public contact info first in Manage Contact before adding SMTP settings.")
+          return
+        }
+        const result = await updateContactAction(initialData.id, payload)
         if (result) {
           toast.success("Contact SMTP configuration created")
           router.push("/dashboard/manage-contact-smtp")
@@ -124,6 +131,9 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
           </CardTitle>
           <CardDescription className="text-sm">
             {mode === "create" ? "Create new SMTP configuration" : "Update this SMTP configuration"}
+            <div className="mt-2 text-xs text-muted-foreground">
+              <strong className="font-medium">Note:</strong> This email and app password are used only for sending messages (SMTP). They will not be shown publicly on your contact page. If you want the public contact email to be different, edit it under <em>Manage Contact</em>.
+            </div>
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-2">
@@ -147,10 +157,10 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
                 
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="smtpEmail"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Gmail Address</FormLabel>
+                      <FormLabel>Gmail Address (used for SMTP)</FormLabel>
                       <FormControl>
                         <Input 
                           placeholder="your.email@gmail.com" 

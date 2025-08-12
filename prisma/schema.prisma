@@ -61,6 +61,7 @@ model Techstack{
 model Contact {
   id                 String      @id @default(auto()) @map("_id") @db.ObjectId
   email              String
+  smtpEmail          String?
   emailPassword      String?
   phone              String
   address            String

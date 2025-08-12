@@ -16,19 +16,19 @@ import {
 
 export const columns: ColumnDef<ContactType>[] = [
   {
-    accessorKey: "email",
+    accessorKey: "smtpEmail",
     header: ({ column }) => (
       <div className="flex items-center gap-2">
         <Mail className="h-4 w-4" />
-        Email
+        SMTP Email
       </div>
     ),
     cell: ({ row }) => {
-      const email = row.getValue("email") as string
+      const smtpEmail = row.getValue("smtpEmail") as string | undefined
       return (
         <div className="flex items-center gap-2">
           <Mail className="h-4 w-4 text-muted-foreground" />
-          <span className="font-medium">{email}</span>
+          <span className="font-medium">{smtpEmail ? smtpEmail : "Not Set"}</span>
         </div>
       )
     },
@@ -58,9 +58,9 @@ export const columns: ColumnDef<ContactType>[] = [
     header: "Configuration Status",
     cell: ({ row }) => {
       const emailPassword = row.getValue("emailPassword") as string
-      const email = row.getValue("email") as string
-      
-      const isFullyConfigured = emailPassword && email
+      const smtpEmail = row.getValue("smtpEmail") as string
+
+      const isFullyConfigured = emailPassword && smtpEmail
       
       return (
         <Badge 

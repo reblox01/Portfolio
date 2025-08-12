@@ -16,10 +16,14 @@ import {
   ListIcon,
   Mail,
   MailCheck,
+  CalendarIcon,
+  BellIcon,
+  KeyIcon,
   SearchIcon,
   SettingsIcon,
   UsersIcon,
   Zap,
+  Bot,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -150,8 +154,22 @@ const data = {
     },
     {
       name: "Integration",
-      url: "/dashboard/integration",
+      url: "#",
       icon: Zap,
+      children: [
+        { name: "Overview", url: "/dashboard/integration", icon: LayoutDashboardIcon },
+        { name: "Analytics", url: "/dashboard/integration/analytics", icon: BarChartIcon },
+        { name: "Backups", url: "/dashboard/integration/backups", icon: DatabaseIcon },
+        { name: "Webhooks", url: "/dashboard/integration/webhooks", icon: Zap },
+        { name: "AI Assistant", url: "/dashboard/integration/ai-assistant", icon: Bot },
+        { name: "Image CDN", url: "/dashboard/integration/image-cdn", icon: CameraIcon },
+        { name: "Forms", url: "/dashboard/integration/forms", icon: FileIcon },
+        { name: "Scheduling", url: "/dashboard/integration/scheduling", icon: CalendarIcon },
+        { name: "Marketplace", url: "/dashboard/integration/marketplace", icon: FolderIcon },
+        { name: "Notifications", url: "/dashboard/integration/notifications", icon: BellIcon },
+        { name: "CI/CD", url: "/dashboard/integration/ci-cd", icon: FileCodeIcon },
+        { name: "Monitoring", url: "/dashboard/integration/monitoring", icon: BarChartIcon },
+      ],
     }
   ],
 }

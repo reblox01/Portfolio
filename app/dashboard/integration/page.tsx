@@ -6,31 +6,38 @@ export default function IntegrationPage() {
   const upcomingIntegrations = [
     {
       title: "Contact Form Integration",
-      description: "Connect your Contact SMTP settings to enable working contact forms on your portfolio",
+      description: "Connect your Contact SMTP settings to enable working contact forms on your portfolio (already implemented)",
       icon: Mail,
-      status: "In Development",
-      estimatedRelease: "Coming Soon"
+      status: "Available",
+      estimatedRelease: "12/08/2025"
     },
     {
       title: "Database Backup",
       description: "Automated backup and restore functionality for your portfolio data",
       icon: Database,
       status: "Planned",
-      estimatedRelease: "Future Release"
+      estimatedRelease: "Future Release",
+      pendingTasks: [
+        "Design backup schema",
+        "Export/restore endpoints",
+        "Secure storage integration"
+      ]
     },
     {
       title: "Webhook Notifications",
       description: "Real-time notifications when visitors interact with your portfolio",
       icon: Webhook,
       status: "Planned",
-      estimatedRelease: "Future Release"
+      estimatedRelease: "Future Release",
+      pendingTasks: ["Webhook receiver endpoint", "Event filter rules"]
     },
     {
       title: "AI Assistant",
       description: "AI-powered content suggestions and portfolio optimization recommendations",
       icon: Bot,
       status: "Planned",
-      estimatedRelease: "Future Release"
+      estimatedRelease: "Future Release",
+      pendingTasks: ["Model selection", "Privacy review"]
     }
   ]
 
