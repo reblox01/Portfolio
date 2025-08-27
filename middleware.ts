@@ -13,7 +13,9 @@ export default authMiddleware({
         "/techstack", 
         "/contact", 
         "/api/email", 
-        "/techstack/(.*)"
+        "/techstack/(.*)",
+        "/sitemap.xml",
+        "/robots.txt"
     ],
 });
 
