@@ -10,6 +10,7 @@ import {
 import { IconBrandFacebook, IconBrandGitlab, IconBrandWhatsapp, IconBrandYoutube, IconBrandYoutubeFilled } from "@tabler/icons-react";
 import { LinkedinIcon } from "lucide-react";
 import Link from "next/link";
+import { socialUrl } from "@/lib/utils/social-utils";
 
 const Footer = () => {
   const data = useMyContext();
@@ -26,76 +27,76 @@ const Footer = () => {
         </div>
 
         <div className="order-3 flex items-center gap-4 md:order-3 md:gap-6">
-          {data?.gitlab && (
+          {data?.gitlab && socialUrl("gitlab", data?.gitlab) && (
             <Link
               target="_blank" 
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.gitlab}>
+              href={socialUrl("gitlab", data?.gitlab)!}>
               <span className="sr-only">Gitlab</span>
               <IconBrandGitlab className="w-6 h-4 fill-current" />
             </Link>
           )}
-          {data?.github && (
+          {data?.github && socialUrl("github", data?.github) && (
             <Link
               target="_blank" 
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.github}>
+              href={socialUrl("github", data?.github)!}>
               <span className="sr-only">GitHub</span>
               <GitHubLogoIcon className="w-4 h-4 fill-current" />
             </Link>
           )}
-          {data?.linkedIn && (
+          {data?.linkedIn && socialUrl("linkedIn", data?.linkedIn) && (
             <Link
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.linkedIn}>
+              href={socialUrl("linkedIn", data?.linkedIn)!}>
               <span className="sr-only">LinkedIn</span>
               <LinkedinIcon className="w-4 h-4 fill-current" />
             </Link>
           )}
-          {data?.twitter && (
+          {data?.twitter && socialUrl("twitter", data?.twitter) && (
             <Link
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.twitter}>
+              href={socialUrl("twitter", data?.twitter)!}>
               <span className="sr-only">Twitter</span>
               <TwitterLogoIcon className="w-4 h-4 fill-current" />
             </Link>
           )}
-          {data?.whatsapp && (
+          {data?.whatsapp && socialUrl("whatsapp", data?.whatsapp) && (
             <Link
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.whatsapp}>
+              href={socialUrl("whatsapp", data?.whatsapp)!}>
               <span className="sr-only">WhatsApp</span>
               <IconBrandWhatsapp className="w-4 h-4" />
             </Link>
           )}
-          {data?.discord && (
+          {data?.discord && socialUrl("discord", data?.discord) && (
             <Link
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.discord}>
+              href={socialUrl("discord", data?.discord)!}>
               <span className="sr-only">Discord</span>
               <DiscordLogoIcon />
             </Link>
           )}
-          {data?.instagram && (
+          {data?.instagram && socialUrl("instagram", data?.instagram) && (
             <Link
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.instagram}>
+              href={socialUrl("instagram", data?.instagram)!}>
               <span className="sr-only">Instagram</span>
               <InstagramLogoIcon />
             </Link>
           )}
-          {data?.facebook && (
+          {data?.facebook && socialUrl("facebook", data?.facebook) && (
             <Link
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.facebook}>
+              href={socialUrl("facebook", data?.facebook)!}>
               <span className="sr-only">facebook</span>
               <IconBrandFacebook className="w-4 h-4 fill-current" />
             </Link>
           )}
-          {data?.youtube && (
+          {data?.youtube && socialUrl("youtube", data?.youtube) && (
             <Link
               className="rounded-full w-6 h-6 flex items-center justify-center border border-gray-200 hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-50"
-              href={data?.youtube}>
+              href={socialUrl("youtube", data?.youtube)!}>
               <span className="sr-only">youtube</span>
               <IconBrandYoutubeFilled className="w-4 h-4 fill-current" />
             </Link>

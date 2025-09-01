@@ -3,9 +3,9 @@
 import {
   ColumnDef,
   flexRender,
-  getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { getCoreRowModel } from "@tanstack/table-core"
 
 import {
   Table,

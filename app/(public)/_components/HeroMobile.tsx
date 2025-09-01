@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const HeroMobile = ({ name, position, location }: AdminType) => {
   const FADE_UP_ANIMATION_VARIANTS = {
     hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0, transition: { type: "spring" } },
+    show: { opacity: 1, y: 0, transition: { type: "spring" as const } },
   };
   return (
     <div className="container sm:hidden mt-32 max-w-[1024px]">

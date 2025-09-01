@@ -11,47 +11,13 @@ import { useRouter } from "next/navigation"
 import ImageUpload from "@/components/image-upload"
 import FileUpload from "@/components/file-upload"
 import { TagInput } from "@/components/ui/tag-input"
+import { normalizeHandle } from "@/lib/utils/social-utils"
 
 type Props = {
   initialData?: (AdminType & { id: string }) | null
 }
 
 const schema = createAndEditAdminSchema
-
-// Extract a username/handle from a URL or raw input
-function normalizeHandle(value?: string | null): string | null {
-  if (!value) return null
-  let v = value.trim()
-  if (!v) return null
-  // remove protocol and www
-  v = v.replace(/^https?:\/\//i, "").replace(/^www\./i, "")
-  // remove domain for common sites
-  const hosts = [
-    "github.com/",
-    "linkedin.com/in/",
-    "linkedin.com/",
-    "facebook.com/",
-    "instagram.com/",
-    "discord.com/users/",
-    "discordapp.com/users/",
-    "gitlab.com/",
-    "twitter.com/",
-    "x.com/",
-    "youtube.com/@",
-    "youtube.com/",
-  ]
-  for (const h of hosts) {
-    if (v.toLowerCase().startsWith(h)) {
-      v = v.slice(h.length)
-      break
-    }
-  }
-  // if path-like, take last segment
-  if (v.includes("/")) v = v.split("/").filter(Boolean).pop() || v
-  // trim leading @
-  v = v.replace(/^@+/, "")
-  return v
-}
 
 export function AdminForm({ initialData }: Props) {
   const router = useRouter()

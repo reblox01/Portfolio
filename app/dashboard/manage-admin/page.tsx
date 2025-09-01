@@ -18,56 +18,10 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import { socialUrl, normalizeHandle, withProtocol } from "@/lib/utils/social-utils";
 
 export default async function ManageAdminPage() {
   const admin = await getAdminDetail();
-  const withProtocol = (url?: string | null) =>
-    url ? (url.startsWith("http") ? url : `https://${url}`) : undefined;
-  const normalizeHandle = (value?: string | null) => {
-    if (!value) return undefined as unknown as string;
-    let v = value.trim();
-    if (!v) return undefined as unknown as string;
-    v = v.replace(/^https?:\/\//i, "").replace(/^www\./i, "");
-    const hosts = [
-      "github.com/",
-      "linkedin.com/in/",
-      "linkedin.com/",
-      "facebook.com/",
-      "instagram.com/",
-      "discord.com/users/",
-      "discordapp.com/users/",
-      "gitlab.com/",
-      "twitter.com/",
-      "x.com/",
-      "youtube.com/@",
-      "youtube.com/",
-    ];
-    for (const h of hosts) {
-      if (v.toLowerCase().startsWith(h)) {
-        v = v.slice(h.length);
-        break;
-      }
-    }
-    if (v.includes("/")) v = v.split("/").filter(Boolean).pop() || v;
-    v = v.replace(/^@+/, "");
-    return v;
-  };
-  const socialUrl = (network: string, handle?: string | null) => {
-    const raw = normalizeHandle(handle);
-    if (!raw) return undefined;
-    const h = raw.replace(/^@+/, "");
-    switch (network) {
-      case "github": return `https://github.com/${h}`;
-      case "linkedIn": return `https://linkedin.com/in/${h}`;
-      case "facebook": return `https://facebook.com/${h}`;
-      case "instagram": return `https://instagram.com/${h}`;
-      case "discord": return `https://discord.com/users/${h}`;
-      case "gitlab": return `https://gitlab.com/${h}`;
-      case "twitter": return `https://twitter.com/${h}`;
-      case "youtube": return `https://youtube.com/@${h}`;
-      default: return undefined;
-    }
-  };
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">

@@ -5,6 +5,7 @@ import { getAdminDetail } from "@/actions/admin.actions";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { socialUrl } from "@/lib/utils/social-utils";
 
 const AboutPageContainer = () => {
   const { data, isPending } = useQuery({
@@ -116,42 +117,42 @@ const AboutPageContainer = () => {
                 E-mail
               </Link>
               ,{" "}
-              {data?.twitter && (
+              {data?.twitter && socialUrl("twitter", data?.twitter) && (
                 <>
                   {" "}
                   or follow me on{" "}
                   <Link
                     className="text-black font-semibold dark:text-white"
                     target="_blank"
-                    href={data?.twitter}
+                    href={socialUrl("twitter", data?.twitter)!}
                   >
                     X
                   </Link>
                   .
                 </>
               )}{" "}
-              {data?.linkedIn && (
+              {data?.linkedIn && socialUrl("linkedIn", data?.linkedIn) && (
                 <>
                   {" "}
-                  Want to see where I’ve worked? Check out my{" "}
+                  Want to see where I've worked? Check out my{" "}
                   <Link
                     className="text-black font-semibold dark:text-white"
                     target="_blank"
-                    href={data?.linkedIn}
+                    href={socialUrl("linkedIn", data?.linkedIn)!}
                   >
                     LinkedIn
                   </Link>
                   , or connect with me on LinkedIn.
                 </>
               )}{" "}
-              {data?.github && (
+              {data?.github && socialUrl("github", data?.github) && (
                 <>
                   {" "}
                   For my latest projects, visit my{" "}
                   <Link
                     className="text-black font-semibold dark:text-white"
                     target="_blank"
-                    href={data?.github}
+                    href={socialUrl("github", data?.github)!}
                   >
                     GitHub
                   </Link>{" "}
