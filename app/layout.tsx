@@ -24,15 +24,32 @@ export const metadata: Metadata = {
 // Prepare JSON-LD structured data and OG meta defaults
 const jsonLd = JSON.stringify(siteConfig.structuredData || {});
 
-// Build site URL and additional JSON-LD for navigation and site search
+// Build site URL and enhanced JSON-LD for navigation and sitelinks
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || siteConfig.structuredData?.url || siteConfig.meta?.["og:url"] || "").replace(/\/$/, "")
-const navItems = ["", "projects", "about", "experience", "certifications", "contact"]
-const navUrls = navItems.map((p) => SITE_URL ? `${SITE_URL}/${p}`.replace(/\/$/, "") : `/${p}`)
+
+// Enhanced navigation structure for Google sitelinks
+const navigationItems = [
+  { name: "About", url: `${SITE_URL}/about`, description: "Learn more about my background and skills" },
+  { name: "Projects", url: `${SITE_URL}/projects`, description: "View my portfolio and recent work" },
+  { name: "Experience", url: `${SITE_URL}/experience`, description: "Professional experience and career history" },
+  { name: "Certifications", url: `${SITE_URL}/certification`, description: "Professional certifications and achievements" },
+  { name: "Contact", url: `${SITE_URL}/contact`, description: "Get in touch for opportunities" },
+  { name: "Tech Stack", url: `${SITE_URL}/techstack`, description: "Technologies and tools I use" }
+]
+
+// Navigation structured data for better sitelinks
 const navJsonLd = JSON.stringify({
   "@context": "https://schema.org",
-  "@type": "SiteNavigationElement",
-  "name": "Main navigation",
-  "url": navUrls,
+  "@type": "ItemList",
+  "name": "Site Navigation",
+  "numberOfItems": navigationItems.length,
+  "itemListElement": navigationItems.map((item, index) => ({
+    "@type": "SiteNavigationElement",
+    "position": index + 1,
+    "name": item.name,
+    "description": item.description,
+    "url": item.url
+  }))
 })
 
 const websiteJsonLd = JSON.stringify({
@@ -40,11 +57,29 @@ const websiteJsonLd = JSON.stringify({
   "@type": "WebSite",
   "url": SITE_URL || siteConfig.structuredData?.url || siteConfig.meta?.["og:url"] || "",
   "name": siteConfig.name,
+  "alternateName": `${siteConfig.name} - Portfolio`,
+  "description": siteConfig.description,
   "potentialAction": {
     "@type": "SearchAction",
     "target": `${SITE_URL || ""}/search?q={search_term_string}`,
     "query-input": "required name=search_term_string",
   },
+})
+
+// Organization structured data for better professional context
+const organizationJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": siteConfig.name,
+  "url": SITE_URL,
+  "logo": `${SITE_URL}${siteConfig.favicon.dark}`,
+  "description": siteConfig.description,
+  "serviceType": ["Web Development", "Full Stack Development", "Software Engineering"],
+  "areaServed": "Global",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "MA" // Morocco
+  }
 })
 
 export default async function RootLayout({
@@ -68,9 +103,12 @@ export default async function RootLayout({
         <head>
           {/* JSON-LD structured data */}
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
-          {/* Site navigation and website/search structured data */}
+          {/* Enhanced site navigation for better sitelinks */}
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: navJsonLd }} />
+          {/* Website and search structured data */}
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJsonLd }} />
+          {/* Professional service organization data */}
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: organizationJsonLd }} />
           {/* Open Graph / Twitter meta (defaults from siteConfig.meta) */}
           {/* Use process.env.SITE_URL at runtime when available to build full URLs */}
           {(() => {
