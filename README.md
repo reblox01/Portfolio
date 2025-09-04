@@ -8,6 +8,10 @@ Welcome to the **Portfolio** GitHub repository! This project is designed to prov
 
 This project is aimed at developers who want to showcase their work in a professional and customizable manner. By utilizing this repository, developers can create their portfolio websites without having to start from scratch. The portfolio includes features such as:
 
+![Performance](https://github.com/reblox01/Portfolio/blob/master/public/Performance.png)
+
+This project is optimized for fast load times, strong accessibility, and modern best practices to deliver a smooth, reliable experience across devices.
+
 - Admin login functionality
 - User-friendly interface for managing portfolio content
 - Customizable design and layout
