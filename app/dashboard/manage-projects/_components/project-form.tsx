@@ -10,7 +10,7 @@ import { CreateAndEditProjectType, Project, ProjectType } from "@/lib/types/proj
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import RichTextEditor from "@/components/RichTextEditor"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import ImageUpload from "@/components/image-upload"
@@ -212,11 +212,11 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea 
+                      <RichTextEditor 
+                        value={field.value}
+                        onChange={field.onChange}
                         placeholder="Provide a comprehensive description of your project..."
-                        className="min-h-[100px]"
-                        disabled={isSubmitting} 
-                        {...field} 
+                        disabled={isSubmitting}
                       />
                     </FormControl>
                     <FormMessage />

@@ -22,19 +22,19 @@ export default function DynamicSectionCards({
 
         return (
           <Card key={s.title} className="p-4">
-            <CardHeader className="relative">
+            <CardHeader className="relative p-0">
               <CardDescription className="capitalize text-sm">{s.title}</CardDescription>
               <CardTitle className="text-3xl font-semibold tabular-nums">{s.count}</CardTitle>
-              <div className="absolute right-4 top-4">
-                <Badge variant="outline" className="flex items-center gap-2 rounded-lg text-xs">
+              <div className="absolute right-0 top-0">
+                <Badge variant="outline" className="flex items-center gap-2 rounded-lg text-xs whitespace-nowrap">
                   {up ? <TrendingUpIcon className="h-3 w-3" /> : <TrendingDownIcon className="h-3 w-3" />} 
                   <span>{up ? "+12.5%" : "-20%"}</span>
                 </Badge>
               </div>
             </CardHeader>
-            <CardFooter className="flex-col items-start gap-1 text-sm pt-2">
+            <CardFooter className="flex-col items-start gap-1 text-sm pt-2 p-0 mt-2">
               <div className="font-medium">{up ? "Trending up this month" : "Down this period"}</div>
-              <div className="text-muted-foreground">Auto-generated from your portfolio database</div>
+              <div className="text-muted-foreground text-xs">Auto-generated from your portfolio database</div>
             </CardFooter>
           </Card>
         )

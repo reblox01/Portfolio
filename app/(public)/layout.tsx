@@ -10,6 +10,7 @@ import MyContext from "../MyContext";
 import MobileNavbar from "@/components/MobileNavbar";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { VisitorTracker } from "@/components/VisitorTracker";
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
     <>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <MyContext>
+          <VisitorTracker />
           <div className="h-full flex flex-col justify-between  ">
             <Navbar />
             <section className="w-full md:max-w-screen-2xl mx-auto  py-10  ">

@@ -79,13 +79,23 @@ model SiteSettings {
   customCursor  Boolean     @default(true)
 }
 
-// Visitor metrics for analytics charts
+// Visitor metrics for analytics charts (daily aggregation)
 model Visitor {
   id    String   @id @default(auto()) @map("_id") @db.ObjectId
   date  DateTime @unique
   desktop Int    @default(0)
   mobile  Int    @default(0)
   total   Int    @default(0)
+}
+
+// Hourly visitor tracking for detailed 24h analytics
+model HourlyVisitor {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  datetime DateTime @unique
+  hour     Int      // 0-23
+  desktop  Int      @default(0)
+  mobile   Int      @default(0)
+  total    Int      @default(0)
 }
 
 model Admin {

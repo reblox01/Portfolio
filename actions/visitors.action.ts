@@ -16,6 +16,16 @@ export async function getVisitorsForRange(days = 90) {
     orderBy: { date: 'asc' },
   })
 
+  // If no visitors at all, return empty array
+  if (visitors.length === 0) {
+    return []
+  }
+
+  // If no visitors at all, return empty array
+  if (visitors.length === 0) {
+    return []
+  }
+
   // Ensure we have a contiguous set of dates by filling missing days with zeros
   const dayMap = new Map(visitors.map((v) => [v.date.toISOString().slice(0, 10), v]))
   const result = [] as { date: string; desktop: number; mobile: number; total: number }[]

@@ -233,7 +233,7 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## Contact
 
-For any inquiries or support, please contact [sohailkoutari@gmail.com](mailto:sohailkoutari@gmail.com).
+For any inquiries or support, please contact [Contact@sohailkoutari.com](mailto:contact@sohailkoutari.com).
 
 ## Acknowledgements
 
