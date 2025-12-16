@@ -1,22 +1,32 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 const inter = Inter({ subsets: ["latin"] });
-import { dark } from "@clerk/themes";
 import { siteConfig } from "@/site.config";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { getSiteSettingsAction } from "@/actions/site-settings.actions";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
 export const metadata: Metadata = {
-  title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
+  title: {
+    default: siteConfig.name,
+    template: `%s - ${siteConfig.name}`
+  },
   description: siteConfig.description,
   icons: [
     {
-      url: siteConfig?.logo?.url,
-      href: siteConfig?.logo?.href,
+      rel: 'icon',
+      url: '/favicon.ico',
+    },
+    {
+      rel: 'icon',
+      type: 'image/svg+xml',
+      url: '/favicon.svg',
+    },
+    {
+      rel: 'apple-touch-icon',
+      url: '/apple-touch-icon.png',
     },
   ],
 };
@@ -93,12 +103,9 @@ export default async function RootLayout({
     queryKey: ["siteSettings"],
     queryFn: () => getSiteSettingsAction(),
   });
-  
+
   return (
-    <ClerkProvider
-      appearance={{
-        baseTheme: dark,
-      }}>
+    <>
       <html className="scrollbar" lang="en" suppressHydrationWarning>
         <head>
           {/* JSON-LD structured data */}
@@ -139,6 +146,6 @@ export default async function RootLayout({
           </Providers>
         </body>
       </html>
-    </ClerkProvider>
+    </>
   );
 }
