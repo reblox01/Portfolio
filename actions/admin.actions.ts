@@ -86,12 +86,15 @@ export async function updateAdminAction(values: Partial<AdminType>): Promise<Adm
             throw new Error("Admin not found.");
         }
 
+        const { skills, ...otherValues } = values;
+
         const admin: AdminType = await prisma.admin.update({
             where: {
                 id: existingAdmin.id,
             },
             data: {
-                ...values,
+                ...otherValues,
+                ...(skills && { skills: skills as any }),
                 // Ensure resumeUrl is handled consistently if it's part of the update
                 ...(values.resumeUrl !== undefined && { resumeUrl: values.resumeUrl || '' })
             },
