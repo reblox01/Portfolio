@@ -1,11 +1,11 @@
 'use server';
 import prisma from "@/db";
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { Contact } from "lucide-react";
 import { redirect } from 'next/navigation';
 
-function authenticateAndRedirect(): string {
-    const { userId } = auth();
+async function authenticateAndRedirect(): Promise<string> {
+    const { userId } = await auth();
     if (!userId) redirect('/');
     return userId;
 }
@@ -15,7 +15,7 @@ type Stats = {
     count: number;
 }
 export async function getAllStats(): Promise<{ stats: Stats[] }> {
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
 
     try {
         const projects = await prisma.project.count()

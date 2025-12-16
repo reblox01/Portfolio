@@ -11,16 +11,17 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Project Info",
 };
-const ProjectDetails = async ({ params }: { params: { id: string } }) => {
+const ProjectDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["project", params.id],
-    queryFn: () => getSingleProjectAction(params.id),
+    queryKey: ["project", id],
+    queryFn: () => getSingleProjectAction(id),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ProjectDetailContainer projectId={params?.id} />
+      <ProjectDetailContainer projectId={id} />
     </HydrationBoundary>
   );
 };

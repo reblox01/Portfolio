@@ -4,20 +4,21 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
 interface EditProjectPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: EditProjectPageProps): Promise<Metadata> {
-  const project = await getSingleProjectAction(params.id);
+  const { id } = await params;
+  const project = await getSingleProjectAction(id);
   return {
     title: project?.title || "Edit Project",
   };
 }
 
 export default async function EditProjectPage({ params }: EditProjectPageProps) {
-  const { id } = params;
+  const { id } = await params;
   const project = await getSingleProjectAction(id);
 
   if (!project) {

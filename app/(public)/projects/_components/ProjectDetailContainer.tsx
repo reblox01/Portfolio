@@ -34,7 +34,10 @@ const ProjectDetailContainer = ({ projectId }: { projectId: string }) => {
                 </p>
               </div>
               <div className="space-y-4 text-gray-500 text-sm text-justify dark:text-gray-400">
-                <p>{data?.description}</p>
+                <div 
+                  className="prose prose-sm dark:prose-invert max-w-none prose-project-description"
+                  dangerouslySetInnerHTML={{ __html: data?.description || '' }}
+                />
               </div>
             </div>
             <div className="flex h-full flex-col gap-4 ">

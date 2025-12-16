@@ -50,25 +50,25 @@ export function ExperienceForm({ initialData, mode }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
-          positionName: initialData.positionName,
-          companyName: initialData.companyName,
-          companyLocation: initialData.companyLocation,
-          workMode: (initialData as any).workMode || 'onsite',
-          startDate: toDateInputValue(initialData.startDate),
-          endDate: toDateInputValue(initialData.endDate),
-          isCurrentlyWorking: initialData.isCurrentlyWorking,
-          learned: (initialData.learned as any[]).map((s: any) => s?.text ?? String(s)),
-        }
+        positionName: initialData.positionName,
+        companyName: initialData.companyName,
+        companyLocation: initialData.companyLocation,
+        workMode: (initialData as any).workMode || 'onsite',
+        startDate: toDateInputValue(initialData.startDate),
+        endDate: toDateInputValue(initialData.endDate),
+        isCurrentlyWorking: initialData.isCurrentlyWorking,
+        learned: (initialData.learned as any[]).map((s: any) => s?.text ?? String(s)),
+      }
       : {
-          positionName: "",
-          companyName: "",
-          companyLocation: "",
-          workMode: 'onsite',
-          startDate: "",
-          endDate: "",
-          isCurrentlyWorking: false,
-          learned: [] as string[],
-        },
+        positionName: "",
+        companyName: "",
+        companyLocation: "",
+        workMode: 'onsite',
+        startDate: "",
+        endDate: "",
+        isCurrentlyWorking: false,
+        learned: [] as string[],
+      },
   })
 
   const isSubmitting = form.formState.isSubmitting
@@ -98,7 +98,6 @@ export function ExperienceForm({ initialData, mode }: Props) {
         toast.success("Experience updated")
       }
       router.push("/dashboard/manage-experience")
-      router.refresh()
     } catch (e) {
       toast.error("Failed to save experience")
     }
@@ -185,7 +184,7 @@ export function ExperienceForm({ initialData, mode }: Props) {
                 />
               </div>
 
-              
+
 
               <div className="grid gap-4 md:grid-cols-3">
                 <FormField

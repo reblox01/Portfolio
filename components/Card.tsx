@@ -13,9 +13,10 @@ type Prop = {
   source: string | null;
   href: string;
   techStack: Techstack[];
+  index?: number;
 };
 
-const Card = ({ OneLiner, screenshot, title, href, source, techStack = [] }: Prop) => {
+const Card = ({ OneLiner, screenshot, title, href, source, techStack = [], index = 0 }: Prop) => {
   // Function to determine the icon based on the source URL
   const getSourceIcon = (url: string) => {
     if (url.includes("github.com")) {
@@ -31,13 +32,14 @@ const Card = ({ OneLiner, screenshot, title, href, source, techStack = [] }: Pro
     <div className="relative flex flex-col justify-between h-full rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-none p-4 dark:bg-black dark:border-white/[0.2] bg-white border">
       <Link href={href}>
         <div className="flex flex-col h-full">
-          <div className="flex-shrink-0 rounded-xl border overflow-hidden">
+          <div className="flex-shrink-0 rounded-xl border overflow-hidden relative aspect-[4/3] w-full">
             <Image
               className="object-cover rounded-xl"
               src={screenshot}
               alt={title}
-              width={400}
-              height={300}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+              priority={index < 4}
             />
           </div>
           <div className="flex-grow mt-2 group-hover/bento:translate-x-2 transition duration-200">
@@ -64,7 +66,7 @@ const Card = ({ OneLiner, screenshot, title, href, source, techStack = [] }: Pro
       {/* Tech stack tags */}
       <div className="absolute bottom-3 left-4 flex gap-1">
         {techStack?.slice(0, 3).map((tech) => (
-          <Badge 
+          <Badge
             key={tech?.id}
             variant="outline"
             className="text-xs"

@@ -10,6 +10,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Certification",
+  description: "Explore the certifications I've earned from my work. These certifications are a testament to my skills and knowledge in my field."
 };
 const CertificationPage = async () => {
   const queryClient = new QueryClient();

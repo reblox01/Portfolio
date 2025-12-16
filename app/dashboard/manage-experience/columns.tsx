@@ -34,8 +34,8 @@ export const columns: ColumnDef<ExperienceType>[] = [
       (row.isCurrentlyWorking
         ? " - Present"
         : row.endDate
-        ? ` - ${format(new Date(row.endDate), "MMM yyyy")}`
-        : ""),
+          ? ` - ${format(new Date(row.endDate), "MMM yyyy")}`
+          : ""),
     header: "Duration",
   },
   {
@@ -49,7 +49,7 @@ export const columns: ColumnDef<ExperienceType>[] = [
           window.location.reload();
         }
       }
- 
+
       return (
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" asChild>
@@ -57,8 +57,8 @@ export const columns: ColumnDef<ExperienceType>[] = [
               Edit
             </Link>
           </Button>
-          <Button 
-            variant="destructive" 
+          <Button
+            variant="destructive"
             size="sm"
             onClick={handleDelete}
           >

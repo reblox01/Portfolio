@@ -1,20 +1,21 @@
 'use server';
 
 import prisma from "@/db";
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { ContactType, createAndEditContactSchema, CreateAndEditContactType, updateContactSchema } from '@/lib/types/contact-types';
 
 // Function to authenticate the user and redirect if not authenticated
-function authenticateAndRedirect(): string {
-    const { userId } = auth();
+async function authenticateAndRedirect(): Promise<string> {
+    const { userId } = await auth();
     if (!userId) redirect('/');
     return userId;
 }
 
 // Function to create a new contact
 export async function createContactAction(values: CreateAndEditContactType): Promise<ContactType | null> {
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
     try {
         createAndEditContactSchema.parse(values);
 
@@ -53,6 +54,7 @@ export async function createContactAction(values: CreateAndEditContactType): Pro
             mailboxSettings: (contactRaw as any).mailboxSettings ?? undefined,
         };
 
+        revalidatePath('/dashboard/manage-contact');
         return contact;
     } catch (error) {
         console.log(error);
@@ -90,16 +92,18 @@ export async function getAllContactsAction(): Promise<{
 
 // Function to delete a contact by ID
 export async function deleteContactAction(id: string): Promise<ContactType | null> {
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
+    let contact: ContactType | null = null;
     try {
-        const contact: ContactType = await prisma.contact.delete({
+        contact = await prisma.contact.delete({
             where: { id },
-        });
-        return contact;
+        }) as ContactType;
     } catch (error) {
-        console.log(error);
+        console.error("Error deleting contact:", error);
         return null;
     }
+    revalidatePath('/dashboard/manage-contact');
+    return contact;
 }
 
 // Function to get a single contact by ID
@@ -138,20 +142,20 @@ export async function updateContactAction(
     id: string,
     values: any
 ): Promise<ContactType | null> {
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
     try {
         // For updates, we'll handle the password logic here
         const existingContact = await prisma.contact.findUnique({
             where: { id }
         });
-        
+
         if (!existingContact) {
             throw new Error("Contact not found");
         }
-        
+
         // Use the existing emailPassword if new emailPassword is empty
         const finalEmailPassword = values.emailPassword || existingContact.emailPassword;
-        
+
         const updateData = {
             email: values.email || existingContact.email,
             smtpEmail: (values as any).smtpEmail || existingContact.smtpEmail,
@@ -187,6 +191,7 @@ export async function updateContactAction(
             emailProvider: (contactRaw as any).emailProvider ?? undefined,
             mailboxSettings: (contactRaw as any).mailboxSettings ?? undefined,
         };
+        revalidatePath('/dashboard/manage-contact');
         return updatedContact;
     } catch (error) {
         console.log(error);

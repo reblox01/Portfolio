@@ -39,23 +39,23 @@ export function CertificationForm({ initialData, mode }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
-          title: initialData.title,
-          organizationName: initialData.organizationName,
-          completionDate: new Date(initialData.completionDate).toISOString().slice(0, 10),
-          credentialID: initialData.credentialID,
-          certificateUrl: initialData.certificateUrl,
-          screenshot: initialData.screenshot,
-          learned: (initialData.learned as any[]).map((s: any) => s?.text ?? String(s)),
-        }
+        title: initialData.title,
+        organizationName: initialData.organizationName,
+        completionDate: new Date(initialData.completionDate).toISOString().slice(0, 10),
+        credentialID: initialData.credentialID,
+        certificateUrl: initialData.certificateUrl,
+        screenshot: initialData.screenshot,
+        learned: (initialData.learned as any[]).map((s: any) => s?.text ?? String(s)),
+      }
       : {
-          title: "",
-          organizationName: "",
-          completionDate: "",
-          credentialID: "",
-          certificateUrl: "",
-          screenshot: "",
-          learned: [] as string[],
-        },
+        title: "",
+        organizationName: "",
+        completionDate: "",
+        credentialID: "",
+        certificateUrl: "",
+        screenshot: "",
+        learned: [] as string[],
+      },
   })
 
   const isSubmitting = form.formState.isSubmitting
@@ -68,7 +68,7 @@ export function CertificationForm({ initialData, mode }: Props) {
       credentialID: values.credentialID,
       certificateUrl: values.certificateUrl,
       screenshot: values.screenshot,
-      learned: (values.learned as string[]) .map((t) => ({ id: crypto.randomUUID(), text: t })),
+      learned: (values.learned as string[]).map((t) => ({ id: crypto.randomUUID(), text: t })),
     }
 
     try {
@@ -80,7 +80,6 @@ export function CertificationForm({ initialData, mode }: Props) {
         toast.success("Certification updated")
       }
       router.push("/dashboard/manage-certifications")
-      router.refresh()
     } catch (e) {
       toast.error("Failed to save certification")
     }
@@ -141,10 +140,10 @@ export function CertificationForm({ initialData, mode }: Props) {
                 <FormItem>
                   <FormLabel>Screenshot</FormLabel>
                   <FormControl>
-                    <ImageUpload 
-                      value={field.value} 
-                      onChange={field.onChange} 
-                      disabled={isSubmitting} 
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />

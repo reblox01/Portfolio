@@ -10,6 +10,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Projects",
+  description: "Explore Projects I've worked on."
 };
 const ProjectsPage = async () => {
   const queryClient = new QueryClient();

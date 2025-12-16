@@ -63,10 +63,10 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
     liveURL: initialData.liveURL || "",
     sourceURL: initialData.sourceURL || "",
     description: initialData.description,
-    techStack: Array.isArray(initialData.techStack) 
+    techStack: Array.isArray(initialData.techStack)
       ? initialData.techStack.map((tech: any) => typeof tech === 'string' ? tech : tech.text || tech)
       : [],
-    keywords: Array.isArray(initialData.keywords) 
+    keywords: Array.isArray(initialData.keywords)
       ? initialData.keywords.map((keyword: any) => typeof keyword === 'string' ? keyword : keyword.text || keyword)
       : []
   } : {
@@ -109,7 +109,6 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
         if (result) {
           toast.success("Project created successfully!");
           router.push('/dashboard/manage-projects');
-          router.refresh();
         } else {
           toast.error("Failed to create project. Please try again.");
         }
@@ -119,7 +118,6 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
         if (result) {
           toast.success("Project updated successfully!");
           router.push('/dashboard/manage-projects');
-          router.refresh();
         } else {
           toast.error("Failed to update project. Please try again.");
         }
@@ -152,10 +150,10 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                     <FormItem>
                       <FormLabel>Project Title</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="My Awesome Project" 
-                          disabled={isSubmitting} 
-                          {...field} 
+                        <Input
+                          placeholder="My Awesome Project"
+                          disabled={isSubmitting}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -194,10 +192,10 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                   <FormItem>
                     <FormLabel>One-Line Description</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="A brief, compelling description of your project" 
-                        disabled={isSubmitting} 
-                        {...field} 
+                      <Input
+                        placeholder="A brief, compelling description of your project"
+                        disabled={isSubmitting}
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -212,7 +210,7 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <RichTextEditor 
+                      <RichTextEditor
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="Provide a comprehensive description of your project..."
@@ -232,10 +230,10 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                     <FormItem>
                       <FormLabel>Live URL</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="https://your-project.com" 
-                          disabled={isSubmitting} 
-                          {...field} 
+                        <Input
+                          placeholder="https://your-project.com"
+                          disabled={isSubmitting}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -249,10 +247,10 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                     <FormItem>
                       <FormLabel>Source Code URL</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="https://github.com/username/project" 
-                          disabled={isSubmitting} 
-                          {...field} 
+                        <Input
+                          placeholder="https://github.com/username/project"
+                          disabled={isSubmitting}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -269,7 +267,7 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                     <FormItem>
                       <FormLabel>Project Logo</FormLabel>
                       <FormControl>
-                        <ImageUpload 
+                        <ImageUpload
                           value={field.value}
                           onChange={field.onChange}
                           disabled={isSubmitting}
@@ -286,7 +284,7 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                     <FormItem>
                       <FormLabel>Project Screenshot</FormLabel>
                       <FormControl>
-                        <ImageUpload 
+                        <ImageUpload
                           value={field.value}
                           onChange={field.onChange}
                           disabled={isSubmitting}
@@ -305,7 +303,7 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                   <FormItem>
                     <FormLabel>Technology Stack</FormLabel>
                     <FormControl>
-                      <TagInput 
+                      <TagInput
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="Type and press Enter"
@@ -324,7 +322,7 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                   <FormItem>
                     <FormLabel>Keywords & Tags</FormLabel>
                     <FormControl>
-                      <TagInput 
+                      <TagInput
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="Type and press Enter"
@@ -337,9 +335,9 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
               />
 
               <div className="flex justify-end gap-3">
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => router.push('/dashboard/manage-projects')}
                   disabled={isSubmitting}
                 >

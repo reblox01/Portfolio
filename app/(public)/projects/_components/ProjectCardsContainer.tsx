@@ -16,7 +16,7 @@ const ProjectCardsContainer = () => {
     queryFn: () => getAllProjectsAction(),
   });
   const projects = data?.projects || [];
-  
+
   if (isPending) return <h2 className="text-xl">Please wait...</h2>;
 
   if (projects.length <= 0)
@@ -40,6 +40,7 @@ const ProjectCardsContainer = () => {
             screenshot={project?.screenshot}
             href={`/projects/${project?.id}`}
             techStack={project?.techStack as Techstack[] || []}
+            index={index}
           />
         </motion.div>
       ))}

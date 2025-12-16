@@ -36,19 +36,19 @@ export function TechstackForm({ initialData, mode }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
-          title: initialData.title,
-          imageUrl: initialData.imageUrl,
-          category: initialData.category,
-          url: initialData.url,
-          techstackType: initialData.techstackType,
-        }
+        title: initialData.title,
+        imageUrl: initialData.imageUrl,
+        category: initialData.category,
+        url: initialData.url,
+        techstackType: initialData.techstackType,
+      }
       : {
-          title: "",
-          imageUrl: "",
-          category: "",
-          url: "",
-          techstackType: TechType.Skills,
-        },
+        title: "",
+        imageUrl: "",
+        category: "",
+        url: "",
+        techstackType: TechType.Skills,
+      },
   })
 
   const isSubmitting = form.formState.isSubmitting
@@ -71,7 +71,6 @@ export function TechstackForm({ initialData, mode }: Props) {
         toast.success("Technology updated")
       }
       router.push("/dashboard/manage-techstack")
-      router.refresh()
     } catch (e) {
       toast.error("Failed to save technology")
     }
@@ -138,10 +137,10 @@ export function TechstackForm({ initialData, mode }: Props) {
                 <FormItem>
                   <FormLabel>Icon/Logo</FormLabel>
                   <FormControl>
-                    <ImageUpload 
-                      value={field.value} 
-                      onChange={field.onChange} 
-                      disabled={isSubmitting} 
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />

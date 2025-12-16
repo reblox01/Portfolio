@@ -7,12 +7,13 @@ import {
     createAndEditProjectSchema,
 } from "@/lib/types/project-types";
 
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 
-function authenticateAndRedirect(): string | null {
-    const { userId } = auth();
+async function authenticateAndRedirect(): Promise<string | null> {
+    const { userId } = await auth();
     if (!userId) {
         redirect('/');
         return null;
@@ -23,6 +24,8 @@ function authenticateAndRedirect(): string | null {
 
 
 export async function createProjectAction(values: CreateAndEditProjectType): Promise<Project | null> {
+    await authenticateAndRedirect();
+
     try {
         createAndEditProjectSchema.parse(values);
 
@@ -75,7 +78,7 @@ function shuffleProjects(projects: Project[]): Project[] {
 }
 
 export async function getRandomProjectsAction(): Promise<{
-  source: string; title: string; link: string; thumbnail: string; oneLiner?: string
+    source: string; title: string; link: string; thumbnail: string; oneLiner?: string
 }[]> {
     try {
         const randomProjects = await prisma.project.findMany({
@@ -126,7 +129,7 @@ export async function getSingleProjectAction(id: string): Promise<Project | null
 }
 
 export async function deleteProjectAction(id: string): Promise<Project | null> {
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
     if (!userId) {
         return null;
     }
@@ -147,7 +150,7 @@ export async function updateProjectAction(
     id: string,
     values: CreateAndEditProjectType
 ): Promise<Project | null> {
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
     if (!userId) {
         return null;
     }

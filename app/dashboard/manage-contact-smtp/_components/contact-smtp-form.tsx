@@ -22,7 +22,7 @@ type Props = {
   mode: "create" | "edit"
 }
 
-  const formSchema = z.object({
+const formSchema = z.object({
   smtpEmail: z.string().min(1, "SMTP Email is required").email("Invalid SMTP email address"),
   emailPassword: z.string().optional().refine((val) => {
     if (!val) return true
@@ -39,7 +39,7 @@ type Props = {
 export function ContactSMTPForm({ initialData, mode }: Props) {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
-  
+
   // Format password with dots every 4 characters for display
   const formatPasswordDisplay = (value: string) => {
     if (!value) return value
@@ -47,7 +47,7 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
     const cleanValue = value.replace(/[•\s]/g, '')
     return cleanValue.replace(/(.{4})(?=.)/g, '$1•')
   }
-  
+
   // Remove dots and spaces from password for storage
   const cleanPasswordForStorage = (value: string) => {
     return value.replace(/[•\s]/g, '')
@@ -57,39 +57,39 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
-          // Do NOT fallback to public contact email here; SMTP email must be explicit
-          smtpEmail: initialData.smtpEmail || "",
-          emailPassword: initialData.emailPassword || "",
-          phone: initialData.phone || "",
-          address: initialData.address || "",
-        }
+        // Do NOT fallback to public contact email here; SMTP email must be explicit
+        smtpEmail: initialData.smtpEmail || "",
+        emailPassword: initialData.emailPassword || "",
+        phone: initialData.phone || "",
+        address: initialData.address || "",
+      }
       : {
-          smtpEmail: "",
-          emailPassword: "",
-          phone: "",
-          address: "",
-        },
+        smtpEmail: "",
+        emailPassword: "",
+        phone: "",
+        address: "",
+      },
   })
 
   const isSubmitting = form.formState.isSubmitting
 
   async function onSubmit(values: any) {
     const cleanedPassword = values.emailPassword ? cleanPasswordForStorage(values.emailPassword) : ""
-    
+
     const payload = {
       ...values,
       // Clean password (remove dots) and handle empty case
       emailPassword: cleanedPassword || (mode === "edit" && initialData?.emailPassword ? initialData.emailPassword : ""),
     }
-    
+
     // For create mode, ensure password is not empty
     if (mode === "create" && !payload.emailPassword) {
       toast.error("Email password is required for SMTP configuration")
       return
     }
-    
+
     console.log("Submitting payload:", { ...payload, emailPassword: payload.emailPassword ? "[REDACTED]" : "empty" })
-    
+
     try {
       // Prefer updating existing contact for SMTP config. Creating SMTP without a contact
       // would require setting the required `email` field; ask the user to create contact first.
@@ -102,7 +102,6 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
         if (result) {
           toast.success("Contact SMTP configuration created")
           router.push("/dashboard/manage-contact-smtp")
-          router.refresh()
         } else {
           toast.error("Failed to create SMTP configuration")
         }
@@ -111,7 +110,6 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
         if (result) {
           toast.success("Contact SMTP configuration updated")
           router.push("/dashboard/manage-contact-smtp")
-          router.refresh()
         } else {
           toast.error("Failed to update SMTP configuration")
         }
@@ -139,12 +137,12 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
         <CardContent className="pt-2">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              
+
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertTitle>Gmail SMTP Setup Required</AlertTitle>
                 <AlertDescription>
-                  To use contact form functionality, you need to generate a Gmail App Password. 
+                  To use contact form functionality, you need to generate a Gmail App Password.
                   Enable 2FA on your Gmail account, then create an app password for "Mail" application.
                 </AlertDescription>
               </Alert>
@@ -154,7 +152,7 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
                 <p className="text-sm text-muted-foreground">
                   Email settings for sending contact form messages
                 </p>
-                
+
                 <FormField
                   control={form.control}
                   name="smtpEmail"
@@ -162,17 +160,17 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
                     <FormItem>
                       <FormLabel>Gmail Address (used for SMTP)</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="your.email@gmail.com" 
-                          disabled={isSubmitting} 
-                          {...field} 
+                        <Input
+                          placeholder="your.email@gmail.com"
+                          disabled={isSubmitting}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="emailPassword"
@@ -181,10 +179,10 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
                       <FormLabel>Gmail App Password</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input 
+                          <Input
                             type={showPassword ? "text" : "password"}
                             placeholder={initialData?.emailPassword ? "Password configured (hidden for security)" : "abcd•efgh•ijkl•mnop"}
-                            disabled={isSubmitting} 
+                            disabled={isSubmitting}
                             {...field}
                             onChange={(e) => {
                               const rawValue = e.target.value
@@ -223,7 +221,7 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
                         </div>
                       </FormControl>
                       <div className="text-xs text-muted-foreground">
-                        {initialData?.emailPassword 
+                        {initialData?.emailPassword
                           ? "Update with new password or leave blank to keep existing"
                           : "Generate this from your Google Account → Security → App passwords → Mail"
                         }
@@ -264,10 +262,10 @@ export function ContactSMTPForm({ initialData, mode }: Props) {
               </div>
 
               <div className="flex justify-end gap-3">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => router.push("/dashboard/manage-contact-smtp")} 
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.push("/dashboard/manage-contact-smtp")}
                   disabled={isSubmitting}
                 >
                   Cancel

@@ -1,11 +1,11 @@
 "use server";
 
 import prisma from "@/db";
-import { auth } from "@clerk/nextjs";
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from "next/navigation";
 
-function authenticateAndRedirect(): string {
-  const { userId } = auth();
+async function authenticateAndRedirect(): Promise<string> {
+  const { userId } = await auth();
   if (!userId) redirect('/');
   return userId;
 }
@@ -14,7 +14,7 @@ export async function getSiteSettingsAction() {
   try {
     // Get site settings, or create default if none exists
     let settings = await prisma.siteSettings.findFirst();
-    
+
     if (!settings) {
       settings = await prisma.siteSettings.create({
         data: {
@@ -22,7 +22,7 @@ export async function getSiteSettingsAction() {
         }
       });
     }
-    
+
     return { settings };
   } catch (error) {
     console.error("Error getting site settings:", error);
@@ -32,11 +32,11 @@ export async function getSiteSettingsAction() {
 
 export async function updateSiteSettingsAction({ customCursor }: { customCursor: boolean }) {
   // Authenticate admin
-  authenticateAndRedirect();
-  
+  await authenticateAndRedirect();
+
   try {
     let settings = await prisma.siteSettings.findFirst();
-    
+
     if (settings) {
       // Update existing settings
       settings = await prisma.siteSettings.update({
@@ -49,7 +49,7 @@ export async function updateSiteSettingsAction({ customCursor }: { customCursor:
         data: { customCursor }
       });
     }
-    
+
     return { settings };
   } catch (error) {
     console.error("Error updating site settings:", error);

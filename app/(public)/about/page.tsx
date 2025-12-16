@@ -9,7 +9,8 @@ import AboutPageContainer from "./_components/AboutPageContainer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About"
+  title: "About",
+  description: "Get to know me better, explore my background, skills, and experiences. Discover my journey and the values that drive me in my work and personal life."
 };
 const AboutPage = async () => {
   const queryClient = new QueryClient();

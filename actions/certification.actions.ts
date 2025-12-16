@@ -2,19 +2,21 @@
 
 import prisma from "@/db";
 
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { CertificateType, createAndEditCertificateSchema, CreateAndEditCertificateType } from '@/lib/types/certification-types';
 
-function authenticateAndRedirect(): string {
-    const { userId } = auth();
+async function authenticateAndRedirect(): Promise<string> {
+    const { userId } = await auth();
     if (!userId) redirect('/');
     return userId;
 }
 
 
 export async function createCertificationAction(values: CreateAndEditCertificateType): Promise<CertificateType | null> {
-    authenticateAndRedirect()
+    await authenticateAndRedirect();
+
     try {
         createAndEditCertificateSchema.parse(values);
 
@@ -24,6 +26,7 @@ export async function createCertificationAction(values: CreateAndEditCertificate
             }
         });
 
+        revalidatePath('/dashboard/manage-certifications');
         return certificate;
     } catch (error) {
         console.log(error);
@@ -46,7 +49,7 @@ export async function getAllCertificationsAction(): Promise<{
 
 
 export async function deleteCertificationAction(id: string): Promise<CertificateType | null> {
-    authenticateAndRedirect();
+    await authenticateAndRedirect();
 
     try {
         const certificate: CertificateType = await prisma.certification.delete({
@@ -84,7 +87,7 @@ export async function updateCertificationAction(
     id: string,
     values: CreateAndEditCertificateType
 ): Promise<CertificateType | null> {
-    authenticateAndRedirect();
+    await authenticateAndRedirect();
 
     try {
         const certificate: CertificateType = await prisma.certification.update({

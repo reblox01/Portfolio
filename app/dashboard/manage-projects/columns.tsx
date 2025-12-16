@@ -5,6 +5,7 @@ import { Project } from "@/lib/types/project-types"
 import { Button } from "@/components/ui/button"
 import { deleteProjectAction } from "@/actions/project.actions"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export const columns: ColumnDef<Project>[] = [
   {
@@ -20,13 +21,15 @@ export const columns: ColumnDef<Project>[] = [
     cell: ({ row }) => {
       const project = row.original
 
+      const router = useRouter()
+
       const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this project?")) {
           await deleteProjectAction(project.id);
-          window.location.reload();
+          router.refresh();
         }
       }
- 
+
       return (
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" asChild>
@@ -34,8 +37,8 @@ export const columns: ColumnDef<Project>[] = [
               Edit
             </Link>
           </Button>
-          <Button 
-            variant="destructive" 
+          <Button
+            variant="destructive"
             size="sm"
             onClick={handleDelete}
           >

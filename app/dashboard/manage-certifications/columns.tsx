@@ -5,6 +5,7 @@ import { CertificateType as Certification } from "@/lib/types/certification-type
 import { Button } from "@/components/ui/button"
 import { deleteCertificationAction } from "@/actions/certification.actions"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { format } from "date-fns"
 
 export const columns: ColumnDef<Certification>[] = [
@@ -29,13 +30,15 @@ export const columns: ColumnDef<Certification>[] = [
     cell: ({ row }) => {
       const cert = row.original
 
+      const router = useRouter()
+
       const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this certification?")) {
           await deleteCertificationAction(cert.id);
-          window.location.reload();
+          router.refresh();
         }
       }
- 
+
       return (
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" asChild>
@@ -48,8 +51,8 @@ export const columns: ColumnDef<Certification>[] = [
               Edit
             </Link>
           </Button>
-          <Button 
-            variant="destructive" 
+          <Button
+            variant="destructive"
             size="sm"
             onClick={handleDelete}
           >

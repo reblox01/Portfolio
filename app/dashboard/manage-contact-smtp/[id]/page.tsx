@@ -3,13 +3,13 @@ import { ContactSMTPForm } from "../_components/contact-smtp-form";
 import { notFound } from "next/navigation";
 
 interface EditContactSMTPPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function EditContactSMTPPage({ params }: EditContactSMTPPageProps) {
-  const { id } = params;
+  const { id } = await params;
   const contact = await getSingleContactAction(id);
 
   if (!contact) {

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Mail, Phone, MapPin, Edit, Trash2, MoreHorizontal } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { deleteContactAction } from "@/actions/contact.actions"
 import {
   DropdownMenu,
@@ -76,6 +77,8 @@ export const columns: ColumnDef<ContactType>[] = [
     cell: ({ row }) => {
       const contact = row.original
 
+      const router = useRouter()
+
       const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this contact information?")) {
           await deleteContactAction(contact.id)
@@ -98,7 +101,7 @@ export const columns: ColumnDef<ContactType>[] = [
                 Edit
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={handleDelete}
               className="text-destructive hover:text-destructive"
             >

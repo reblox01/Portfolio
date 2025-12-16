@@ -33,15 +33,15 @@ export function ContactForm({ initialData, mode }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
-          email: initialData.email,
-          phone: initialData.phone,
-          address: initialData.address,
-        }
+        email: initialData.email,
+        phone: initialData.phone,
+        address: initialData.address,
+      }
       : {
-          email: "",
-          phone: "",
-          address: "",
-        },
+        email: "",
+        phone: "",
+        address: "",
+      },
   })
 
   const isSubmitting = form.formState.isSubmitting
@@ -51,7 +51,7 @@ export function ContactForm({ initialData, mode }: Props) {
       ...values,
       // Do not modify SMTP fields here; updateContactAction will preserve them
     }
-    
+
     try {
       if (mode === "create") {
         await createContactAction(payload)
@@ -61,7 +61,6 @@ export function ContactForm({ initialData, mode }: Props) {
         toast.success("Contact information updated")
       }
       router.push("/dashboard/manage-contact")
-      router.refresh()
     } catch (e) {
       toast.error("Failed to save contact information")
     }
@@ -81,14 +80,14 @@ export function ContactForm({ initialData, mode }: Props) {
         <CardContent className="pt-2">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              
+
               {/* Basic Contact Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Contact</h3>
                 <p className="text-sm text-muted-foreground">
                   Information that will be displayed on your portfolio's contact page
                 </p>
-                
+
                 <div className="grid gap-4 md:grid-cols-2">
                   <FormField
                     control={form.control}
@@ -97,17 +96,17 @@ export function ContactForm({ initialData, mode }: Props) {
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="your.email@example.com" 
-                            disabled={isSubmitting} 
-                            {...field} 
+                          <Input
+                            placeholder="your.email@example.com"
+                            disabled={isSubmitting}
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="phone"
@@ -115,10 +114,10 @@ export function ContactForm({ initialData, mode }: Props) {
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="+1 (555) 123-4567" 
-                            disabled={isSubmitting} 
-                            {...field} 
+                          <Input
+                            placeholder="+1 (555) 123-4567"
+                            disabled={isSubmitting}
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
@@ -134,11 +133,11 @@ export function ContactForm({ initialData, mode }: Props) {
                     <FormItem>
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Textarea 
+                        <Textarea
                           placeholder="123 Main Street, City, State, Country"
                           className="min-h-[80px]"
-                          disabled={isSubmitting} 
-                          {...field} 
+                          disabled={isSubmitting}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -148,10 +147,10 @@ export function ContactForm({ initialData, mode }: Props) {
               </div>
 
               <div className="flex justify-end gap-3">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => router.push("/dashboard/manage-contact")} 
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.push("/dashboard/manage-contact")}
                   disabled={isSubmitting}
                 >
                   Cancel

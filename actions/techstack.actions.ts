@@ -4,20 +4,22 @@ import prisma from "@/db";
 
 import { CreateAndEditTechstackType, createAndEditTechstackType, Techstack } from './../lib/types/techstack-types/index';
 
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 
-function authenticateAndRedirect(): string {
-    const { userId } = auth();
+async function authenticateAndRedirect(): Promise<string> {
+    const { userId } = await auth();
     if (!userId) redirect('/');
     return userId;
 }
 
 
 export async function createTechstackAction(values: CreateAndEditTechstackType): Promise<Techstack | null> {
+    await authenticateAndRedirect();
+
     try {
-        authenticateAndRedirect();
         createAndEditTechstackType.parse(values);
 
         const techstack: Techstack = await prisma.techstack.create({
@@ -26,6 +28,7 @@ export async function createTechstackAction(values: CreateAndEditTechstackType):
             }
         });
 
+        revalidatePath('/dashboard/manage-techstack');
         return techstack;
     } catch (error) {
         console.log(error);
@@ -48,7 +51,7 @@ export async function getAllTechstacksAction(): Promise<{
 
 export async function getSingleTechstackAction(id: string): Promise<Techstack | null> {
     let techstack: Techstack | null = null;
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
 
     try {
         techstack = await prisma.techstack.findUnique({
@@ -66,7 +69,7 @@ export async function getSingleTechstackAction(id: string): Promise<Techstack | 
 }
 
 export async function deleteTechstackAction(id: string): Promise<Techstack | null> {
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
 
     try {
         const techstack: Techstack = await prisma.techstack.delete({
@@ -74,8 +77,10 @@ export async function deleteTechstackAction(id: string): Promise<Techstack | nul
                 id,
             },
         });
+        revalidatePath('/dashboard/manage-techstack');
         return techstack;
     } catch (error) {
+        console.error("Error deleting techstack:", error);
         return null;
     }
 }
@@ -83,7 +88,7 @@ export async function updateTechstackAction(
     id: string,
     values: CreateAndEditTechstackType
 ): Promise<Techstack | null> {
-    const userId = authenticateAndRedirect();
+    const userId = await authenticateAndRedirect();
 
     try {
         const techtstack: Techstack = await prisma.techstack.update({
@@ -94,6 +99,7 @@ export async function updateTechstackAction(
                 ...values,
             },
         });
+        revalidatePath('/dashboard/manage-techstack');
         return techtstack;
     } catch (error) {
         return null;

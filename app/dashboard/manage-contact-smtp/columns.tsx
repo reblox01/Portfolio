@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Mail, Key, Edit, Trash2, MoreHorizontal } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { deleteContactAction } from "@/actions/contact.actions"
 import {
   DropdownMenu,
@@ -61,10 +62,10 @@ export const columns: ColumnDef<ContactType>[] = [
       const smtpEmail = row.getValue("smtpEmail") as string
 
       const isFullyConfigured = emailPassword && smtpEmail
-      
+
       return (
-        <Badge 
-          variant={isFullyConfigured ? "default" : "secondary"} 
+        <Badge
+          variant={isFullyConfigured ? "default" : "secondary"}
           className={`text-xs ${isFullyConfigured ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100" : ""}`}
         >
           {isFullyConfigured ? "Ready" : "Incomplete"}
@@ -78,10 +79,12 @@ export const columns: ColumnDef<ContactType>[] = [
     cell: ({ row }) => {
       const contact = row.original
 
+      const router = useRouter()
+
       const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this SMTP configuration?")) {
           await deleteContactAction(contact.id)
-          window.location.reload()
+          router.refresh()
         }
       }
 
@@ -100,7 +103,7 @@ export const columns: ColumnDef<ContactType>[] = [
                 Edit
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={handleDelete}
               className="text-destructive hover:text-destructive"
             >

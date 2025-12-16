@@ -5,6 +5,7 @@ import { Techstack } from "@/lib/types/techstack-types"
 import { Button } from "@/components/ui/button"
 import { deleteTechstackAction } from "@/actions/techstack.actions"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 
 export const columns: ColumnDef<Techstack>[] = [
@@ -28,6 +29,7 @@ export const columns: ColumnDef<Techstack>[] = [
             alt={tech.title}
             fill
             className="object-contain"
+            unoptimized={true}
           />
         </div>
       )
@@ -41,14 +43,15 @@ export const columns: ColumnDef<Techstack>[] = [
     id: "actions",
     cell: ({ row }) => {
       const tech = row.original
+      const router = useRouter()
 
       const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this technology?")) {
           await deleteTechstackAction(tech.id);
-          window.location.reload();
+          router.refresh();
         }
       }
- 
+
       return (
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" asChild>
@@ -56,8 +59,8 @@ export const columns: ColumnDef<Techstack>[] = [
               Edit
             </Link>
           </Button>
-          <Button 
-            variant="destructive" 
+          <Button
+            variant="destructive"
             size="sm"
             onClick={handleDelete}
           >

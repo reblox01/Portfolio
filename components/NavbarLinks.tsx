@@ -55,21 +55,21 @@ export function NavbarLinks() {
       <NavigationMenuList>
         {links.map((link) => (
           <NavigationMenuItem key={link.title}>
-            <Link href={link.href} legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink asChild>
+              <Link href={link.href} className={navigationMenuTriggerStyle()}>
                 {link.title}
-              </NavigationMenuLink>
-            </Link>
+              </Link>
+            </NavigationMenuLink>
           </NavigationMenuItem>
         ))}
         <SignedIn>
           {data?.adminUserId === userId && (
             <NavigationMenuItem>
-              <Link href="/dashboard" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild>
+                <Link href="/dashboard" className={navigationMenuTriggerStyle()}>
                   Dashboard
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           )}
         </SignedIn>

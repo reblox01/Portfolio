@@ -11,6 +11,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Techstack",
+  description: "Explore the tech stack I use in my work. This includes the tools, platforms, and devices I use, and the multimedia I play."
 };
 const TechstackPage = async () => {
   const queryClient = new QueryClient();

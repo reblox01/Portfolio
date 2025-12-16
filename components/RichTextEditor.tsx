@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import 'react-quill/dist/quill.snow.css';
+import 'react-quill-new/dist/quill.snow.css';
 
 interface RichTextEditorProps {
   value: string;
@@ -11,13 +11,13 @@ interface RichTextEditorProps {
   disabled?: boolean;
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ 
-  value, 
-  onChange, 
+const RichTextEditor: React.FC<RichTextEditorProps> = ({
+  value,
+  onChange,
   placeholder = "Write your description...",
   disabled = false
 }) => {
-  const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { 
+  const ReactQuill = useMemo(() => dynamic(() => import('react-quill-new'), {
     ssr: false,
     loading: () => <div className="min-h-[200px] border rounded-md p-4 animate-pulse bg-muted" />
   }), []);
@@ -26,8 +26,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     toolbar: [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
       [{ 'color': [] }, { 'background': [] }],
       [{ 'align': [] }],
       ['link', 'image'],

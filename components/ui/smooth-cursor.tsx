@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useSpring } from "framer-motion";
-import { FC, JSX, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getSiteSettingsAction } from "@/actions/site-settings.actions";
 
@@ -11,7 +11,7 @@ interface Position {
 }
 
 export interface SmoothCursorProps {
-  cursor?: JSX.Element;
+  cursor?: React.JSX.Element;
   springConfig?: {
     damping: number;
     stiffness: number;
@@ -84,19 +84,19 @@ const DefaultCursorSVG: FC = () => {
 
 const PointerSVG: FC = () => {
   return (
-    <svg 
-      width="32" 
-      height="32" 
-      viewBox="0 0 32 32" 
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       style={{ scale: 1.5 }}
     >
       <defs>
-        <rect id="SVGID_1_" width="32" height="32"/>
+        <rect id="SVGID_1_" width="32" height="32" />
       </defs>
       <clipPath id="SVGID_2_">
-        <use xlinkHref="#SVGID_1_" overflow="visible"/>
+        <use xlinkHref="#SVGID_1_" overflow="visible" />
       </clipPath>
       <path clipPath="url(#SVGID_2_)" fill="#FFFFFF" d="M11.3,20.4c-0.3-0.4-0.6-1.1-1.2-2c-0.3-0.5-1.2-1.5-1.5-1.9
         c-0.2-0.4-0.2-0.6-0.1-1c0.1-0.6,0.7-1.1,1.4-1.1c0.5,0,1,0.4,1.4,0.7c0.2,0.2,0.5,0.6,0.7,0.8c0.2,0.2,0.2,0.3,0.4,0.5
@@ -117,9 +117,9 @@ const PointerSVG: FC = () => {
         c0,0.5,0,0.8,0,1.2c0,0.4-0.1,1.3-0.2,1.7c-0.1,0.3-0.4,1-0.7,1.4c0,0-1.1,1.2-1.2,1.8c-0.1,0.6-0.1,0.6-0.1,1
         c0,0.4,0.1,0.9,0.1,0.9s-0.8,0.1-1.2,0c-0.4-0.1-0.9-0.8-1-1.1c-0.2-0.3-0.5-0.3-0.7,0c-0.2,0.4-0.7,1.1-1.1,1.1
         c-0.7,0.1-2.1,0-3.1,0c0,0,0.2-1-0.2-1.4c-0.3-0.3-0.8-0.8-1.1-1.1L11.3,20.4z"/>
-      <line clipPath="url(#SVGID_2_)" fill="none" stroke="#000000" strokeWidth="0.75" strokeLinecap="round" x1="19.6" y1="20.7" x2="19.6" y2="17.3"/>
-      <line clipPath="url(#SVGID_2_)" fill="none" stroke="#000000" strokeWidth="0.75" strokeLinecap="round" x1="17.6" y1="20.7" x2="17.5" y2="17.3"/>
-      <line clipPath="url(#SVGID_2_)" fill="none" stroke="#000000" strokeWidth="0.75" strokeLinecap="round" x1="15.6" y1="17.3" x2="15.6" y2="20.7"/>
+      <line clipPath="url(#SVGID_2_)" fill="none" stroke="#000000" strokeWidth="0.75" strokeLinecap="round" x1="19.6" y1="20.7" x2="19.6" y2="17.3" />
+      <line clipPath="url(#SVGID_2_)" fill="none" stroke="#000000" strokeWidth="0.75" strokeLinecap="round" x1="17.6" y1="20.7" x2="17.5" y2="17.3" />
+      <line clipPath="url(#SVGID_2_)" fill="none" stroke="#000000" strokeWidth="0.75" strokeLinecap="round" x1="15.6" y1="17.3" x2="15.6" y2="20.7" />
     </svg>
   );
 };
@@ -140,14 +140,14 @@ export function SmoothCursor({
   const lastUpdateTime = useRef(Date.now());
   const previousAngle = useRef(0);
   const accumulatedRotation = useRef(0);
-  
+
   // Check site settings to see if custom cursor is enabled
   const { data, isLoading } = useQuery({
     queryKey: ["siteSettings"],
     queryFn: () => getSiteSettingsAction(),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
-  
+
   const isCustomCursorEnabled = data?.settings?.customCursor ?? true;
 
   const cursorX = useSpring(0, springConfig);
@@ -168,7 +168,7 @@ export function SmoothCursor({
     if (!isCustomCursorEnabled || isLoading) {
       return;
     }
-    
+
     const updateVelocity = (currentPos: Position) => {
       const currentTime = Date.now();
       const deltaTime = currentTime - lastUpdateTime.current;
@@ -197,8 +197,8 @@ export function SmoothCursor({
 
       // Check if cursor is over a clickable element
       const target = e.target as HTMLElement;
-      const isClickable = 
-        target.tagName === 'A' || 
+      const isClickable =
+        target.tagName === 'A' ||
         target.tagName === 'BUTTON' ||
         target.closest('a') !== null ||
         target.closest('button') !== null ||

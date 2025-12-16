@@ -3,19 +3,21 @@
 import prisma from "@/db";
 import { ExperienceType, createAndEditExperienceSchema, CreateAndEditExperienceType } from "@/lib/types/experience-types";
 
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 
-  function authenticateAndRedirect(): string {
-    const { userId } = auth();
+async function authenticateAndRedirect(): Promise<string> {
+    const { userId } = await auth();
     if (!userId) redirect('/');
     return userId;
 }
 
 
 export async function createExperienceAction(values: CreateAndEditExperienceType): Promise<ExperienceType | null> {
-    authenticateAndRedirect()
+    await authenticateAndRedirect();
+
     try {
         createAndEditExperienceSchema.parse(values);
 
@@ -26,6 +28,7 @@ export async function createExperienceAction(values: CreateAndEditExperienceType
         });
 
         const exp: ExperienceType = normalizeExperienceRow(raw);
+        revalidatePath('/dashboard/manage-experience');
         return exp;
     } catch (error) {
         console.log(error);
@@ -49,7 +52,7 @@ export async function getAllExperienceAction(): Promise<{
 
 
 export async function deleteExperienceAction(id: string): Promise<ExperienceType | null> {
-    authenticateAndRedirect();
+    await authenticateAndRedirect();
 
     try {
         const raw = await prisma.experience.delete({
@@ -87,7 +90,7 @@ export async function updateExperienceAction(
     id: string,
     values: CreateAndEditExperienceType
 ): Promise<ExperienceType | null> {
-    authenticateAndRedirect();
+    await authenticateAndRedirect();
 
     try {
         const raw = await prisma.experience.update({

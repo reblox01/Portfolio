@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { createAdminAction, updateAdminDetails } from "@/actions/admin.actions"
+import { createAdminAction, updateAdminAction } from "@/actions/admin.actions"
 import { createAndEditAdminSchema, CreateAndEditAdminType, AdminType } from "@/lib/types/admin-types"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
@@ -70,14 +70,13 @@ export function AdminForm({ initialData }: Props) {
 
     startTransition(async () => {
       const ok = initialData
-        ? await updateAdminDetails(initialData.id, values as CreateAndEditAdminType)
+        ? await updateAdminAction(values as Partial<AdminType>)
         : await createAdminAction(values as CreateAndEditAdminType)
       if (!ok) {
         setError("Failed to save admin")
         return
       }
       router.push("/dashboard/manage-admin")
-      router.refresh()
     })
   }
 
