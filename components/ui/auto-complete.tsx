@@ -29,7 +29,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
 }) => {
   return (
     <Command className="border">
-      {children}
+      {children as any}
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">
