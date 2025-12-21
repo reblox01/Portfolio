@@ -10,16 +10,17 @@ export type CertificateType = {
     credentialID: string,
     certificateUrl: string,
     screenshot: string,
+    isPublished: boolean,
 };
 
 const minDate: Date = new Date("2000-01-01")
 
 // Coerce form strings to Date
 const coerceDate = (val: unknown) => {
-  if (typeof val === 'string') {
-    return val ? new Date(val) : undefined
-  }
-  return val
+    if (typeof val === 'string') {
+        return val ? new Date(val) : undefined
+    }
+    return val
 }
 
 
@@ -49,6 +50,7 @@ export const createAndEditCertificateSchema = z.object({
         message: "Certificate Url is required."
     }),
     screenshot: z.string(),
+    isPublished: z.boolean().default(true),
 });
 
 

@@ -13,17 +13,18 @@ export const metadata: Metadata = {
 const CertificationDetailPage = async ({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) => {
+  const { id } = await params;
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["certificate", params.id],
-    queryFn: () => getSingleCertificationAction(params.id),
+    queryKey: ["certificate", id],
+    queryFn: () => getSingleCertificationAction(id),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <CertificationDetailContainer certificationId={params.id} />
+      <CertificationDetailContainer certificationId={id} />
     </HydrationBoundary>
   );
 };

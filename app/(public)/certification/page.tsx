@@ -10,13 +10,13 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Certification",
-  description: "Explore the certifications I've earned from my work. These certifications are a testament to my skills and knowledge in my field."
+  description: "Professional certifications and achievements of Sohail Koutari. Validated skills in web development, software engineering, and modern technologies. View credentials and learning journey."
 };
 const CertificationPage = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["certifications"],
-    queryFn: () => getAllCertificationsAction(),
+    queryFn: () => getAllCertificationsAction(true), // publishedOnly = true
   });
   return (
     <>

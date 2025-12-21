@@ -35,6 +35,7 @@ datasource db {
   certificateUrl    String
   screenshot        String
   learned           Json[]
+  isPublished       Boolean     @default(true)
   }
  
   model Experience {

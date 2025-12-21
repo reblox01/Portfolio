@@ -3,7 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { CertificateType as Certification } from "@/lib/types/certification-types"
 import { Button } from "@/components/ui/button"
-import { deleteCertificationAction } from "@/actions/certification.actions"
+import { Badge } from "@/components/ui/badge"
+import { deleteCertificationAction, toggleCertificationPublishAction } from "@/actions/certification.actions"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { format } from "date-fns"
@@ -26,6 +27,18 @@ export const columns: ColumnDef<Certification>[] = [
     header: "Credential ID",
   },
   {
+    accessorKey: "isPublished",
+    header: "Status",
+    cell: ({ row }) => {
+      const isPublished = row.original.isPublished
+      return (
+        <Badge variant={isPublished ? "default" : "secondary"}>
+          {isPublished ? "Published" : "Draft"}
+        </Badge>
+      )
+    },
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const cert = row.original
@@ -39,8 +52,20 @@ export const columns: ColumnDef<Certification>[] = [
         }
       }
 
+      const handleTogglePublish = async () => {
+        await toggleCertificationPublishAction(cert.id, cert.isPublished);
+        router.refresh();
+      }
+
       return (
         <div className="flex items-center gap-4">
+          <Button
+            variant={cert.isPublished ? "outline" : "default"}
+            size="sm"
+            onClick={handleTogglePublish}
+          >
+            {cert.isPublished ? "Unpublish" : "Publish"}
+          </Button>
           <Button variant="ghost" size="sm" asChild>
             <Link href={cert.certificateUrl} target="_blank" rel="noopener noreferrer">
               View

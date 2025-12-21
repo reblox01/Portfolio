@@ -9,7 +9,8 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 
 import { TagInput } from "@/components/ui/tag-input"
 import ImageUpload from "@/components/image-upload"
@@ -30,6 +31,7 @@ const formSchema = z.object({
   certificateUrl: z.string().url(),
   screenshot: z.string().optional().default(""),
   learned: z.array(z.string()).min(1),
+  isPublished: z.boolean().default(true),
 })
 
 export function CertificationForm({ initialData, mode }: Props) {
@@ -46,6 +48,7 @@ export function CertificationForm({ initialData, mode }: Props) {
         certificateUrl: initialData.certificateUrl,
         screenshot: initialData.screenshot,
         learned: (initialData.learned as any[]).map((s: any) => s?.text ?? String(s)),
+        isPublished: initialData.isPublished,
       }
       : {
         title: "",
@@ -55,6 +58,7 @@ export function CertificationForm({ initialData, mode }: Props) {
         certificateUrl: "",
         screenshot: "",
         learned: [] as string[],
+        isPublished: true,
       },
   })
 
@@ -69,6 +73,7 @@ export function CertificationForm({ initialData, mode }: Props) {
       certificateUrl: values.certificateUrl,
       screenshot: values.screenshot,
       learned: (values.learned as string[]).map((t) => ({ id: crypto.randomUUID(), text: t })),
+      isPublished: values.isPublished,
     }
 
     try {
@@ -158,6 +163,22 @@ export function CertificationForm({ initialData, mode }: Props) {
                   </FormControl>
                   <CardDescription className="text-xs">Key topics or skills (press Enter to add)</CardDescription>
                   <FormMessage />
+                </FormItem>
+              )} />
+
+              <FormField control={form.control} name="isPublished" render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={isSubmitting}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Publish this certification</FormLabel>
+                    <FormDescription>When checked, this certification will be visible on the public website.</FormDescription>
+                  </div>
                 </FormItem>
               )} />
 

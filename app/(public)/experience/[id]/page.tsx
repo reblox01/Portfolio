@@ -5,20 +5,21 @@ import {
 } from "@tanstack/react-query";
 import { getSingleExperienceAction } from "@/actions/experience.actions";
 import ExperienceDetailPage from "../_components/ExperienceDetailPage";
- 
+
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Experience Info",
 };
-const ExperienceDetail = async ({ params }: { params: { id: string } }) => {
+const ExperienceDetail = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["experience", params.id],
-    queryFn: () => getSingleExperienceAction(params.id),
+    queryKey: ["experience", id],
+    queryFn: () => getSingleExperienceAction(id),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ExperienceDetailPage experienceId={params?.id} />
+      <ExperienceDetailPage experienceId={id} />
     </HydrationBoundary>
   );
 };

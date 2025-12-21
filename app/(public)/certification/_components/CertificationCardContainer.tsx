@@ -13,7 +13,7 @@ const fadeUpVariants = {
 const CertificationCardContainer = () => {
   const { data, isPending } = useQuery({
     queryKey: ["certifications"],
-    queryFn: () => getAllCertificationsAction(),
+    queryFn: () => getAllCertificationsAction(true), // publishedOnly = true
   });
 
   const certifications = data?.certifications || [];
@@ -26,21 +26,21 @@ const CertificationCardContainer = () => {
     <div className="max-w-7xl p-4 mx-auto gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
       {certifications.map((cert, index) => (
         <motion.div
-        key={cert?.id}
-        variants={fadeUpVariants}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: index * 0.1, duration: 0.5 }}
-      >
-        <Card
+          key={cert?.id}
+          variants={fadeUpVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: index * 0.1, duration: 0.5 }}
+        >
+          <Card
             key={cert?.id}
             title={cert?.title}
             OneLiner={cert?.organizationName}
             source={cert?.certificateUrl}
             screenshot={cert?.screenshot}
             href={`/certification/${cert?.id}`} techStack={[]}
-        />
-      </motion.div>
+          />
+        </motion.div>
       ))}
     </div>
   );

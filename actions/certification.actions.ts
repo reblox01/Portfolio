@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from "@/db";
+import { Prisma } from '@prisma/client';
 
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
@@ -35,11 +36,14 @@ export async function createCertificationAction(values: CreateAndEditCertificate
 }
 
 
-export async function getAllCertificationsAction(): Promise<{
+export async function getAllCertificationsAction(publishedOnly: boolean = false): Promise<{
     certifications: CertificateType[]
 }> {
     try {
-        const certifications: CertificateType[] = await prisma.certification.findMany({})
+        const whereClause: Prisma.CertificationWhereInput = publishedOnly ? { isPublished: true } : {};
+        const certifications: CertificateType[] = await prisma.certification.findMany({
+            where: whereClause,
+        })
         return { certifications };
     } catch (error) {
         console.log(error);
@@ -57,8 +61,11 @@ export async function deleteCertificationAction(id: string): Promise<Certificate
                 id,
             },
         });
+        revalidatePath('/dashboard/manage-certifications');
+        revalidatePath('/certification');
         return certificate;
     } catch (error) {
+        console.error(error);
         return null;
     }
 }
@@ -77,7 +84,7 @@ export async function getSingleCertificationAction(id: string): Promise<Certific
         certification = null;
     }
     if (!certification) {
-        redirect('/dashboard/manage-certification');
+        redirect('/dashboard/manage-certifications');
     }
     return certification;
 }
@@ -98,8 +105,35 @@ export async function updateCertificationAction(
                 ...values,
             },
         });
+        revalidatePath('/dashboard/manage-certifications');
+        revalidatePath('/certification');
         return certificate;
     } catch (error) {
+        return null;
+    }
+}
+
+
+export async function toggleCertificationPublishAction(
+    id: string,
+    currentStatus: boolean
+): Promise<CertificateType | null> {
+    await authenticateAndRedirect();
+
+    try {
+        const certificate: CertificateType = await prisma.certification.update({
+            where: {
+                id,
+            },
+            data: {
+                isPublished: !currentStatus,
+            },
+        });
+        revalidatePath('/dashboard/manage-certifications');
+        revalidatePath('/certification');
+        return certificate;
+    } catch (error) {
+        console.error(error);
         return null;
     }
 }
