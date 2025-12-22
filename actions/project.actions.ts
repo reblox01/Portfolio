@@ -34,6 +34,7 @@ export async function createProjectAction(values: CreateAndEditProjectType): Pro
                 ...values,
                 liveURL: values.liveURL ?? undefined,
                 sourceURL: values.sourceURL ?? undefined,
+                isPublished: values.isPublished ?? true,
             }
         });
 
@@ -45,9 +46,11 @@ export async function createProjectAction(values: CreateAndEditProjectType): Pro
 }
 
 
-export const getAllProjectsAction = async () => {
+export const getAllProjectsAction = async (publishedOnly: boolean = false) => {
     try {
+        const whereClause = publishedOnly ? { isPublished: true } : {};
         const projects = await prisma.project.findMany({
+            where: whereClause,
             select: {
                 id: true,
                 title: true,
@@ -55,6 +58,7 @@ export const getAllProjectsAction = async () => {
                 sourceURL: true,
                 screenshot: true,
                 techStack: true,
+                isPublished: true,
             },
         });
         return { projects };
@@ -82,6 +86,7 @@ export async function getRandomProjectsAction(): Promise<{
 }[]> {
     try {
         const randomProjects = await prisma.project.findMany({
+            where: { isPublished: true },
             take: 15,
             orderBy: {
                 id: 'asc'
@@ -146,6 +151,71 @@ export async function deleteProjectAction(id: string): Promise<Project | null> {
     }
 }
 
+export async function bulkDeleteProjectsAction(ids: string[]): Promise<boolean> {
+    const userId = await authenticateAndRedirect();
+    if (!userId) return false;
+
+    try {
+        await prisma.project.deleteMany({
+            where: {
+                id: { in: ids }
+            }
+        });
+        revalidatePath('/dashboard/manage-projects');
+        revalidatePath('/projects');
+        return true;
+    } catch (error) {
+        console.error("Bulk delete error:", error);
+        return false;
+    }
+}
+
+export async function bulkTogglePublishProjectsAction(ids: string[], isPublished: boolean): Promise<boolean> {
+    const userId = await authenticateAndRedirect();
+    if (!userId) return false;
+
+    try {
+        await prisma.project.updateMany({
+            where: {
+                id: { in: ids }
+            },
+            data: {
+                isPublished
+            }
+        });
+        revalidatePath('/dashboard/manage-projects');
+        revalidatePath('/projects');
+        return true;
+    } catch (error) {
+        console.error("Bulk toggle publish error:", error);
+        return false;
+    }
+}
+
+export async function toggleProjectPublishAction(
+    id: string,
+    currentStatus: boolean
+): Promise<Project | null> {
+    await authenticateAndRedirect();
+
+    try {
+        const project: Project = await prisma.project.update({
+            where: {
+                id,
+            },
+            data: {
+                isPublished: !currentStatus,
+            },
+        });
+        revalidatePath('/dashboard/manage-projects');
+        revalidatePath('/projects');
+        return project;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 export async function updateProjectAction(
     id: string,
     values: CreateAndEditProjectType
@@ -164,8 +234,11 @@ export async function updateProjectAction(
                 ...values,
                 liveURL: values.liveURL ?? undefined,
                 sourceURL: values.sourceURL ?? undefined,
+                isPublished: values.isPublished ?? true,
             },
         });
+        revalidatePath('/dashboard/manage-projects');
+        revalidatePath('/projects');
         return project;
     } catch (error) {
         return null;

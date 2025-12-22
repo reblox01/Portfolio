@@ -14,6 +14,7 @@ const TechstackCard = ({ category, imageUrl, title, url }: Techstack) => {
           width={200}
           height={200}
           alt={`Logo of ${title}`}
+          unoptimized
         />
       </picture>
       <svg

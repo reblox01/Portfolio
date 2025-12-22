@@ -11,13 +11,13 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Experience",
-  description: "Delve into my extensive professional journey, where each role, project, and challenge has fueled my growth and passion for excellence. From hands-on experience to leadership roles, this section paints a vivid picture of my commitment to continuous learning and achievement.",
+  description: "Professional experience and career history of Sohail Koutari. Full Stack Developer with hands-on expertise in modern web development, software engineering, and digital solutions."
 };
 const ExperiencePage = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["experiences"],
-    queryFn: () => getAllExperienceAction(),
+    queryFn: () => getAllExperienceAction(true),
   });
   return (
     <>

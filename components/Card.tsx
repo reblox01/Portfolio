@@ -40,6 +40,7 @@ const Card = ({ OneLiner, screenshot, title, href, source, techStack = [], index
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
               priority={index < 4}
+              unoptimized
             />
           </div>
           <div className="flex-grow mt-2 group-hover/bento:translate-x-2 transition duration-200">

@@ -113,6 +113,45 @@ export async function updateCertificationAction(
     }
 }
 
+export async function bulkDeleteCertificationsAction(ids: string[]): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.certification.deleteMany({
+            where: {
+                id: { in: ids }
+            }
+        });
+        revalidatePath('/dashboard/manage-certifications');
+        revalidatePath('/certification');
+        return true;
+    } catch (error) {
+        console.error("Bulk delete error:", error);
+        return false;
+    }
+}
+
+export async function bulkTogglePublishCertificationsAction(ids: string[], isPublished: boolean): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.certification.updateMany({
+            where: {
+                id: { in: ids }
+            },
+            data: {
+                isPublished
+            }
+        });
+        revalidatePath('/dashboard/manage-certifications');
+        revalidatePath('/certification');
+        return true;
+    } catch (error) {
+        console.error("Bulk toggle publish error:", error);
+        return false;
+    }
+}
+
 
 export async function toggleCertificationPublishAction(
     id: string,

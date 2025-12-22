@@ -24,6 +24,7 @@ datasource db {
     description String
     techStack   Json[]
     keywords    Json[]
+    isPublished Boolean     @default(true)
   }
  
   model Certification {
@@ -48,6 +49,7 @@ datasource db {
   endDate         DateTime?
   isCurrentlyWorking Boolean  @default(false)
   learned         Json[]
+  isPublished     Boolean     @default(true)
   }
 
 model Techstack{

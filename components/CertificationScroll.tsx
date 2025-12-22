@@ -12,7 +12,7 @@ export function CertificationScroll({ screenshot, title, organizationName }: Cer
         titleComponent={
           <>
             <h1 className="text-6xl font-semibold text-black dark:text-white">
-                {title} <br />
+              {title} <br />
               <span className="text-4xl md:text-[8rem] font-bold mt-1 leading-none">
                 {organizationName}
               </span>
@@ -27,6 +27,7 @@ export function CertificationScroll({ screenshot, title, organizationName }: Cer
           width={1400}
           className="mx-auto rounded-2xl object-cover h-full object-left-top"
           draggable={false}
+          unoptimized
         />
       </ContainerScroll>
     </div>

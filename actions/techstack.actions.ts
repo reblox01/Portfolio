@@ -105,3 +105,20 @@ export async function updateTechstackAction(
         return null;
     }
 }
+
+export async function bulkDeleteTechstackAction(ids: string[]): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.techstack.deleteMany({
+            where: {
+                id: { in: ids }
+            }
+        });
+        revalidatePath('/dashboard/manage-techstack');
+        return true;
+    } catch (error) {
+        console.error("Bulk delete error:", error);
+        return false;
+    }
+}

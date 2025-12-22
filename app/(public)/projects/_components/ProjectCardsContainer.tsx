@@ -13,7 +13,7 @@ const fadeUpVariants = {
 const ProjectCardsContainer = () => {
   const { data, isPending } = useQuery({
     queryKey: ["projects"],
-    queryFn: () => getAllProjectsAction(),
+    queryFn: () => getAllProjectsAction(true),
   });
   const projects = data?.projects || [];
 

@@ -53,7 +53,7 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
           <div key={p.title} className="flex flex-col sm:flex-row gap-4 items-start rounded-lg border p-3">
             <div className="w-full sm:w-56 h-40 sm:h-28 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
               <Link href={p.link} target="_blank" className="block w-full h-full">
-                <Image src={p.thumbnail || "/placeholder.png"} alt={p.title} width={560} height={280} className="object-cover w-full h-full" />
+                <Image src={p.thumbnail || "/placeholder.png"} alt={p.title} width={560} height={280} className="object-cover w-full h-full" unoptimized />
               </Link>
             </div>
 

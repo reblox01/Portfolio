@@ -20,7 +20,7 @@ export default async function Page() {
   const visitors = await getVisitorsForRange(90)
   const hourlyVisitors = await getHourlyVisitorsLast24Hours()
   const { techstacks } = await getAllTechstacksAction()
-  
+
   // Log visitor data for debugging
   console.log('Visitors data count:', visitors?.length)
   console.log('Hourly visitors count:', hourlyVisitors?.length)
@@ -52,7 +52,7 @@ export default async function Page() {
             .map((t) => (
               <Link key={t.id} href={`/dashboard/manage-techstack/${t.id}`} className="rounded-lg border p-4 flex items-center gap-4 hover:shadow">
                 <div className="w-16 h-16 relative rounded-md overflow-hidden flex-shrink-0">
-                  <Image src={t.imageUrl || "/placeholder.png"} alt={t.title} fill className="object-cover" />
+                  <Image src={t.imageUrl || "/placeholder.png"} alt={t.title} fill className="object-cover" unoptimized />
                 </div>
                 <div className="min-w-0">
                   <div className="font-semibold truncate">{t.title}</div>

@@ -11,21 +11,22 @@ export type ExperienceType = {
     endDate: Date | null,
     isCurrentlyWorking: boolean,
     learned: JsonValue[],
+    isPublished: boolean,
 };
 const minDate: Date = new Date("2000-01-01")
 
 // Helpers to coerce form string dates (yyyy-MM-dd) to Date/null
 const coerceDate = (val: unknown) => {
-  if (typeof val === 'string') {
-    return val ? new Date(val) : undefined
-  }
-  return val
+    if (typeof val === 'string') {
+        return val ? new Date(val) : undefined
+    }
+    return val
 }
 const coerceNullableDate = (val: unknown) => {
-  if (typeof val === 'string') {
-    return val ? new Date(val) : null
-  }
-  return val
+    if (typeof val === 'string') {
+        return val ? new Date(val) : null
+    }
+    return val
 }
 
 export const createAndEditExperienceSchema = z.object({
@@ -38,7 +39,7 @@ export const createAndEditExperienceSchema = z.object({
     companyLocation: z.string().min(1, {
         message: "Location is required!"
     }),
-    workMode: z.enum(['remote','hybrid','onsite']).optional(),
+    workMode: z.enum(['remote', 'hybrid', 'onsite']).optional(),
     startDate: z.preprocess(coerceDate, z.date().min(minDate, {
         message: "Start date is required."
     })),
@@ -52,6 +53,7 @@ export const createAndEditExperienceSchema = z.object({
     })).min(1, {
         message: "What I did is required."
     }),
+    isPublished: z.boolean().default(true),
 }).refine((data) => {
     // If not currently working, end date is required
     if (!data.isCurrentlyWorking && !data.endDate) {

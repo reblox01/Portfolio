@@ -59,6 +59,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               className="object-cover"
               alt="Image"
               src={value}
+              unoptimized
             />
           </div>
         )}

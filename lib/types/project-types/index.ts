@@ -13,6 +13,7 @@ export type Project = {
     description: string; // Description
     keywords: Prisma.JsonValue[];
     techStack: Prisma.JsonValue[];
+    isPublished: boolean;
 };
 export type ObjectTag = {
     id: string;
@@ -62,7 +63,8 @@ export const createAndEditProjectSchema = z.object({
     }),
     description: z.string().min(2, {
         message: 'Description must be at least 2 characters.',
-    })
+    }),
+    isPublished: z.boolean().default(true),
 });
 
 export type CreateAndEditProjectType = z.infer<typeof createAndEditProjectSchema>;

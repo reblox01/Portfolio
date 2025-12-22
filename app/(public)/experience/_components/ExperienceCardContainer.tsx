@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 const ExperienceCardContainer = () => {
   const { data, isPending } = useQuery({
     queryKey: ["experiences"],
-    queryFn: () => getAllExperienceAction(),
+    queryFn: () => getAllExperienceAction(true),
   });
 
   const experiences = data?.experience || [];

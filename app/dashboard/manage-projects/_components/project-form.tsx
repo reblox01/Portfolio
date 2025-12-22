@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import ImageUpload from "@/components/image-upload"
 import { TagInput } from "@/components/ui/tag-input"
+import { Checkbox } from "@/components/ui/checkbox"
 
 interface ProjectFormProps {
   initialData?: Project;
@@ -47,7 +48,8 @@ const formSchema = z.object({
   }),
   description: z.string().min(2, {
     message: 'Description must be at least 2 characters.',
-  })
+  }),
+  isPublished: z.boolean().default(true),
 });
 
 export function ProjectForm({ initialData, mode }: ProjectFormProps) {
@@ -68,7 +70,8 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
       : [],
     keywords: Array.isArray(initialData.keywords)
       ? initialData.keywords.map((keyword: any) => typeof keyword === 'string' ? keyword : keyword.text || keyword)
-      : []
+      : [],
+    isPublished: initialData.isPublished ?? true,
   } : {
     title: "",
     oneLiner: "",
@@ -79,7 +82,8 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
     sourceURL: "",
     description: "",
     techStack: [],
-    keywords: []
+    keywords: [],
+    isPublished: true,
   };
 
   const form = useForm<any>({
@@ -101,6 +105,7 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
       description: values.description,
       techStack: (values.techStack as string[]).map((t) => ({ id: crypto.randomUUID(), text: t })),
       keywords: (values.keywords as string[]).map((k) => ({ id: crypto.randomUUID(), text: k })),
+      isPublished: values.isPublished,
     };
 
     try {
@@ -330,6 +335,28 @@ export function ProjectForm({ initialData, mode }: ProjectFormProps) {
                       />
                     </FormControl>
                     <CardDescription className="text-xs">Keywords that describe your project (press Enter to add)</CardDescription>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isPublished"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Published</FormLabel>
+                      <CardDescription>
+                        Determine if this project is visible on the public page.
+                      </CardDescription>
+                    </div>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />

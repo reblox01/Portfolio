@@ -1,11 +1,31 @@
+"use client";
 import { getAllTechstacksAction } from "@/actions/techstack.actions";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import * as React from "react";
+import { BulkActionsToolbar } from "../_components/bulk-actions-toolbar";
+import { bulkDeleteTechstackAction } from "@/actions/techstack.actions";
+import { useRouter } from "next/navigation";
+import { ColumnDef } from "@tanstack/react-table";
 
-export default async function ManageTechStackPage() {
-  const { techstacks } = await getAllTechstacksAction();
+export default function ManageTechStackPage() {
+  const router = useRouter();
+  const [techstacks, setTechstacks] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    getAllTechstacksAction().then((res) => setTechstacks(res.techstacks || []));
+  }, []);
+
+  const handleBulkDelete = async (ids: string[]) => {
+    const success = await bulkDeleteTechstackAction(ids);
+    if (success) {
+      router.refresh();
+      const { techstacks } = await getAllTechstacksAction();
+      setTechstacks(techstacks || []);
+    }
+  };
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -17,7 +37,17 @@ export default async function ManageTechStackPage() {
           </Button>
         </div>
       </div>
-      <DataTable columns={columns} data={techstacks || []} />
+      <DataTable
+        columns={columns as ColumnDef<any, any>[]}
+        data={techstacks}
+        bulkActions={(selectedIds) => (
+          <BulkActionsToolbar
+            selectedIds={selectedIds}
+            onDelete={handleBulkDelete}
+            canPublish={false}
+          />
+        )}
+      />
     </div>
   );
 }

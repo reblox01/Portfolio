@@ -37,11 +37,14 @@ export async function createExperienceAction(values: CreateAndEditExperienceType
 }
 
 
-export async function getAllExperienceAction(): Promise<{
+export async function getAllExperienceAction(publishedOnly: boolean = false): Promise<{
     experience: ExperienceType[]
 }> {
     try {
-        const rows = await prisma.experience.findMany({})
+        const whereClause = publishedOnly ? { isPublished: true } : {};
+        const rows = await prisma.experience.findMany({
+            where: whereClause
+        })
         const experience: ExperienceType[] = rows.map(normalizeExperienceRow)
         return { experience };
     } catch (error) {
@@ -99,11 +102,77 @@ export async function updateExperienceAction(
             },
             data: {
                 ...values,
+                isPublished: values.isPublished ?? true,
             },
         });
+        revalidatePath('/dashboard/manage-experience');
+        revalidatePath('/experience');
         return normalizeExperienceRow(raw);
     } catch (error) {
         return null;
+    }
+}
+
+export async function toggleExperiencePublishAction(
+    id: string,
+    currentStatus: boolean
+): Promise<ExperienceType | null> {
+    await authenticateAndRedirect();
+
+    try {
+        const raw = await prisma.experience.update({
+            where: {
+                id,
+            },
+            data: {
+                isPublished: !currentStatus,
+            },
+        });
+        revalidatePath('/dashboard/manage-experience');
+        revalidatePath('/experience');
+        return normalizeExperienceRow(raw);
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function bulkDeleteExperienceAction(ids: string[]): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.experience.deleteMany({
+            where: {
+                id: { in: ids }
+            }
+        });
+        revalidatePath('/dashboard/manage-experience');
+        revalidatePath('/experience');
+        return true;
+    } catch (error) {
+        console.error("Bulk delete error:", error);
+        return false;
+    }
+}
+
+export async function bulkTogglePublishExperienceAction(ids: string[], isPublished: boolean): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.experience.updateMany({
+            where: {
+                id: { in: ids }
+            },
+            data: {
+                isPublished
+            }
+        });
+        revalidatePath('/dashboard/manage-experience');
+        revalidatePath('/experience');
+        return true;
+    } catch (error) {
+        console.error("Bulk toggle publish error:", error);
+        return false;
     }
 }
 

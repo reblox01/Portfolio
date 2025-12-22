@@ -40,6 +40,7 @@ export function ExperienceForm({ initialData, mode }: Props) {
       isCurrentlyWorking: z.boolean().default(false),
       endDate: z.string().optional().nullable(),
       learned: z.array(z.string()).min(1),
+      isPublished: z.boolean().default(true),
     })
     .refine((data) => data.isCurrentlyWorking || !!data.endDate, {
       path: ["endDate"],
@@ -58,6 +59,7 @@ export function ExperienceForm({ initialData, mode }: Props) {
         endDate: toDateInputValue(initialData.endDate),
         isCurrentlyWorking: initialData.isCurrentlyWorking,
         learned: (initialData.learned as any[]).map((s: any) => s?.text ?? String(s)),
+        isPublished: (initialData as any).isPublished ?? true,
       }
       : {
         positionName: "",
@@ -68,6 +70,7 @@ export function ExperienceForm({ initialData, mode }: Props) {
         endDate: "",
         isCurrentlyWorking: false,
         learned: [] as string[],
+        isPublished: true,
       },
   })
 
@@ -87,6 +90,7 @@ export function ExperienceForm({ initialData, mode }: Props) {
           .map((s) => s.trim())
           .filter(Boolean)
           .map((text) => ({ id: crypto.randomUUID(), text })),
+        isPublished: !!values.isPublished,
       }
 
       if (mode === "create") {
@@ -239,6 +243,28 @@ export function ExperienceForm({ initialData, mode }: Props) {
                       <TagInput value={field.value} onChange={field.onChange} placeholder="Type and press Enter" disabled={isSubmitting} />
                     </FormControl>
                     <CardDescription className="text-xs">Add key responsibilities or tools (press Enter to add)</CardDescription>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isPublished"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Published</FormLabel>
+                      <CardDescription>
+                        Visible on the public portfolio.
+                      </CardDescription>
+                    </div>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />
