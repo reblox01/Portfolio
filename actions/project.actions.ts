@@ -51,15 +51,6 @@ export const getAllProjectsAction = async (publishedOnly: boolean = false) => {
         const whereClause = publishedOnly ? { isPublished: true } : {};
         const projects = await prisma.project.findMany({
             where: whereClause,
-            select: {
-                id: true,
-                title: true,
-                oneLiner: true,
-                sourceURL: true,
-                screenshot: true,
-                techStack: true,
-                isPublished: true,
-            },
         });
         return { projects };
     } catch (error) {
