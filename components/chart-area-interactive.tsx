@@ -51,10 +51,10 @@ interface HourlyData {
   total: number
 }
 
-export function ChartAreaInteractive({ 
-  initialData, 
-  hourlyData 
-}: { 
+export function ChartAreaInteractive({
+  initialData,
+  hourlyData
+}: {
   initialData?: { date: string; desktop: number; mobile: number; total?: number }[]
   hourlyData?: HourlyData[]
 }) {
@@ -73,7 +73,7 @@ export function ChartAreaInteractive({
         total: h.total
       })) || []
     }
-    
+
     console.log('Chart received initialData:', initialData?.length, 'records')
     if (initialData && initialData.length > 0) {
       console.log('First date:', initialData[0].date)
@@ -106,14 +106,14 @@ export function ChartAreaInteractive({
       const d = new Date(item.date)
       return d >= startDate
     })
-    
+
     console.log(`Filtered data for ${timeRange}:`, filtered.length, 'records')
     return filtered
   }, [sourceData, timeRange])
 
   // Check if we have data
   const hasData = filteredData.length > 0
-  
+
   return (
     <Card className="@container/card">
       <CardHeader className="relative">
@@ -183,97 +183,105 @@ export function ChartAreaInteractive({
             config={chartConfig}
             className="aspect-auto h-[250px] w-full"
           >
-            <AreaChart data={filteredData}>
-            <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={1.0}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                // For 24h view, show hour format
-                if (timeRange === "24h") {
-                  return date.toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    hour12: true,
-                  })
-                }
-                // For other views, show date format
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
+            <AreaChart
+              key={timeRange}
+              data={filteredData}
+              margin={{
+                left: 12,
+                right: 12,
               }}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    const date = new Date(value)
-                    // For 24h view, show hour with date
-                    if (timeRange === "24h") {
-                      return date.toLocaleString("en-US", {
+            >
+              <defs>
+                <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="var(--color-desktop)"
+                    stopOpacity={1.0}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="var(--color-desktop)"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+                <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="var(--color-mobile)"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="var(--color-mobile)"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                padding={{ left: 16, right: 16 }}
+                tickFormatter={(value) => {
+                  const date = new Date(value)
+                  // For 24h view, show hour format
+                  if (timeRange === "24h") {
+                    return date.toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      hour12: true,
+                    })
+                  }
+                  // For other views, show date format
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(value) => {
+                      const date = new Date(value)
+                      // For 24h view, show hour with date
+                      if (timeRange === "24h") {
+                        return date.toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          hour: "numeric",
+                          hour12: true,
+                        })
+                      }
+                      // For other views, show date only
+                      return date.toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
-                        hour: "numeric",
-                        hour12: true,
                       })
-                    }
-                    // For other views, show date only
-                    return date.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })
-                  }}
-                  indicator="dot"
-                />
-              }
-            />
-            <Area
-              dataKey="mobile"
-              type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
-              stackId="a"
-            />
-          </AreaChart>
-        </ChartContainer>
+                    }}
+                    indicator="dot"
+                  />
+                }
+              />
+              <Area
+                dataKey="mobile"
+                type="monotone"
+                fill="url(#fillMobile)"
+                stroke="var(--color-mobile)"
+                stackId="a"
+              />
+              <Area
+                dataKey="desktop"
+                type="monotone"
+                fill="url(#fillDesktop)"
+                stroke="var(--color-desktop)"
+                stackId="a"
+              />
+            </AreaChart>
+          </ChartContainer>
         )}
       </CardContent>
     </Card>
