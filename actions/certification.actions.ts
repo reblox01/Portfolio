@@ -7,6 +7,7 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { CertificateType, createAndEditCertificateSchema, CreateAndEditCertificateType } from '@/lib/types/certification-types';
+import { validateObjectId, validateObjectIds } from '@/lib/validation';
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
@@ -36,18 +37,62 @@ export async function createCertificationAction(values: CreateAndEditCertificate
 }
 
 
+import { getSortSettingsAction } from "./sortSettings.actions";
+
 export async function getAllCertificationsAction(publishedOnly: boolean = false): Promise<{
-    certifications: CertificateType[]
+    certifications: CertificateType[];
+    sortType: string;
 }> {
     try {
         const whereClause: Prisma.CertificationWhereInput = publishedOnly ? { isPublished: true } : {};
+
+        // Fetch sort settings
+        const settings = await getSortSettingsAction();
+        const sortType = settings.certificationSortType || 'newest';
+
+        let orderBy: any = { completionDate: 'desc' }; // Default for Certs
+
+        if (sortType === 'newest') {
+            orderBy = { completionDate: 'desc' };
+        } else if (sortType === 'oldest') {
+            orderBy = { completionDate: 'asc' };
+        } else if (sortType === 'custom') {
+            orderBy = [
+                { displayOrder: 'asc' },
+                { completionDate: 'desc' }
+            ];
+        }
+
         const certifications: CertificateType[] = await prisma.certification.findMany({
             where: whereClause,
+            orderBy: orderBy
         })
-        return { certifications };
+        return { certifications, sortType };
     } catch (error) {
         console.log(error);
-        return { certifications: [] };
+        return { certifications: [], sortType: 'newest' };
+    }
+}
+
+export async function reorderCertificationsAction(items: { id: string; displayOrder: number }[]): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.$transaction(
+            items.map((item) =>
+                prisma.certification.update({
+                    where: { id: item.id },
+                    data: { displayOrder: item.displayOrder }
+                })
+            )
+        );
+
+        revalidatePath('/dashboard/manage-certifications');
+        revalidatePath('/certification');
+        return true;
+    } catch (error) {
+        console.error("Error reordering certifications:", error instanceof Error ? error.message : "Unknown error");
+        return false;
     }
 }
 
@@ -56,6 +101,7 @@ export async function deleteCertificationAction(id: string): Promise<Certificate
     await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
         const certificate: CertificateType = await prisma.certification.delete({
             where: {
                 id,
@@ -65,7 +111,7 @@ export async function deleteCertificationAction(id: string): Promise<Certificate
         revalidatePath('/certification');
         return certificate;
     } catch (error) {
-        console.error(error);
+        console.error("Error deleting certification:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -75,12 +121,14 @@ export async function getSingleCertificationAction(id: string): Promise<Certific
     let certification: CertificateType | null = null;
 
     try {
+        validateObjectId(id);
         certification = await prisma.certification.findUnique({
             where: {
                 id,
             },
         });
     } catch (error) {
+        console.error("Error fetching certification:", error instanceof Error ? error.message : "Unknown error");
         certification = null;
     }
     if (!certification) {
@@ -97,6 +145,9 @@ export async function updateCertificationAction(
     await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
+        createAndEditCertificateSchema.parse(values);
+
         const certificate: CertificateType = await prisma.certification.update({
             where: {
                 id,
@@ -109,6 +160,7 @@ export async function updateCertificationAction(
         revalidatePath('/certification');
         return certificate;
     } catch (error) {
+        console.error("Error updating certification:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -117,6 +169,7 @@ export async function bulkDeleteCertificationsAction(ids: string[]): Promise<boo
     await authenticateAndRedirect();
 
     try {
+        validateObjectIds(ids);
         await prisma.certification.deleteMany({
             where: {
                 id: { in: ids }
@@ -126,7 +179,7 @@ export async function bulkDeleteCertificationsAction(ids: string[]): Promise<boo
         revalidatePath('/certification');
         return true;
     } catch (error) {
-        console.error("Bulk delete error:", error);
+        console.error("Bulk delete error:", error instanceof Error ? error.message : "Unknown error");
         return false;
     }
 }
@@ -135,6 +188,7 @@ export async function bulkTogglePublishCertificationsAction(ids: string[], isPub
     await authenticateAndRedirect();
 
     try {
+        validateObjectIds(ids);
         await prisma.certification.updateMany({
             where: {
                 id: { in: ids }
@@ -147,7 +201,7 @@ export async function bulkTogglePublishCertificationsAction(ids: string[], isPub
         revalidatePath('/certification');
         return true;
     } catch (error) {
-        console.error("Bulk toggle publish error:", error);
+        console.error("Bulk toggle publish error:", error instanceof Error ? error.message : "Unknown error");
         return false;
     }
 }
@@ -160,6 +214,7 @@ export async function toggleCertificationPublishAction(
     await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
         const certificate: CertificateType = await prisma.certification.update({
             where: {
                 id,
@@ -172,7 +227,7 @@ export async function toggleCertificationPublishAction(
         revalidatePath('/certification');
         return certificate;
     } catch (error) {
-        console.error(error);
+        console.error("Error toggling certification publish:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }

@@ -3,7 +3,7 @@ import {
   Briefcase,
   CheckCircle,
   FolderGit2,
-  Home,
+  GraduationCap,
   Layers,
   LucideIcon,
   User,
@@ -31,6 +31,11 @@ export const sidelinks: sideLink[] = [
     text: "Certifications",
     href: "/dashboard/manage-certifications",
     icon: CheckCircle,
+  },
+  {
+    text: "Education",
+    href: "/dashboard/manage-education",
+    icon: GraduationCap,
   },
   {
     text: "Experience",

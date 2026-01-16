@@ -1,23 +1,35 @@
 import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/db"
+import { visitorRateLimit, getClientIp } from "@/lib/rate-limit"
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting: prevent spam tracking
+    const ip = getClientIp(req.headers);
+    const { success } = await visitorRateLimit.limit(ip);
+
+    if (!success) {
+      return NextResponse.json(
+        { success: false, error: "Too many requests" },
+        { status: 429 }
+      );
+    }
+
     const userAgent = req.headers.get("user-agent") || ""
-    
+
     // Detect if mobile or desktop
     const isMobile = /mobile|android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())
-    
+
     // Get today's date at midnight UTC
     const today = new Date()
     today.setUTCHours(0, 0, 0, 0)
-    
+
     // Get current hour
     const now = new Date()
     const currentHour = new Date()
     currentHour.setUTCMinutes(0, 0, 0)
     const hourOfDay = now.getUTCHours()
-    
+
     // Update or create daily visitor record
     const visitor = await prisma.visitor.upsert({
       where: { date: today },
@@ -33,7 +45,7 @@ export async function POST(req: NextRequest) {
         total: 1,
       },
     })
-    
+
     // Update or create hourly visitor record
     const hourlyVisitor = await prisma.hourlyVisitor.upsert({
       where: { datetime: currentHour },
@@ -50,9 +62,9 @@ export async function POST(req: NextRequest) {
         total: 1,
       },
     })
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       visitor,
       hourlyVisitor
     })

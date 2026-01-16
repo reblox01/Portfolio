@@ -7,6 +7,7 @@ import { CreateAndEditTechstackType, createAndEditTechstackType, Techstack } fro
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { validateObjectId, validateObjectIds } from '@/lib/validation';
 
 
 async function authenticateAndRedirect(): Promise<string> {
@@ -37,15 +38,58 @@ export async function createTechstackAction(values: CreateAndEditTechstackType):
 }
 
 
+import { getSortSettingsAction } from "./sortSettings.actions";
+
 export async function getAllTechstacksAction(): Promise<{
-    techstacks: Techstack[]
+    techstacks: Techstack[];
+    sortType: string;
 }> {
     try {
-        const techstacks: Techstack[] = await prisma.techstack.findMany({})
-        return { techstacks };
+        // Fetch sort settings
+        const settings = await getSortSettingsAction();
+        const sortType = settings.techstackSortType || 'newest';
+
+        let orderBy: any = { createdAt: 'desc' }; // Default
+
+        if (sortType === 'newest') {
+            orderBy = { createdAt: 'desc' };
+        } else if (sortType === 'oldest') {
+            orderBy = { createdAt: 'asc' };
+        } else if (sortType === 'custom') {
+            orderBy = [
+                { displayOrder: 'asc' },
+                { createdAt: 'desc' }
+            ];
+        }
+
+        const techstacks: Techstack[] = await prisma.techstack.findMany({
+            orderBy: orderBy
+        })
+        return { techstacks, sortType };
     } catch (error) {
         console.log(error);
-        return { techstacks: [] };
+        return { techstacks: [], sortType: 'newest' };
+    }
+}
+
+export async function reorderTechstackAction(items: { id: string; displayOrder: number }[]): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.$transaction(
+            items.map((item) =>
+                prisma.techstack.update({
+                    where: { id: item.id },
+                    data: { displayOrder: item.displayOrder }
+                })
+            )
+        );
+
+        revalidatePath('/dashboard/manage-techstack');
+        return true;
+    } catch (error) {
+        console.error("Error reordering techstack:", error instanceof Error ? error.message : "Unknown error");
+        return false;
     }
 }
 
@@ -54,12 +98,14 @@ export async function getSingleTechstackAction(id: string): Promise<Techstack | 
     const userId = await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
         techstack = await prisma.techstack.findUnique({
             where: {
                 id,
             },
         });
     } catch (error) {
+        console.error("Error fetching techstack:", error instanceof Error ? error.message : "Unknown error");
         techstack = null;
     }
     if (!techstack) {
@@ -72,6 +118,7 @@ export async function deleteTechstackAction(id: string): Promise<Techstack | nul
     const userId = await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
         const techstack: Techstack = await prisma.techstack.delete({
             where: {
                 id,
@@ -80,7 +127,7 @@ export async function deleteTechstackAction(id: string): Promise<Techstack | nul
         revalidatePath('/dashboard/manage-techstack');
         return techstack;
     } catch (error) {
-        console.error("Error deleting techstack:", error);
+        console.error("Error deleting techstack:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -91,6 +138,9 @@ export async function updateTechstackAction(
     const userId = await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
+        createAndEditTechstackType.parse(values);
+
         const techtstack: Techstack = await prisma.techstack.update({
             where: {
                 id,
@@ -102,6 +152,7 @@ export async function updateTechstackAction(
         revalidatePath('/dashboard/manage-techstack');
         return techtstack;
     } catch (error) {
+        console.error("Error updating techstack:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -110,6 +161,7 @@ export async function bulkDeleteTechstackAction(ids: string[]): Promise<boolean>
     await authenticateAndRedirect();
 
     try {
+        validateObjectIds(ids);
         await prisma.techstack.deleteMany({
             where: {
                 id: { in: ids }
@@ -118,7 +170,7 @@ export async function bulkDeleteTechstackAction(ids: string[]): Promise<boolean>
         revalidatePath('/dashboard/manage-techstack');
         return true;
     } catch (error) {
-        console.error("Bulk delete error:", error);
+        console.error("Bulk delete error:", error instanceof Error ? error.message : "Unknown error");
         return false;
     }
 }

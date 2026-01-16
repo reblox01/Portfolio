@@ -34,6 +34,10 @@ export const links: { title: string; href: string; icon?: any }[] = [
     href: "/experience",
   },
   {
+    title: "Education",
+    href: "/education",
+  },
+  {
     title: "Certification",
     href: "/certification",
   },

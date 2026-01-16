@@ -7,12 +7,22 @@ import { Project } from "@/lib/types/project-types";
 import { useQuery } from "@tanstack/react-query";
 import { MoveLeft, MoveRight } from "lucide-react";
 import Link from "next/link";
+import DOMPurify from "isomorphic-dompurify";
 
 const ProjectDetailContainer = ({ projectId }: { projectId: string }) => {
   const { data } = useQuery({
     queryKey: ["project", projectId],
     queryFn: () => getSingleProjectAction(projectId),
   });
+
+  // Sanitize description to prevent XSS attacks
+  const sanitizedDescription = data?.description
+    ? DOMPurify.sanitize(data.description, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'code', 'pre', 'blockquote'],
+      ALLOWED_ATTR: ['href', 'target', 'class', 'rel'],
+      ALLOW_DATA_ATTR: false,
+    })
+    : '';
 
   return (
     <>
@@ -34,9 +44,9 @@ const ProjectDetailContainer = ({ projectId }: { projectId: string }) => {
                 </p>
               </div>
               <div className="space-y-4 text-gray-500 text-sm text-justify dark:text-gray-400">
-                <div 
+                <div
                   className="prose prose-sm dark:prose-invert max-w-none prose-project-description"
-                  dangerouslySetInnerHTML={{ __html: data?.description || '' }}
+                  dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
                 />
               </div>
             </div>

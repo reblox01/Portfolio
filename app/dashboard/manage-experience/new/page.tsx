@@ -1,3 +1,4 @@
+"use client";
 import { ExperienceForm } from "../_components/experience-form";
 
 export default function NewExperiencePage() {

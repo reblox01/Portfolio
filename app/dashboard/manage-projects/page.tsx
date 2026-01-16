@@ -1,30 +1,38 @@
+
 "use client";
 import * as React from "react";
 import { Project } from "@/lib/types/project-types";
-import { ColumnDef } from "@tanstack/react-table";
-import { getAllProjectsAction } from "@/actions/project.actions";
-import { DataTable } from "./data-table";
+import { getAllProjectsAction, reorderProjectsAction, bulkDeleteProjectsAction, bulkTogglePublishProjectsAction } from "@/actions/project.actions";
+import { updateSortSettingsAction } from "@/actions/sortSettings.actions";
+import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BulkActionsToolbar } from "../_components/bulk-actions-toolbar";
-import { bulkDeleteProjectsAction, bulkTogglePublishProjectsAction } from "@/actions/project.actions";
 import { useRouter } from "next/navigation";
+
+import { SortControl } from "@/components/dashboard/sort-control";
 
 export default function ManageProjectsPage() {
   const router = useRouter();
   const [projects, setProjects] = React.useState<Project[]>([]);
+  const [sortType, setSortType] = React.useState<string>("newest");
+
+  const refreshData = async () => {
+    const res = await getAllProjectsAction();
+    setProjects(res.projects || []);
+    setSortType(res.sortType || "newest");
+  };
 
   React.useEffect(() => {
-    getAllProjectsAction().then((res) => setProjects(res.projects || []));
+    refreshData();
   }, []);
 
   const handleBulkDelete = async (ids: string[]) => {
     const success = await bulkDeleteProjectsAction(ids);
     if (success) {
       router.refresh();
-      const { projects } = await getAllProjectsAction();
-      setProjects(projects || []);
+      refreshData();
     }
   };
 
@@ -32,8 +40,22 @@ export default function ManageProjectsPage() {
     const success = await bulkTogglePublishProjectsAction(ids, publish);
     if (success) {
       router.refresh();
-      const { projects } = await getAllProjectsAction();
-      setProjects(projects || []);
+      refreshData();
+    }
+  };
+
+  const handleReorder = async (newOrder: Project[]) => {
+    setProjects(newOrder);
+    setSortType('custom');
+
+    const items = newOrder.map((item, index) => ({
+      id: item.id,
+      displayOrder: index
+    }));
+    await reorderProjectsAction(items);
+
+    if (sortType !== 'custom') {
+      await updateSortSettingsAction({ projectSortType: 'custom' });
     }
   };
 
@@ -42,14 +64,20 @@ export default function ManageProjectsPage() {
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Manage Projects</h2>
         <div className="flex items-center space-x-2">
+          <SortControl
+            contentType="project"
+            currentSort={sortType}
+            onSortComplete={refreshData}
+          />
           <Button asChild>
-            <Link href="/dashboard/manage-projects/new">Add new projects</Link>
+            <Link href="/dashboard/manage-projects/new">Add new project</Link>
           </Button>
         </div>
       </div>
       <DataTable
-        columns={columns as ColumnDef<any, any>[]}
+        columns={columns as any}
         data={projects}
+        onReorder={handleReorder}
         bulkActions={(selectedIds) => (
           <BulkActionsToolbar
             selectedIds={selectedIds}

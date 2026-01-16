@@ -193,6 +193,7 @@ export function CustomTagField({
   );
 }
 
+
 export function CustomPasswordField({
   name,
   control,
@@ -220,10 +221,10 @@ export function CustomPasswordField({
               <Input
                 type={showPassword ? "text" : "password"}
                 {...field}
-                value={formatPassword(field.value || '')} 
+                value={formatPassword(field.value || '')}
                 onChange={(e) => {
                   const rawValue = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                  field.onChange(rawValue); 
+                  field.onChange(rawValue);
                 }}
                 className="pr-10"
               />
@@ -241,6 +242,35 @@ export function CustomPasswordField({
               )}
             </button>
           </div>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+import RichTextEditor from "./RichTextEditor";
+
+export function CustomFormRichText({
+  name,
+  control,
+  title,
+  placeholder,
+}: CustomFormFieldProps & { placeholder?: string }) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="capitalize">{title || name}</FormLabel>
+          <FormControl>
+            <RichTextEditor
+              value={field.value}
+              onChange={field.onChange}
+              placeholder={placeholder}
+            />
+          </FormControl>
           <FormMessage />
         </FormItem>
       )}

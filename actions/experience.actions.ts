@@ -6,6 +6,7 @@ import { ExperienceType, createAndEditExperienceSchema, CreateAndEditExperienceT
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { validateObjectId, validateObjectIds } from '@/lib/validation';
 
 
 async function authenticateAndRedirect(): Promise<string> {
@@ -37,19 +38,63 @@ export async function createExperienceAction(values: CreateAndEditExperienceType
 }
 
 
+import { getSortSettingsAction } from "./sortSettings.actions";
+
 export async function getAllExperienceAction(publishedOnly: boolean = false): Promise<{
-    experience: ExperienceType[]
+    experience: ExperienceType[];
+    sortType: string;
 }> {
     try {
         const whereClause = publishedOnly ? { isPublished: true } : {};
+
+        // Fetch sort settings
+        const settings = await getSortSettingsAction();
+        const sortType = settings.experienceSortType || 'newest';
+
+        let orderBy: any = { startDate: 'desc' }; // Default
+
+        if (sortType === 'newest') {
+            orderBy = { startDate: 'desc' };
+        } else if (sortType === 'oldest') {
+            orderBy = { startDate: 'asc' };
+        } else if (sortType === 'custom') {
+            orderBy = [
+                { displayOrder: 'asc' },
+                { startDate: 'desc' }
+            ];
+        }
+
         const rows = await prisma.experience.findMany({
-            where: whereClause
+            where: whereClause,
+            orderBy: orderBy
         })
         const experience: ExperienceType[] = rows.map(normalizeExperienceRow)
-        return { experience };
+        return { experience, sortType };
     } catch (error) {
         console.log(error);
-        return { experience: [] };
+        return { experience: [], sortType: 'newest' };
+    }
+}
+
+export async function reorderExperienceAction(items: { id: string; displayOrder: number }[]): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.$transaction(
+            items.map((item) =>
+                prisma.experience.update({
+                    where: { id: item.id },
+                    data: { displayOrder: item.displayOrder }
+                })
+            )
+        );
+
+        revalidatePath('/dashboard/manage-experience');
+        revalidatePath('/experience');
+        return true;
+    } catch (error) {
+        console.error("Error reordering experience:", error instanceof Error ? error.message : "Unknown error");
+        return false;
     }
 }
 
@@ -58,13 +103,17 @@ export async function deleteExperienceAction(id: string): Promise<ExperienceType
     await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
         const raw = await prisma.experience.delete({
             where: {
                 id,
             },
         });
+        revalidatePath('/dashboard/manage-experience');
+        revalidatePath('/experience');
         return normalizeExperienceRow(raw);
     } catch (error) {
+        console.error("Error deleting experience:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -73,6 +122,7 @@ export async function getSingleExperienceAction(id: string): Promise<ExperienceT
     let experience: ExperienceType | null = null;
 
     try {
+        validateObjectId(id);
         const raw = await prisma.experience.findUnique({
             where: {
                 id,
@@ -80,6 +130,7 @@ export async function getSingleExperienceAction(id: string): Promise<ExperienceT
         });
         experience = raw ? normalizeExperienceRow(raw) : null;
     } catch (error) {
+        console.error("Error fetching experience:", error instanceof Error ? error.message : "Unknown error");
         experience = null;
     }
     if (!experience) {
@@ -96,6 +147,9 @@ export async function updateExperienceAction(
     await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
+        createAndEditExperienceSchema.parse(values);
+
         const raw = await prisma.experience.update({
             where: {
                 id,
@@ -109,6 +163,7 @@ export async function updateExperienceAction(
         revalidatePath('/experience');
         return normalizeExperienceRow(raw);
     } catch (error) {
+        console.error("Error updating experience:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -120,6 +175,7 @@ export async function toggleExperiencePublishAction(
     await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
         const raw = await prisma.experience.update({
             where: {
                 id,
@@ -132,7 +188,7 @@ export async function toggleExperiencePublishAction(
         revalidatePath('/experience');
         return normalizeExperienceRow(raw);
     } catch (error) {
-        console.error(error);
+        console.error("Error toggling experience publish:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -141,6 +197,7 @@ export async function bulkDeleteExperienceAction(ids: string[]): Promise<boolean
     await authenticateAndRedirect();
 
     try {
+        validateObjectIds(ids);
         await prisma.experience.deleteMany({
             where: {
                 id: { in: ids }
@@ -150,7 +207,7 @@ export async function bulkDeleteExperienceAction(ids: string[]): Promise<boolean
         revalidatePath('/experience');
         return true;
     } catch (error) {
-        console.error("Bulk delete error:", error);
+        console.error("Bulk delete error:", error instanceof Error ? error.message : "Unknown error");
         return false;
     }
 }
@@ -159,6 +216,7 @@ export async function bulkTogglePublishExperienceAction(ids: string[], isPublish
     await authenticateAndRedirect();
 
     try {
+        validateObjectIds(ids);
         await prisma.experience.updateMany({
             where: {
                 id: { in: ids }
@@ -171,7 +229,7 @@ export async function bulkTogglePublishExperienceAction(ids: string[], isPublish
         revalidatePath('/experience');
         return true;
     } catch (error) {
-        console.error("Bulk toggle publish error:", error);
+        console.error("Bulk toggle publish error:", error instanceof Error ? error.message : "Unknown error");
         return false;
     }
 }

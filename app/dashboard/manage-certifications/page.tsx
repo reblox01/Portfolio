@@ -2,27 +2,37 @@
 import Link from "next/link";
 import * as React from "react";
 import { BulkActionsToolbar } from "../_components/bulk-actions-toolbar";
-import { bulkDeleteCertificationsAction, bulkTogglePublishCertificationsAction, getAllCertificationsAction } from "@/actions/certification.actions";
+import { bulkDeleteCertificationsAction, bulkTogglePublishCertificationsAction, getAllCertificationsAction, reorderCertificationsAction } from "@/actions/certification.actions";
+import { updateSortSettingsAction } from "@/actions/sortSettings.actions";
 import { useRouter } from "next/navigation";
-import { DataTable } from "./data-table";
+import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
-import { ColumnDef } from "@tanstack/table-core";
+import { ColumnDef } from "@tanstack/react-table";
+import { CertificateType } from "@/lib/types/certification-types";
+
+import { SortControl } from "@/components/dashboard/sort-control";
 
 export default function ManageCertificationsPage() {
   const router = useRouter();
-  const [certifications, setCertifications] = React.useState<any[]>([]);
+  const [certifications, setCertifications] = React.useState<CertificateType[]>([]);
+  const [sortType, setSortType] = React.useState<string>("newest");
+
+  const refreshData = async () => {
+    const res = await getAllCertificationsAction();
+    setCertifications(res.certifications || []);
+    setSortType(res.sortType || "newest");
+  };
 
   React.useEffect(() => {
-    getAllCertificationsAction().then((res) => setCertifications(res.certifications || []));
+    refreshData();
   }, []);
 
   const handleBulkDelete = async (ids: string[]) => {
     const success = await bulkDeleteCertificationsAction(ids);
     if (success) {
       router.refresh();
-      const { certifications } = await getAllCertificationsAction();
-      setCertifications(certifications || []);
+      refreshData();
     }
   };
 
@@ -30,8 +40,21 @@ export default function ManageCertificationsPage() {
     const success = await bulkTogglePublishCertificationsAction(ids, publish);
     if (success) {
       router.refresh();
-      const { certifications } = await getAllCertificationsAction();
-      setCertifications(certifications || []);
+      refreshData();
+    }
+  };
+
+  const handleReorder = async (newOrder: CertificateType[]) => {
+    setCertifications(newOrder);
+    setSortType('custom');
+    const items = newOrder.map((item, index) => ({
+      id: item.id,
+      displayOrder: index
+    }));
+    await reorderCertificationsAction(items);
+
+    if (sortType !== 'custom') {
+      await updateSortSettingsAction({ certificationSortType: 'custom' });
     }
   };
 
@@ -40,14 +63,20 @@ export default function ManageCertificationsPage() {
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Manage Certifications</h2>
         <div className="flex items-center space-x-2">
+          <SortControl
+            contentType="certification"
+            currentSort={sortType}
+            onSortComplete={refreshData}
+          />
           <Button asChild>
             <Link href="/dashboard/manage-certifications/new">Add new certifications</Link>
           </Button>
         </div>
       </div>
       <DataTable
-        columns={columns as ColumnDef<any, any>[]}
+        columns={columns as any}
         data={certifications}
+        onReorder={handleReorder}
         bulkActions={(selectedIds) => (
           <BulkActionsToolbar
             selectedIds={selectedIds}

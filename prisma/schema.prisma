@@ -12,114 +12,159 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
-  model Project {
-    id          String      @id @default(auto()) @map("_id") @db.ObjectId
-    title       String
-    oneLiner    String
-    logo        String
-    screenshot  String
-    projectType String
-    liveURL     String?
-    sourceURL   String?
-    description String
-    techStack   Json[]
-    keywords    Json[]
-    isPublished Boolean     @default(true)
-  }
- 
-  model Certification {
-  id                String      @id @default(auto()) @map("_id") @db.ObjectId
-  title             String
-  organizationName  String
-  completionDate    DateTime
-  credentialID      String
-  certificateUrl    String
-  screenshot        String
-  learned           Json[]
-  isPublished       Boolean     @default(true)
-  }
- 
-  model Experience {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  positionName    String
-  companyName     String
-  companyLocation String
-  workMode        String?
-  startDate       DateTime
-  endDate         DateTime?
-  isCurrentlyWorking Boolean  @default(false)
-  learned         Json[]
-  isPublished     Boolean     @default(true)
-  }
 
-model Techstack{
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+model Project {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  oneLiner     String
+  logo         String
+  screenshot   String
+  projectType  String
+  liveURL      String?
+  sourceURL    String?
+  description  String
+  techStack    Json[]
+  keywords     Json[]
+  isPublished  Boolean  @default(true)
+  displayOrder Int? // For custom ordering
+  createdAt    DateTime @default(now())
+}
+
+model Certification {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  organizationName String
+  completionDate   DateTime
+  credentialID     String
+  certificateUrl   String
+  screenshot       String
+  learned          Json[]
+  isPublished      Boolean  @default(true)
+  displayOrder     Int? // For custom ordering
+  createdAt        DateTime @default(now())
+}
+
+model Experience {
+  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
+  positionName       String
+  companyName        String
+  companyLocation    String
+  workMode           String?
+  startDate          DateTime
+  endDate            DateTime?
+  isCurrentlyWorking Boolean   @default(false)
+  learned            Json[]
+  isPublished        Boolean   @default(true)
+  displayOrder       Int? // For custom ordering
+  createdAt          DateTime  @default(now())
+}
+
+model Education {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  degree       String // "Bachelor of Science", "Master's", etc.
+  fieldOfStudy String // "Computer Science", "Software Engineering", etc.
+  institution  String // University/School name
+  location     String? // City, Country
+  startDate    DateTime
+  endDate      DateTime?
+  isCurrently  Boolean   @default(false) // Currently studying
+  grade        String? // "3.8 GPA", "First Class Honours", etc.
+  achievements Json[] // Notable achievements, awards, honors
+  description  String? // Additional details about coursework, projects
+  isPublished  Boolean   @default(true)
+  displayOrder Int? // For custom ordering
+  createdAt    DateTime  @default(now())
+}
+
+model Techstack {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   category      String
   url           String
   techstackType String
   imageUrl      String
+  displayOrder  Int? // For custom ordering
+  createdAt     DateTime @default(now())
 }
 
 model Contact {
-  id                 String      @id @default(auto()) @map("_id") @db.ObjectId
-  email              String
-  smtpEmail          String?
-  emailPassword      String?
-  phone              String
-  address            String
-  smtpServer         String?
-  smtpPort           Int?
-  smtpUsername       String?
-  smtpPassword       String?
-  emailIntegration   Boolean     @default(false)
-  emailProvider      String?     // "gmail" | "outlook" | "other"
-  mailboxSettings    Json?       // For storing provider-specific settings
+  id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  email            String
+  smtpEmail        String?
+  emailPassword    String?
+  phone            String
+  address          String
+  smtpServer       String?
+  smtpPort         Int?
+  smtpUsername     String?
+  smtpPassword     String?
+  emailIntegration Boolean @default(false)
+  emailProvider    String? // "gmail" | "outlook" | "other"
+  mailboxSettings  Json? // For storing provider-specific settings
+}
+
+model SortSettings {
+  id                    String @id @default(auto()) @map("_id") @db.ObjectId
+  // Sort types: "newest" | "oldest" | "custom"
+  projectSortType       String @default("newest")
+  certificationSortType String @default("newest")
+  experienceSortType    String @default("newest")
+  educationSortType     String @default("newest")
+  techstackSortType     String @default("newest")
+
+  // Apply to public pages
+  applyProjectSortToPublic       Boolean @default(true)
+  applyCertificationSortToPublic Boolean @default(true)
+  applyExperienceSortToPublic    Boolean @default(true)
+  applyEducationSortToPublic     Boolean @default(true)
+  applyTechstackSortToPublic     Boolean @default(true)
+
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model SiteSettings {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  customCursor  Boolean     @default(true)
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  customCursor Boolean @default(true)
 }
 
 // Visitor metrics for analytics charts (daily aggregation)
 model Visitor {
-  id    String   @id @default(auto()) @map("_id") @db.ObjectId
-  date  DateTime @unique
-  desktop Int    @default(0)
-  mobile  Int    @default(0)
-  total   Int    @default(0)
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  date    DateTime @unique
+  desktop Int      @default(0)
+  mobile  Int      @default(0)
+  total   Int      @default(0)
 }
 
 // Hourly visitor tracking for detailed 24h analytics
 model HourlyVisitor {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   datetime DateTime @unique
-  hour     Int      // 0-23
+  hour     Int // 0-23
   desktop  Int      @default(0)
   mobile   Int      @default(0)
   total    Int      @default(0)
 }
 
 model Admin {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
   adminUserId  String
-  name         String    
+  name         String
   imageUrl     String
   resumeUrl    String?
   position     String
-  location     String    
-  introduction String     
-  education    String    
-  skills       Json[]  
+  location     String
+  introduction String
+  education    String
+  skills       Json[]
   github       String?
-  linkedIn       String?
-  whatsapp       String?
-  facebook       String?
-  instagram       String?
-  discord       String?
+  linkedIn     String?
+  whatsapp     String?
+  facebook     String?
+  instagram    String?
+  discord      String?
   gitlab       String?
-  twitter       String?
-  email       String?
-  youtube   String?
+  twitter      String?
+  email        String?
+  youtube      String?
 }

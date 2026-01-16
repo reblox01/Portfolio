@@ -10,6 +10,7 @@ import {
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { validateObjectId, validateObjectIds } from '@/lib/validation';
 
 
 async function authenticateAndRedirect(): Promise<string | null> {
@@ -46,18 +47,64 @@ export async function createProjectAction(values: CreateAndEditProjectType): Pro
 }
 
 
-export const getAllProjectsAction = async (publishedOnly: boolean = false) => {
+import { getSortSettingsAction } from "./sortSettings.actions";
+
+export const getAllProjectsAction = async (publishedOnly: boolean = false): Promise<{
+    projects: Project[];
+    sortType: string;
+}> => {
     try {
         const whereClause = publishedOnly ? { isPublished: true } : {};
-        const projects = await prisma.project.findMany({
+
+        // Fetch sort settings
+        const settings = await getSortSettingsAction();
+        const sortType = settings.projectSortType || 'newest';
+
+        let orderBy: any = { createdAt: 'desc' }; // Default
+
+        if (sortType === 'newest') {
+            orderBy = { createdAt: 'desc' };
+        } else if (sortType === 'oldest') {
+            orderBy = { createdAt: 'asc' };
+        } else if (sortType === 'custom') {
+            orderBy = [
+                { displayOrder: 'asc' },
+                { createdAt: 'desc' }
+            ];
+        }
+
+        const projects: Project[] = await prisma.project.findMany({
             where: whereClause,
+            orderBy: orderBy,
         });
-        return { projects };
+        return { projects, sortType };
     } catch (error) {
-        console.error("Error fetching projects:", error);
-        throw error;
+        console.log(error);
+        return { projects: [], sortType: 'newest' };
     }
-};
+}
+
+export async function reorderProjectsAction(items: { id: string; displayOrder: number }[]): Promise<boolean> {
+    await authenticateAndRedirect();
+
+    try {
+        await prisma.$transaction(
+            items.map((item) =>
+                prisma.project.update({
+                    where: { id: item.id },
+                    data: { displayOrder: item.displayOrder }
+                })
+            )
+        );
+
+        revalidatePath('/dashboard/manage-projects');
+        revalidatePath('/projects');
+        return true;
+    } catch (error) {
+        console.error("Error reordering projects:", error instanceof Error ? error.message : "Unknown error");
+        return false;
+    }
+}
 
 function shuffleProjects(projects: Project[]): Project[] {
     // Deep copy the original array to avoid mutating the original array
@@ -110,12 +157,14 @@ export async function getSingleProjectAction(id: string): Promise<Project | null
     let project: Project | null = null;
 
     try {
+        validateObjectId(id);
         project = await prisma.project.findUnique({
             where: {
                 id,
             },
         });
     } catch (error) {
+        console.error("Error fetching project:", error instanceof Error ? error.message : "Unknown error");
         project = null;
     }
     if (!project) {
@@ -131,13 +180,17 @@ export async function deleteProjectAction(id: string): Promise<Project | null> {
     }
 
     try {
+        validateObjectId(id);
         const project: Project = await prisma.project.delete({
             where: {
                 id,
             },
         });
+        revalidatePath('/dashboard/manage-projects');
+        revalidatePath('/projects');
         return project;
     } catch (error) {
+        console.error("Error deleting project:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -147,6 +200,7 @@ export async function bulkDeleteProjectsAction(ids: string[]): Promise<boolean> 
     if (!userId) return false;
 
     try {
+        validateObjectIds(ids);
         await prisma.project.deleteMany({
             where: {
                 id: { in: ids }
@@ -156,7 +210,7 @@ export async function bulkDeleteProjectsAction(ids: string[]): Promise<boolean> 
         revalidatePath('/projects');
         return true;
     } catch (error) {
-        console.error("Bulk delete error:", error);
+        console.error("Bulk delete error:", error instanceof Error ? error.message : "Unknown error");
         return false;
     }
 }
@@ -166,6 +220,7 @@ export async function bulkTogglePublishProjectsAction(ids: string[], isPublished
     if (!userId) return false;
 
     try {
+        validateObjectIds(ids);
         await prisma.project.updateMany({
             where: {
                 id: { in: ids }
@@ -178,7 +233,7 @@ export async function bulkTogglePublishProjectsAction(ids: string[], isPublished
         revalidatePath('/projects');
         return true;
     } catch (error) {
-        console.error("Bulk toggle publish error:", error);
+        console.error("Bulk toggle publish error:", error instanceof Error ? error.message : "Unknown error");
         return false;
     }
 }
@@ -190,6 +245,7 @@ export async function toggleProjectPublishAction(
     await authenticateAndRedirect();
 
     try {
+        validateObjectId(id);
         const project: Project = await prisma.project.update({
             where: {
                 id,
@@ -202,7 +258,7 @@ export async function toggleProjectPublishAction(
         revalidatePath('/projects');
         return project;
     } catch (error) {
-        console.error(error);
+        console.error("Error toggling project publish:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
@@ -217,6 +273,9 @@ export async function updateProjectAction(
     }
 
     try {
+        validateObjectId(id);
+        createAndEditProjectSchema.parse(values);
+
         const project: Project = await prisma.project.update({
             where: {
                 id,
@@ -232,6 +291,7 @@ export async function updateProjectAction(
         revalidatePath('/projects');
         return project;
     } catch (error) {
+        console.error("Error updating project:", error instanceof Error ? error.message : "Unknown error");
         return null;
     }
 }
