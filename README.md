@@ -61,6 +61,7 @@ ADMIN_USER_ID=
 ### SEO / Runtime configuration
 
 - Set `SITE_URL` or `NEXT_PUBLIC_SITE_URL` to your deployed site root (e.g. `https://example.com`). The app will use this for sitemap generation, Open Graph canonical URLs and absolute image URLs. If not set, values from `site.config.ts` are used as defaults.
+- ( **RECOMMENDED** ) Manage your SEO settings in `Dashboard > Settings > SEO` instead of editing `site.config.ts` directly.
 
 Example (Vercel):
 
