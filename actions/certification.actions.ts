@@ -8,10 +8,20 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { CertificateType, createAndEditCertificateSchema, CreateAndEditCertificateType } from '@/lib/types/certification-types';
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
+import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
+import { headers } from 'next/headers';
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
     if (!userId) redirect('/');
+
+    // Rate Limiting Check
+    const ip = getClientIp(await headers());
+    const { success } = await apiRateLimit.limit(ip);
+    if (!success) {
+        throw new Error("Rate limit exceeded. Please try again later.");
+    }
+
     return userId;
 }
 

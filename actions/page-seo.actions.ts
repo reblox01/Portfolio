@@ -5,10 +5,20 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from "next/navigation";
 import { siteConfig } from "@/site.config";
 import * as z from "zod";
+import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
+import { headers } from 'next/headers';
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
     if (!userId) redirect('/');
+
+    // Rate Limiting Check
+    const ip = getClientIp(await headers());
+    const { success } = await apiRateLimit.limit(ip);
+    if (!success) {
+        throw new Error("Rate limit exceeded. Please try again later.");
+    }
+
     return userId;
 }
 
