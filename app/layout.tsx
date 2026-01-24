@@ -14,6 +14,17 @@ export const metadata: Metadata = {
     template: `%s - ${siteConfig.name}`
   },
   description: siteConfig.description,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: [
     {
       rel: 'icon',

@@ -1,20 +1,177 @@
-# robots.txt for this Portfolio
-# Manage and optimize crawl behavior for search engines
+# robots.txt for Sohail Koutari Portfolio
+# Optimized for search engines, AI crawlers, and social platforms
 
+# =====================================================
+# DEFAULT RULES FOR ALL CRAWLERS
+# =====================================================
 User-agent: *
 # Block sensitive and non-public areas
 Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /sign-in/
+Disallow: /sign-up/
 Disallow: /login/
 Disallow: /register/
 Disallow: /cgi-bin/
 Disallow: /private/
 Disallow: /tmp/
-Disallow: /search
-Disallow: /404.html
-Disallow: /dashboard/
-
-# Allow all other content
+Disallow: /_next/static/
+Disallow: /404
+# Allow everything else
 Allow: /
 
-# Sitemap location (use full URL for consistency)
-Sitemap: https://yoursite.com/sitemap.xml
+# =====================================================
+# GOOGLE BOTS
+# =====================================================
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Storebot-Google
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+# =====================================================
+# BING / MICROSOFT BOTS
+# =====================================================
+User-agent: Bingbot
+Allow: /
+
+User-agent: MSNBot
+Allow: /
+
+User-agent: BingPreview
+Allow: /
+
+# =====================================================
+# OTHER SEARCH ENGINES
+# =====================================================
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: Sogou
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: NaverBot
+Allow: /
+
+User-agent: SeznamBot
+Allow: /
+
+# =====================================================
+# AI CRAWLERS - EXPLICITLY ALLOWED
+# =====================================================
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# Meta AI
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+
+# =====================================================
+# SOCIAL MEDIA CRAWLERS
+# =====================================================
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Pinterest
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# =====================================================
+# SEO TOOLS - Allow for auditing
+# =====================================================
+User-agent: SemrushBot
+Allow: /
+
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: rogerbot
+Allow: /
+
+User-agent: DotBot
+Allow: /
+
+# =====================================================
+# SITEMAP
+# =====================================================
+Sitemap: https://your-name.vercel.app/sitemap.xml
+
+# =====================================================
+# CRAWL DELAY (optional - remove if causing issues)
+# =====================================================
+# Crawl-delay: 1

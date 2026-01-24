@@ -7,6 +7,7 @@ const isPublicRoute = createRouteMatcher([
     "/about",
     "/projects(.*)",
     "/experience(.*)",
+    "/education(.*)",
     "/certification(.*)",
     "/techstack(.*)",
     "/contact",
@@ -18,27 +19,32 @@ const isPublicRoute = createRouteMatcher([
     "/api/(.*)"
 ]);
 
-// Comprehensive bot detection for search engines and social crawlers
-const BOT_UA_REGEX = /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandex|facebookexternalhit|twitterbot|whatsapp|telegram|skype|linkedinbot|pinterest|crawler|spider|bot\/|robot/i;
+// Comprehensive bot detection for search engines, AI crawlers, and social platforms
+const BOT_UA_REGEX = /googlebot|google-inspectiontool|storebot-google|googleother|google-extended|bingbot|bingpreview|msnbot|slurp|duckduckbot|baiduspider|yandex|yandexbot|sogou|exabot|facebot|facebookexternalhit|ia_archiver|twitterbot|whatsapp|telegram|skype|linkedinbot|pinterest|pinterestbot|applebot|semrushbot|ahrefsbot|mj12bot|dotbot|petalbot|bytespider|gptbot|chatgpt-user|oai-searchbot|claudebot|anthropic-ai|claude-web|perplexitybot|cohere-ai|youbot|ccbot|diffbot|rogerbot|seznambot|mojeekbot|discordbot|slackbot|embedly|quora|outbrain|flipboardproxy|tumblr|newsbot|mediapartners-google|adsbot-google|apis-google|feedfetcher-google|crawler|spider|bot\/|robot|scraper|archiver|indexer/i;
 
-// Check if request is from a search engine or crawler
+// Check if request is from a search engine, AI crawler, or social platform
 function isCrawler(userAgent: string, ip?: string): boolean {
-    // Check user agent
+    // Check user agent against comprehensive regex
     if (BOT_UA_REGEX.test(userAgent)) {
         return true;
     }
 
-    // Check for common crawler patterns in user agent
+    // Check for crawler and AI patterns in user agent
     const crawlerPatterns = [
-        'google',
-        'bing',
-        'yahoo',
-        'duck',
-        'search',
-        'crawler',
-        'spider',
-        'bot',
-        'indexer'
+        // Major Search Engines
+        'google', 'bing', 'yahoo', 'duckduck', 'baidu', 'yandex', 'sogou', 'naver', 'seznam',
+        // AI Assistants & Crawlers
+        'gpt', 'chatgpt', 'openai', 'claude', 'anthropic', 'perplexity', 'cohere', 'you.com',
+        'meta-externalagent', 'bytedance', 'gemini', 'bard',
+        // SEO Tools
+        'semrush', 'ahrefs', 'moz', 'majestic', 'screaming', 'sitebulb',
+        // Social Platforms
+        'facebook', 'twitter', 'linkedin', 'pinterest', 'instagram', 'tiktok', 'snapchat',
+        'discord', 'slack', 'telegram', 'whatsapp', 'skype',
+        // Generic patterns
+        'search', 'crawler', 'spider', 'bot', 'indexer', 'fetch', 'preview',
+        // Browsers in headless mode
+        'headless', 'phantom', 'puppeteer', 'playwright', 'selenium'
     ];
 
     const ua = userAgent.toLowerCase();

@@ -14,6 +14,7 @@ export async function GET() {
       'about',
       'projects',
       'experience',
+      'education',
       'certification',
       'techstack',
       'contact',
@@ -26,7 +27,7 @@ export async function GET() {
     const allUrls = [...urls, ...projectUrls]
 
     const lastmod = new Date().toISOString()
-    
+
     const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${allUrls
       .map(
         (url) => {
@@ -34,7 +35,7 @@ export async function GET() {
           const isHome = url === baseUrl + '/'
           const isProjectPage = url.includes('/projects/') && url.split('/').length > 4
           const priority = isHome ? '1.0' : isProjectPage ? '0.6' : '0.8'
-          
+
           return `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${priority}</priority>\n  </url>`
         }
       )
