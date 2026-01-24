@@ -6,7 +6,7 @@ export default function MonitoringIntegrationPage() {
   return (
     <div className="flex-1 space-y-6 p-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Health & Monitoring</h1>
+        <h1 text-2xl font-bold tracking-tight>Health & Monitoring</h1>
         <p className="text-muted-foreground">Uptime, performance, and health metrics for your site.</p>
       </div>
 

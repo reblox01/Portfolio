@@ -6,7 +6,7 @@ export function ContactHeader() {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Contact Management</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Contact Management</h1>
         <p className="text-muted-foreground">
           Manage contact information and SMTP configuration
         </p>

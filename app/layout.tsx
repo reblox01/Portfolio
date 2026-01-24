@@ -53,6 +53,7 @@ const navigationItems = [
   { name: "About", url: `${SITE_URL}/about`, description: "Learn more about my background and skills" },
   { name: "Projects", url: `${SITE_URL}/projects`, description: "View my portfolio and recent work" },
   { name: "Experience", url: `${SITE_URL}/experience`, description: "Professional experience and career history" },
+  { name: "Education", url: `${SITE_URL}/education`, description: "Professional education and career history" },
   { name: "Certifications", url: `${SITE_URL}/certification`, description: "Professional certifications and achievements" },
   { name: "Contact", url: `${SITE_URL}/contact`, description: "Get in touch for opportunities" },
   { name: "Tech Stack", url: `${SITE_URL}/techstack`, description: "Technologies and tools I use" }

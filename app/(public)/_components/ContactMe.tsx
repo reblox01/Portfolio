@@ -1,5 +1,6 @@
 import { useMyContext } from "@/app/MyContext";
 import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const ContactMe = () => {
@@ -15,21 +16,17 @@ const ContactMe = () => {
           <br className="hidden lg:inline-block" /> I’m ready when you are.
         </p>
       </div>
-      <Button asChild variant="default" size="lg">
-        <Link href="/contact">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none">
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4.934 12 3.09 5.732c-.481-1.635 1.05-3.147 2.665-2.628a53.872 53.872 0 0 1 12.64 5.963C19.525 9.793 21 10.442 21 12c0 1.558-1.474 2.207-2.605 2.933a53.87 53.87 0 0 1-12.64 5.963c-1.614.519-3.146-.993-2.665-2.628L4.934 12Zm0 0h4.9"></path>
-          </svg>
-          Get in Touch
+      <Button
+        asChild
+        size="lg"
+        className="group relative overflow-hidden bg-primary px-8 text-primary-foreground shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:shadow-primary/25"
+      >
+        <Link href="/contact" className="flex items-center gap-2">
+          <div className="relative z-10 flex items-center gap-2">
+            <Sparkles className="h-6 w-6 transition-transform" />
+            <span className="font-semibold">Get in Touch</span>
+          </div>
+          <div className="absolute inset-0 -translate-x-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-[100%]" />
         </Link>
       </Button>
     </div>

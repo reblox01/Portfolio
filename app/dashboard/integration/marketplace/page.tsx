@@ -6,7 +6,7 @@ export default function MarketplaceIntegrationPage() {
   return (
     <div className="flex-1 space-y-6 p-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Integrations Marketplace</h1>
+        <h1 text-2xl font-bold tracking-tight>Integrations Marketplace</h1>
         <p className="text-muted-foreground">One-click connectors for common services.</p>
       </div>
 

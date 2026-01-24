@@ -7,7 +7,7 @@ export default function AIAssistantIntegrationPage() {
   return (
     <div className="flex-1 space-y-6 p-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+        <h1 className=" flex items-center gap-2">
           <Bot className="h-8 w-8" />
           AI Assistant
         </h1>

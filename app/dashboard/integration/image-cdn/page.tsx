@@ -7,7 +7,7 @@ export default function ImageCDNPage() {
   return (
     <div className="flex-1 space-y-6 p-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+        <h1 className=" flex items-center gap-2">
           <Database className="h-8 w-8" />
           Image CDN
         </h1>

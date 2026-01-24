@@ -1,4 +1,4 @@
-# robots.txt for Sohail Koutari Portfolio
+# robots.txt for <Your Name> Portfolio
 # Optimized for search engines, AI crawlers, and social platforms
 
 # =====================================================

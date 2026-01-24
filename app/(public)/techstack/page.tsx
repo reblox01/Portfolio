@@ -10,8 +10,8 @@ import { getAllTechstacksAction } from "@/actions/techstack.actions";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Techstack",
-  description: "Explore the tech stack I use in my work. This includes the tools, platforms, and devices I use, and the multimedia I play."
+  title: "Tech Stack",
+  description: "Technologies, tools, and platforms used by me. Modern development stack including React, Next.js, Node.js, TypeScript, PostgreSQL, MongoDB, and more. Skills and expertise overview."
 };
 const TechstackPage = async () => {
   const queryClient = new QueryClient();

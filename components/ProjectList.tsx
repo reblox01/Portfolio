@@ -57,10 +57,10 @@ export default function ProjectList({ projects }: { projects: Project[] }) {
               </Link>
             </div>
 
-            <div className="flex-1 w-full">
+            <div className="flex-1 min-w-0">
               <div>
-                <h4 className="font-semibold text-lg">{p.title}</h4>
-                {p.oneLiner && <div className="text-sm text-muted-foreground mt-1 truncate">{p.oneLiner}</div>}
+                <h4 className="font-semibold text-lg truncate">{p.title}</h4>
+                {p.oneLiner && <div className="text-sm text-muted-foreground mt-1 line-clamp-2">{p.oneLiner}</div>}
               </div>
             </div>
           </div>

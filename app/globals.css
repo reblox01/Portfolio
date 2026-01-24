@@ -55,6 +55,12 @@ body,
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --chart-1: 217 91% 60%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 47 87% 63%;
+    --chart-4: 280 80% 50%;
+    --chart-5: 340 75% 55%;
   }
 
   .dark {
@@ -93,6 +99,12 @@ body,
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --chart-1: 217 91% 60%;
+    --chart-2: 142 76% 45%;
+    --chart-3: 47 87% 63%;
+    --chart-4: 280 80% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -100,6 +112,7 @@ body,
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -113,42 +126,122 @@ body,
 }
 
 
- @layer utilities {
-    /* Scrollbar width */
-    .scrollbar::-webkit-scrollbar {
-      width: 4px;
-    }
+@layer utilities {
 
-    /* Scrollbar thumb on hover */
-    .scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #7a7a7a;
-    }
-
-    /* Scrollbar thumb */
-    .scrollbar::-webkit-scrollbar-thumb {
-      background: #484848;
-      border-radius: 10px;
-    }
-
-    /* Scrollbar track */
-    .scrollbar::-webkit-scrollbar-track {
-      background: #212121;
-    }
-    /* Hide scrollbars only for the sidebar/content containers */
-    [data-sidebar="sidebar"], [data-sidebar="content"] {
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-    }
-
-    [data-sidebar="sidebar"]::-webkit-scrollbar,
-    [data-sidebar="content"]::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-      background: transparent;
-    }
-
-    [data-sidebar="sidebar"]::-webkit-scrollbar-thumb,
-    [data-sidebar="content"]::-webkit-scrollbar-thumb {
-      background: transparent;
-    }
+  /* Scrollbar width */
+  .scrollbar::-webkit-scrollbar {
+    width: 4px;
   }
+
+  /* Scrollbar thumb on hover */
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #7a7a7a;
+  }
+
+  /* Scrollbar thumb */
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #484848;
+    border-radius: 10px;
+  }
+
+  /* Scrollbar track */
+  .scrollbar::-webkit-scrollbar-track {
+    background: #212121;
+  }
+
+  /* Dashboard scrollbar - thin and auto-hiding */
+  .dashboard-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  .dashboard-scrollbar:hover {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+
+  .dashboard-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .dashboard-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .dashboard-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+  }
+
+  .dashboard-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+
+  .dashboard-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Hide scrollbars only for the sidebar/content containers */
+  [data-sidebar="sidebar"],
+  [data-sidebar="content"] {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  [data-sidebar="sidebar"]::-webkit-scrollbar,
+  [data-sidebar="content"]::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+
+  [data-sidebar="sidebar"]::-webkit-scrollbar-thumb,
+  [data-sidebar="content"]::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  /* Custom prose styling for project descriptions */
+  .prose-project-description h1 {
+    @apply text-2xl font-bold mt-6 mb-4;
+  }
+
+  .prose-project-description h2 {
+    @apply text-xl font-semibold mt-5 mb-3;
+  }
+
+  .prose-project-description h3 {
+    @apply text-lg font-semibold mt-4 mb-2;
+  }
+
+  .prose-project-description p {
+    @apply mb-4 leading-relaxed;
+  }
+
+  .prose-project-description ul,
+  .prose-project-description ol {
+    @apply mb-4 ml-6;
+  }
+
+  .prose-project-description li {
+    @apply mb-2;
+  }
+
+  .prose-project-description strong {
+    @apply font-semibold;
+  }
+
+  .prose-project-description em {
+    @apply italic;
+  }
+
+  .prose-project-description a {
+    @apply text-primary underline hover:opacity-80;
+  }
+
+  .prose-project-description img {
+    @apply rounded-lg my-4 max-w-full;
+  }
+}

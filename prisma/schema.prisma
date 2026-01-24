@@ -127,6 +127,17 @@ model SiteSettings {
   customCursor Boolean @default(true)
 }
 
+model PageSEO {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  path        String   @unique // e.g., "/", "/about", "/projects"
+  title       String?
+  description String?
+  keywords    String? // comma-separated keywords
+  noIndex     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 // Visitor metrics for analytics charts (daily aggregation)
 model Visitor {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId

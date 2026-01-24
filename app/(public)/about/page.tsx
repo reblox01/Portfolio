@@ -7,11 +7,15 @@ import {
 } from "@tanstack/react-query";
 import AboutPageContainer from "./_components/AboutPageContainer";
 import { Metadata } from "next";
+import { constructMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: "Get to know me better, explore my background, skills, and experiences. Discover my journey and the values that drive me in my work and personal life."
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return constructMetadata({
+    path: "/about",
+    defaultTitle: "About",
+    defaultDescription: "Learn about me, a Full Stack Developer with expertise in React, Next.js, Node.js, and modern web technologies. Based in Morocco, working with Matissar on innovative web solutions.",
+  });
+}
 const AboutPage = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({

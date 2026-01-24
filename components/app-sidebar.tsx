@@ -25,6 +25,10 @@ import {
   UsersIcon,
   Zap,
   Bot,
+  Palette,
+  User,
+  Shield,
+  Puzzle,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -127,11 +131,6 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "/dashboard/site-settings",
-      icon: SettingsIcon,
-    },
-    {
       title: "Get Help",
       url: "/dashboard/help",
       icon: HelpCircleIcon,
@@ -154,9 +153,22 @@ const data = {
       icon: MailCheck,
     },
     {
+      name: "Settings",
+      url: "#",
+      icon: SettingsIcon,
+      children: [
+        { name: "SEO", url: "/dashboard/settings/seo", icon: SearchIcon },
+        { name: "UI Features", url: "/dashboard/settings/ui", icon: Palette },
+        { name: "Account", url: "/dashboard/settings/account", icon: User },
+        { name: "Notifications", url: "#", icon: BellIcon, disabled: true },
+        { name: "Security", url: "#", icon: Shield, disabled: true },
+        { name: "API Keys", url: "#", icon: KeyIcon, disabled: true },
+      ],
+    },
+    {
       name: "Integration",
       url: "#",
-      icon: Zap,
+      icon: Puzzle,
       children: [
         { name: "Overview", url: "/dashboard/integration", icon: LayoutDashboardIcon },
         { name: "Analytics", url: "/dashboard/integration/analytics", icon: BarChartIcon },
@@ -176,7 +188,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const { user: clerkUser } = useUser();
+  const { user: clerkUser, isLoaded } = useUser();
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -188,27 +201,73 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Dashboard | {clerkUser?.fullName || "Admin"}</span>
+                <span className="text-base font-semibold">
+                  {isLoaded ? (
+                    `Dashboard | ${clerkUser?.fullName || "Admin"}`
+                  ) : (
+                    <span className="inline-block h-4 w-32 bg-sidebar-accent animate-pulse rounded" />
+                  )}
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={sidelinks.map((link) => ({
-            title: link.text,
-            url: link.href,
-            icon: link.icon
-        }))} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {!isLoaded ? (
+          // Loading skeleton
+          <>
+            <div className="px-2 py-2">
+              <div className="space-y-1">
+                {Array.from({ length: 7 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-3 rounded-md px-3 py-2">
+                    <div className="h-4 w-4 bg-sidebar-accent animate-pulse rounded" />
+                    <div className="h-4 w-24 bg-sidebar-accent animate-pulse rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="px-2 py-2 mt-4">
+              <div className="space-y-1">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-3 rounded-md px-3 py-2">
+                    <div className="h-4 w-4 bg-sidebar-accent animate-pulse rounded" />
+                    <div className="h-4 w-20 bg-sidebar-accent animate-pulse rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          // Actual content
+          <>
+            <NavMain items={sidelinks.map((link) => ({
+              title: link.text,
+              url: link.href,
+              icon: link.icon
+            }))} />
+            <NavDocuments items={data.documents} />
+            <NavSecondary items={data.navSecondary} className="mt-auto" />
+          </>
+        )}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={{
+        {!isLoaded ? (
+          // Footer skeleton
+          <div className="flex items-center gap-2 px-2 py-2">
+            <div className="h-8 w-8 bg-sidebar-accent animate-pulse rounded-full" />
+            <div className="flex-1 space-y-1">
+              <div className="h-3 w-20 bg-sidebar-accent animate-pulse rounded" />
+              <div className="h-2 w-32 bg-sidebar-accent animate-pulse rounded" />
+            </div>
+          </div>
+        ) : (
+          <NavUser user={{
             name: clerkUser?.fullName || "User",
             email: clerkUser?.emailAddresses[0]?.emailAddress || "",
             avatar: clerkUser?.imageUrl || "",
-        }} />
+          }} />
+        )}
       </SidebarFooter>
     </Sidebar>
   )

@@ -8,8 +8,17 @@ import { getRandomProjectsAction } from "@/actions/project.actions";
 import HomePageContainer from "./_components/HomePageContainer";
 import { getAdminDetail } from "@/actions/admin.actions";
 import { Metadata } from "next";
-// Homepage should use the default title (just the name) from layout.tsx
-// No custom metadata needed here
+import { siteConfig } from "@/site.config";
+import { constructMetadata } from "@/lib/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return constructMetadata({
+    path: "/",
+    defaultTitle: siteConfig.name,
+    defaultDescription: "Explore my portfolio, a skilled Full Stack Developer specializing in React, Next.js, Node.js, TypeScript, and modern web technologies. View projects, experience, and get in touch.",
+  });
+}
+
 const HomePage = async () => {
   const queryClient = new QueryClient();
 

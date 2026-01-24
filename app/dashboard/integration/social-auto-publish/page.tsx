@@ -6,7 +6,7 @@ export default function SocialAutoPublishPage() {
   return (
     <div className="flex-1 space-y-6 p-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Social Auto-Publish</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Social Auto-Publish</h1>
         <p className="text-muted-foreground">Auto-post new projects or updates to social platforms.</p>
       </div>
 

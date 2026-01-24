@@ -6,7 +6,7 @@ export default function SchedulingIntegrationPage() {
   return (
     <div className="flex-1 space-y-6 p-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Scheduling / Bookings</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Scheduling / Bookings</h1>
         <p className="text-muted-foreground">Calendar booking integration for client calls.</p>
       </div>
 

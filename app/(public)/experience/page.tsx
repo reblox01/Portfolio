@@ -11,7 +11,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Experience",
-  description: "Professional experience and career history of Sohail Koutari. Full Stack Developer with hands-on expertise in modern web development, software engineering, and digital solutions."
+  description: "Professional experience and career history of me. Full Stack Developer with hands-on expertise in modern web development, software engineering, and digital solutions."
 };
 const ExperiencePage = async () => {
   const queryClient = new QueryClient();

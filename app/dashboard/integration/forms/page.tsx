@@ -6,7 +6,7 @@ export default function FormsIntegrationPage() {
   return (
     <div className="flex-1 space-y-6 p-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Forms & Spam Protection</h1>
+        <h1 text-2xl font-bold tracking-tight>Forms & Spam Protection</h1>
         <p className="text-muted-foreground">Custom contact forms with spam protection and templates.</p>
       </div>
 

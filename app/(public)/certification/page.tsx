@@ -10,7 +10,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Certification",
-  description: "Professional certifications and achievements of Sohail Koutari. Validated skills in web development, software engineering, and modern technologies. View credentials and learning journey."
+  description: "Professional certifications and achievements of me. Validated skills in web development, software engineering, and modern technologies. View credentials and learning journey."
 };
 const CertificationPage = async () => {
   const queryClient = new QueryClient();

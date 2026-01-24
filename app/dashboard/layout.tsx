@@ -11,15 +11,13 @@ export default function DashboardLayout({
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
+        {/* Fixed header */}
         <SiteHeader />
-        <div className="flex flex-col overflow-auto min-h-0">
-          <div className="@container/main py-4 md:py-6">
-            {children}
-          </div>
+        {/* Scrollable content area - fills remaining height */}
+        <div className="flex-1 overflow-auto p-4 md:p-6 dashboard-scrollbar">
+          {children}
         </div>
       </SidebarInset>
     </SidebarProvider>
   )
 }
-
-
