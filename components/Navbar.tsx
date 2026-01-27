@@ -8,6 +8,7 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { ThemeToggler } from "./ThemeToggler";
 import { useMyContext } from "@/app/MyContext";
 import { motion } from "framer-motion";
+import { NotificationBell } from "./notification-bell";
 
 const fadeVariants = {
   hidden: { opacity: 0 },
@@ -42,9 +43,15 @@ export const Navbar = () => {
         <div className="flex items-center justify-between space-x-4 md:block md:w-auto">
           <div className="flex gap-2 items-center">
             <SignedIn>
+              <NotificationBell />
+            </SignedIn>
+
+            <ThemeToggler />
+
+            <SignedIn>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
-            <ThemeToggler />
+
             <SignedOut>
               <Button
                 className="hidden md:flex"

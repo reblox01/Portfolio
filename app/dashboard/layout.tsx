@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { LoginTracker } from "@/components/login-tracker"
 
 export default function DashboardLayout({
   children,
@@ -9,6 +10,7 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
+      <LoginTracker />
       <AppSidebar variant="inset" />
       <SidebarInset>
         {/* Fixed header */}

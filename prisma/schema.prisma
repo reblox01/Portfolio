@@ -138,6 +138,33 @@ model PageSEO {
   updatedAt   DateTime @updatedAt
 }
 
+model NotificationSettings {
+  id                       String   @id @default(auto()) @map("_id") @db.ObjectId
+  emailContact             Boolean  @default(true)
+  emailContact_method      String   @default("browser") // "email" | "browser" | "both"
+  emailMarketing           Boolean  @default(false)
+  emailMarketing_method    String   @default("browser")
+  securityLogin            Boolean  @default(true)
+  securityLogin_method     String   @default("browser")
+  securityChanges          Boolean  @default(true)
+  securityChanges_method   String   @default("browser")
+  systemUpdates            Boolean  @default(true)
+  systemUpdates_method     String   @default("browser")
+  systemMaintenance        Boolean  @default(false)
+  systemMaintenance_method String   @default("browser")
+  updatedAt                DateTime @default(now()) @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String // "contact_form", "security_alert", "system_update", etc.
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  data      Json? // Additional data (sender email, name, etc.)
+  createdAt DateTime @default(now())
+}
+
 // Visitor metrics for analytics charts (daily aggregation)
 model Visitor {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId

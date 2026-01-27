@@ -583,6 +583,59 @@ export async function POST(request: NextRequest) {
 
 	try {
 		const info = await sendMailPromise();
+
+		// Trigger notifications based on user preferences
+		try {
+			const notificationSettings = await prisma.notificationSettings.findFirst();
+
+			if (notificationSettings && notificationSettings.emailContact) {
+				const method = notificationSettings.emailContact_method;
+
+				// Email notification (send alert to admin about the contact form submission)
+				if ((method === 'email' || method === 'both') && contact.smtpEmail) {
+					const alertMailOptions: Mail.Options = {
+						from: `"Portfolio Alert" <${contact.email}>`,
+						to: contact.smtpEmail,
+						subject: `🔔 New Contact Form Submission: ${cleanSubject}`,
+						html: `
+							<h2>New Contact Form Submission</h2>
+							<p><strong>From:</strong> ${cleanName} (${cleanEmail})</p>
+							<p><strong>Subject:</strong> ${cleanSubject}</p>
+							<p><strong>Message:</strong></p>
+							<p>${cleanMessage}</p>
+							<hr/>
+							<p><small>This is an automated alert from your portfolio notification system.</small></p>
+						`,
+					};
+
+					await transport.sendMail(alertMailOptions);
+				}
+
+				// Browser notification will be handled on client-side when user is logged in
+				// For now, we just log that a notification should be triggered
+				if (method === 'browser' || method === 'both') {
+					// Create in-app notification record
+					await prisma.notification.create({
+						data: {
+							type: 'contact_form',
+							title: 'New Contact Form Submission',
+							message: `${cleanName} sent you a message: "${cleanSubject}"`,
+							data: {
+								senderName: cleanName,
+								senderEmail: cleanEmail,
+								subject: cleanSubject,
+								preview: cleanMessage.substring(0, 100)
+							}
+						}
+					});
+					console.log('Browser notification created in database');
+				}
+			}
+		} catch (notifError) {
+			// Don't fail the email send if notification fails
+			console.error('Notification error:', notifError);
+		}
+
 		// Return a lightweight success response including messageId
 		return NextResponse.json({ message: 'Email sent', messageId: info?.messageId || null });
 	} catch (err) {

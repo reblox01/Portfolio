@@ -26,7 +26,6 @@ import {
   Zap,
   Bot,
   Palette,
-  User,
   Shield,
   Puzzle,
 } from "lucide-react"
@@ -46,7 +45,6 @@ import {
 } from "@/components/ui/sidebar"
 import { sidelinks } from "@/lib/sidelinks";
 import { useUser } from "@clerk/nextjs";
-import { LucideIcon } from "lucide-react";
 
 const data = {
   user: {
@@ -159,8 +157,7 @@ const data = {
       children: [
         { name: "SEO", url: "/dashboard/settings/seo", icon: SearchIcon },
         { name: "UI Features", url: "/dashboard/settings/ui", icon: Palette },
-        { name: "Account", url: "/dashboard/settings/account", icon: User },
-        { name: "Notifications", url: "#", icon: BellIcon, disabled: true },
+        { name: "Notifications", url: "/dashboard/settings/notifications", icon: BellIcon },
         { name: "Security", url: "#", icon: Shield, disabled: true },
         { name: "API Keys", url: "#", icon: KeyIcon, disabled: true },
       ],
