@@ -1,14 +1,18 @@
 "use client"
 
 import {
+  Sparkles,
+  Laptop,
+  Moon,
+  Sun,
   BellIcon,
-  CreditCardIcon,
   LogOutIcon,
   MoreVerticalIcon,
   UserCircleIcon,
 } from "lucide-react"
 import { toast } from "sonner"
 import { useUser, useClerk, SignOutButton } from "@clerk/nextjs"
+import { useTheme } from "next-themes"
 import { useState } from "react"
 import {
   Dialog,
@@ -30,6 +34,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
@@ -47,9 +55,10 @@ export function NavUser({
     avatar: string
   }
 }) {
-    const { user: clerkUser } = useUser();
-    const { openUserProfile } = useClerk();
+  const { user: clerkUser } = useUser();
+  const { openUserProfile } = useClerk();
   const { isMobile } = useSidebar()
+  const { setTheme } = useTheme()
   const [notificationsOpen, setNotificationsOpen] = useState(false)
 
   return (
@@ -95,46 +104,59 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  onClick={() => {
-                    // open Clerk's user profile modal
-                    try {
-                      openUserProfile?.()
-                    } catch (e) {
-                      // fallback to account page
-                      window.location.href = "#"
-                    }
-                  }}
-                >
-                  <UserCircleIcon />
-                  Account
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    // open Clerk dashboard in a new tab for account/billing management
-                    window.open("https://dashboard.clerk.com/", "_blank")
-                  }}
-                >
-                  <CreditCardIcon />
-                  Clerk Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    // open in-place notifications dialog
-                    setNotificationsOpen(true)
-                  }}
-                >
-                  <BellIcon />
-                  Notifications
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() => {
+                  // open Clerk's user profile modal
+                  try {
+                    openUserProfile?.()
+                  } catch (e) {
+                    // fallback to account page
+                    window.location.href = "#"
+                  }
+                }}
+              >
+                <UserCircleIcon />
+                Account
+              </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Sparkles />
+                  Theme
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem onClick={() => setTheme("light")}>
+                      <Sun />
+                      <span>Light</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("dark")}>
+                      <Moon />
+                      <span>Dark</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("system")}>
+                      <Laptop />
+                      <span>System</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              <DropdownMenuItem
+                onClick={() => {
+                  // open in-place notifications dialog
+                  setNotificationsOpen(true)
+                }}
+              >
+                <BellIcon />
+                Notifications
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <SignOutButton>
-            <DropdownMenuItem>
-              <LogOutIcon />
-              Log out
-            </DropdownMenuItem>
+              <DropdownMenuItem>
+                <LogOutIcon />
+                Log out
+              </DropdownMenuItem>
             </SignOutButton>
           </DropdownMenuContent>
         </DropdownMenu>
