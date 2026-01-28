@@ -180,7 +180,19 @@ Take your portfolio to the **next level** with our powerful Site Settings featur
 3. 🎛️ Toggle features ON/OFF according to your preference
 4. 🚀 Watch your portfolio transform instantly!
 
-*More customization options coming soon!*
+## 🔒 Security - OWASP Compliant 🛡️
+
+This project follows **OWASP security guidelines** to ensure your data and portfolio remain safe from common vulnerabilities.
+
+| Feature | Implementation Details | Security Goal |
+| :--- | :--- | :--- |
+| **XSS Prevention** | **Custom Sanitization Layer**: Every Server Action (Projects, Experience, etc.) passes incoming data through our `sanitizeObject` utility in `@/lib/security-utils.ts` using `isomorphic-dompurify`. | Prevents malicious script injection in portfolio content. |
+| **API Rate Limiting** | **Layered Protection**: Implemented `@/lib/rate-limit.ts` with Upstash Redis. Contact form limited to 3/hr per IP; Admin actions limited to 100/min to prevent brute-force. | Protects against DDoS, spam, and API abuse. |
+| **Route Protection** | **Strict Middleware Policy**: `@/middleware.ts` uses an "allow-list" approach, protecting all `/api/*` routes by default with `auth.protect()` except for public analytics and contact endpoints. | Ensures sensitive management APIs are only accessible to the Admin. |
+| **Input Validation** | **Zod Schema Enforcement**: All data transfers are strictly validated using `.parse()` against Zod schemas in `@/lib/types/` before being processed by the backend. | Prevents malformed data and ensures system integrity. |
+| **Database Security** | **Type-Safe ORM**: Exclusively uses **Prisma ORM** for all database interactions, which inherently utilizes parameterized queries. | Completely eliminates SQL Injection (SQLi) attack vectors. |
+| **Secrets Management** | **Secure Environment**: All sensitive credentials (SMTP, Clerk, MongoDB) are handled via `process.env` and never exposed in the client-side code or git history. | Prevents exposure of sensitive API keys and credentials. |
+
 
 ## Deploy on vercel
 
