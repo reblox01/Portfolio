@@ -3,6 +3,9 @@
 import prisma from "@/db"
 import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
+import { apiRateLimit, getClientIp } from "@/lib/rate-limit"
+import { headers } from "next/headers"
+import { sanitizeObject } from "@/lib/security-utils"
 
 export async function getSmtpStatusAction() {
     try {
@@ -83,13 +86,20 @@ export async function updateNotificationSettingsAction(data: {
         const { userId } = await auth();
         if (!userId) throw new Error("Unauthorized");
 
+        // Rate Limiting
+        const ip = getClientIp(await headers());
+        const { success } = await apiRateLimit.limit(ip);
+        if (!success) throw new Error("Rate limit exceeded");
+
+        const sanitized = sanitizeObject(data);
+
         const settings = await prisma.notificationSettings.findFirst()
 
         if (!settings) throw new Error("Settings not found")
 
         const updated = await prisma.notificationSettings.update({
             where: { id: settings.id },
-            data: { ...data }
+            data: { ...sanitized }
         })
 
         revalidatePath('/dashboard/settings/notifications')

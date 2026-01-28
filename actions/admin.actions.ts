@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { createAndEditAdminSchema, CreateAndEditAdminType, AdminType } from '@/lib/types/admin-types';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { sanitizeObject } from '@/lib/security-utils';
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
@@ -26,7 +27,8 @@ export async function createAdminAction(values: CreateAndEditAdminType): Promise
     const adminUserId = await authenticateAndRedirect();
 
     try {
-        createAndEditAdminSchema.parse(values);
+        const validated = createAndEditAdminSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const checkAdminExists: AdminType[] = await prisma.admin.findMany({
             where: {
@@ -40,9 +42,9 @@ export async function createAdminAction(values: CreateAndEditAdminType): Promise
 
         const admin: AdminType = await prisma.admin.create({
             data: {
-                ...values,
+                ...sanitized,
                 adminUserId,
-                resumeUrl: values.resumeUrl || ''
+                resumeUrl: sanitized.resumeUrl || ''
             }
         });
         revalidatePath('/dashboard/manage-admin');
@@ -85,6 +87,8 @@ export async function updateAdminAction(values: Partial<AdminType>): Promise<Adm
     const userId = await authenticateAndRedirect();
 
     try {
+        const sanitized = sanitizeObject(values);
+
         // Find the existing admin to get its ID, assuming there's only one admin per userId
         const existingAdmin = await prisma.admin.findFirst({
             where: {
@@ -96,7 +100,7 @@ export async function updateAdminAction(values: Partial<AdminType>): Promise<Adm
             throw new Error("Admin not found.");
         }
 
-        const { skills, ...otherValues } = values;
+        const { skills, ...otherValues } = sanitized as any;
 
         const admin: AdminType = await prisma.admin.update({
             where: {
@@ -106,7 +110,7 @@ export async function updateAdminAction(values: Partial<AdminType>): Promise<Adm
                 ...otherValues,
                 ...(skills && { skills: skills as any }),
                 // Ensure resumeUrl is handled consistently if it's part of the update
-                ...(values.resumeUrl !== undefined && { resumeUrl: values.resumeUrl || '' })
+                ...(sanitized.resumeUrl !== undefined && { resumeUrl: sanitized.resumeUrl || '' })
             },
         });
         return admin;

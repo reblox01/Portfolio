@@ -7,6 +7,7 @@ import { siteConfig } from "@/site.config";
 import * as z from "zod";
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { sanitizeObject } from "@/lib/security-utils";
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
@@ -86,16 +87,17 @@ export async function upsertPageSeoAction(data: z.infer<typeof pageSeoSchema>) {
     try {
         // Validate input
         const validated = pageSeoSchema.parse(data);
+        const sanitized = sanitizeObject(validated);
 
         const page = await prisma.pageSEO.upsert({
-            where: { path: validated.path },
+            where: { path: sanitized.path },
             update: {
-                title: validated.title,
-                description: validated.description,
-                keywords: validated.keywords,
-                noIndex: validated.noIndex,
+                title: sanitized.title,
+                description: sanitized.description,
+                keywords: sanitized.keywords,
+                noIndex: sanitized.noIndex,
             },
-            create: validated,
+            create: sanitized,
         });
 
         return { page };

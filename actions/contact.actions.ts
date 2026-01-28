@@ -5,37 +5,50 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { ContactType, createAndEditContactSchema, CreateAndEditContactType, updateContactSchema } from '@/lib/types/contact-types';
+import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
+import { headers } from 'next/headers';
+import { sanitizeObject } from '@/lib/security-utils';
 
 // Function to authenticate the user and redirect if not authenticated
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
     if (!userId) redirect('/');
+
+    // Rate Limiting Check
+    const ip = getClientIp(await headers());
+    const { success } = await apiRateLimit.limit(ip);
+    if (!success) {
+        throw new Error("Rate limit exceeded. Please try again later.");
+    }
+
     return userId;
 }
 
 // Function to create a new contact
 export async function createContactAction(values: CreateAndEditContactType): Promise<ContactType | null> {
-    const userId = await authenticateAndRedirect();
+    await authenticateAndRedirect();
     try {
-        createAndEditContactSchema.parse(values);
+        const validated = createAndEditContactSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const contactRaw = await prisma.contact.create({
             data: {
                 // allow creating with only public contact fields or full SMTP fields
-                email: values.email,
-                smtpEmail: (values as any).smtpEmail || undefined,
-                emailPassword: (values as any).emailPassword || undefined,
-                phone: values.phone,
-                address: values.address,
-                smtpServer: (values as any).smtpServer || undefined,
-                smtpPort: (values as any).smtpPort || undefined,
-                smtpUsername: (values as any).smtpUsername || undefined,
-                smtpPassword: (values as any).smtpPassword || undefined,
-                emailIntegration: (values as any).emailIntegration ?? false,
-                emailProvider: (values as any).emailProvider || undefined,
-                mailboxSettings: (values as any).mailboxSettings || undefined,
+                email: sanitized.email,
+                smtpEmail: (sanitized as any).smtpEmail || undefined,
+                emailPassword: (sanitized as any).emailPassword || undefined,
+                phone: sanitized.phone,
+                address: sanitized.address,
+                smtpServer: (sanitized as any).smtpServer || undefined,
+                smtpPort: (sanitized as any).smtpPort || undefined,
+                smtpUsername: (sanitized as any).smtpUsername || undefined,
+                smtpPassword: (sanitized as any).smtpPassword || undefined,
+                emailIntegration: (sanitized as any).emailIntegration ?? false,
+                emailProvider: (sanitized as any).emailProvider || undefined,
+                mailboxSettings: (sanitized as any).mailboxSettings || undefined,
             }
         });
+
 
         // Normalize null values from Prisma to undefined for our ContactType
         const contact: ContactType = {
@@ -142,8 +155,11 @@ export async function updateContactAction(
     id: string,
     values: any
 ): Promise<ContactType | null> {
-    const userId = await authenticateAndRedirect();
+    await authenticateAndRedirect();
     try {
+        const validated = updateContactSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
+
         // For updates, we'll handle the password logic here
         const existingContact = await prisma.contact.findUnique({
             where: { id }
@@ -154,27 +170,28 @@ export async function updateContactAction(
         }
 
         // Use the existing emailPassword if new emailPassword is empty
-        const finalEmailPassword = values.emailPassword || existingContact.emailPassword;
+        const finalEmailPassword = sanitized.emailPassword || existingContact.emailPassword;
 
         const updateData = {
-            email: values.email || existingContact.email,
-            smtpEmail: (values as any).smtpEmail || existingContact.smtpEmail,
+            email: sanitized.email || existingContact.email,
+            smtpEmail: (sanitized as any).smtpEmail || existingContact.smtpEmail,
             emailPassword: finalEmailPassword,
-            phone: values.phone || existingContact.phone,
-            address: values.address || existingContact.address,
-            smtpServer: values.smtpServer || existingContact.smtpServer,
-            smtpPort: values.smtpPort || existingContact.smtpPort,
-            smtpUsername: values.smtpUsername || existingContact.smtpUsername,
-            smtpPassword: values.smtpPassword || existingContact.smtpPassword,
-            emailIntegration: values.emailIntegration ?? existingContact.emailIntegration,
-            emailProvider: values.emailProvider || existingContact.emailProvider,
-            mailboxSettings: values.mailboxSettings || existingContact.mailboxSettings,
+            phone: sanitized.phone || existingContact.phone,
+            address: sanitized.address || existingContact.address,
+            smtpServer: sanitized.smtpServer || existingContact.smtpServer,
+            smtpPort: sanitized.smtpPort || existingContact.smtpPort,
+            smtpUsername: sanitized.smtpUsername || existingContact.smtpUsername,
+            smtpPassword: sanitized.smtpPassword || existingContact.smtpPassword,
+            emailIntegration: sanitized.emailIntegration ?? existingContact.emailIntegration,
+            emailProvider: sanitized.emailProvider || existingContact.emailProvider,
+            mailboxSettings: sanitized.mailboxSettings || existingContact.mailboxSettings,
         };
 
         const contactRaw = await prisma.contact.update({
             where: { id },
             data: updateData,
         });
+
 
         const updatedContact: ContactType = {
             id: (contactRaw as any).id,

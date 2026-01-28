@@ -14,6 +14,17 @@ const Command = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive
     ref={ref}
+    filter={(value, search) => {
+      const words = search.toLowerCase().split(/\s+/).filter(Boolean)
+      if (words.length === 0) return 1
+      const val = value.toLowerCase()
+      const anyMatch = words.some(word => val.includes(word))
+      if (anyMatch) {
+        // Score based on matching count
+        return words.filter(word => val.includes(word)).length
+      }
+      return 0
+    }}
     className={cn(
       "flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground",
       className
@@ -23,7 +34,7 @@ const Command = React.forwardRef<
 ))
 Command.displayName = CommandPrimitive.displayName
 
-interface CommandDialogProps extends DialogProps {}
+interface CommandDialogProps extends DialogProps { }
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (

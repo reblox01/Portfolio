@@ -13,6 +13,7 @@ import { revalidatePath } from 'next/cache';
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { sanitizeObject } from '@/lib/security-utils';
 
 
 async function authenticateAndRedirect(): Promise<string | null> {
@@ -38,14 +39,15 @@ export async function createProjectAction(values: CreateAndEditProjectType): Pro
     await authenticateAndRedirect();
 
     try {
-        createAndEditProjectSchema.parse(values);
+        const validated = createAndEditProjectSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const project: Project = await prisma.project.create({
             data: {
-                ...values,
-                liveURL: values.liveURL ?? undefined,
-                sourceURL: values.sourceURL ?? undefined,
-                isPublished: values.isPublished ?? true,
+                ...sanitized,
+                liveURL: sanitized.liveURL ?? undefined,
+                sourceURL: sanitized.sourceURL ?? undefined,
+                isPublished: sanitized.isPublished ?? true,
             }
         });
 
@@ -284,17 +286,18 @@ export async function updateProjectAction(
 
     try {
         validateObjectId(id);
-        createAndEditProjectSchema.parse(values);
+        const validated = createAndEditProjectSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const project: Project = await prisma.project.update({
             where: {
                 id,
             },
             data: {
-                ...values,
-                liveURL: values.liveURL ?? undefined,
-                sourceURL: values.sourceURL ?? undefined,
-                isPublished: values.isPublished ?? true,
+                ...sanitized,
+                liveURL: sanitized.liveURL ?? undefined,
+                sourceURL: sanitized.sourceURL ?? undefined,
+                isPublished: sanitized.isPublished ?? true,
             },
         });
         revalidatePath('/dashboard/manage-projects');

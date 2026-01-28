@@ -10,6 +10,7 @@ import { revalidatePath } from 'next/cache';
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { sanitizeObject } from '@/lib/security-utils';
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
@@ -31,16 +32,17 @@ export async function createEducationAction(values: CreateAndEditEducationType):
     await authenticateAndRedirect();
 
     try {
-        createAndEditEducationSchema.parse(values);
+        const validated = createAndEditEducationSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const raw = await prisma.education.create({
             data: {
-                ...values,
-                location: values.location ?? undefined,
-                endDate: values.endDate ?? undefined,
-                grade: values.grade ?? undefined,
-                description: values.description ?? undefined,
-                isPublished: values.isPublished ?? true,
+                ...sanitized,
+                location: sanitized.location ?? undefined,
+                endDate: sanitized.endDate ?? undefined,
+                grade: sanitized.grade ?? undefined,
+                description: sanitized.description ?? undefined,
+                isPublished: sanitized.isPublished ?? true,
             }
         });
 
@@ -165,19 +167,20 @@ export async function updateEducationAction(
 
     try {
         validateObjectId(id);
-        createAndEditEducationSchema.parse(values);
+        const validated = createAndEditEducationSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const raw = await prisma.education.update({
             where: {
                 id,
             },
             data: {
-                ...values,
-                location: values.location ?? undefined,
-                endDate: values.endDate ?? undefined,
-                grade: values.grade ?? undefined,
-                description: values.description ?? undefined,
-                isPublished: values.isPublished ?? true,
+                ...sanitized,
+                location: sanitized.location ?? undefined,
+                endDate: sanitized.endDate ?? undefined,
+                grade: sanitized.grade ?? undefined,
+                description: sanitized.description ?? undefined,
+                isPublished: sanitized.isPublished ?? true,
             },
         });
         revalidatePath('/dashboard/manage-education');

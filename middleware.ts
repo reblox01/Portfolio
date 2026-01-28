@@ -14,9 +14,9 @@ const isPublicRoute = createRouteMatcher([
     "/sign-in(.*)",
     "/sign-up(.*)",
     "/api/email",
+    "/api/track-visit", // Analytics tracking must be public
     "/sitemap.xml",
     "/robots.txt",
-    "/api/(.*)"
 ]);
 
 // Comprehensive bot detection for search engines, AI crawlers, and social platforms

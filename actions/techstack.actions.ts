@@ -10,6 +10,7 @@ import { revalidatePath } from 'next/cache';
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { sanitizeObject } from '@/lib/security-utils';
 
 
 async function authenticateAndRedirect(): Promise<string> {
@@ -31,11 +32,12 @@ export async function createTechstackAction(values: CreateAndEditTechstackType):
     await authenticateAndRedirect();
 
     try {
-        createAndEditTechstackType.parse(values);
+        const validated = createAndEditTechstackType.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const techstack: Techstack = await prisma.techstack.create({
             data: {
-                ...values
+                ...sanitized
             }
         });
 
@@ -149,14 +151,15 @@ export async function updateTechstackAction(
 
     try {
         validateObjectId(id);
-        createAndEditTechstackType.parse(values);
+        const validated = createAndEditTechstackType.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const techtstack: Techstack = await prisma.techstack.update({
             where: {
                 id,
             },
             data: {
-                ...values,
+                ...sanitized,
             },
         });
         revalidatePath('/dashboard/manage-techstack');

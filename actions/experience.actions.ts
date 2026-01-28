@@ -9,6 +9,7 @@ import { revalidatePath } from 'next/cache';
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { sanitizeObject } from '@/lib/security-utils';
 
 
 async function authenticateAndRedirect(): Promise<string> {
@@ -30,11 +31,12 @@ export async function createExperienceAction(values: CreateAndEditExperienceType
     await authenticateAndRedirect();
 
     try {
-        createAndEditExperienceSchema.parse(values);
+        const validated = createAndEditExperienceSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const raw = await prisma.experience.create({
             data: {
-                ...values
+                ...sanitized
             }
         });
 
@@ -158,15 +160,16 @@ export async function updateExperienceAction(
 
     try {
         validateObjectId(id);
-        createAndEditExperienceSchema.parse(values);
+        const validated = createAndEditExperienceSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const raw = await prisma.experience.update({
             where: {
                 id,
             },
             data: {
-                ...values,
-                isPublished: values.isPublished ?? true,
+                ...sanitized,
+                isPublished: sanitized.isPublished ?? true,
             },
         });
         revalidatePath('/dashboard/manage-experience');

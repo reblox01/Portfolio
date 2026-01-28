@@ -1,25 +1,42 @@
 "use client"
 
 import {
-  Sparkles,
   Laptop,
   Moon,
   Sun,
-  BellIcon,
+  Sparkles,
   LogOutIcon,
   MoreVerticalIcon,
   UserCircleIcon,
+  Keyboard,
+  Zap,
+  Briefcase,
+  CheckCircle,
+  FolderGit2,
+  GraduationCap,
+  Layers,
+  User,
+  Settings,
+  Mail,
+  Shield,
+  Palette,
+  Search,
+  Bell,
+  Puzzle,
+  LayoutDashboard,
 } from "lucide-react"
-import { toast } from "sonner"
 import { useUser, useClerk, SignOutButton } from "@clerk/nextjs"
 import { useTheme } from "next-themes"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog"
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command"
 
 import {
   Avatar,
@@ -59,7 +76,23 @@ export function NavUser({
   const { openUserProfile } = useClerk();
   const { isMobile } = useSidebar()
   const { setTheme } = useTheme()
-  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [openShortcuts, setOpenShortcuts] = useState(false)
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "f" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setOpenShortcuts((open) => !open)
+      }
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setOpenShortcuts((open) => !open)
+      }
+    }
+
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
+  }, [])
 
   return (
     <SidebarMenu>
@@ -141,14 +174,9 @@ export function NavUser({
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
-              <DropdownMenuItem
-                onClick={() => {
-                  // open in-place notifications dialog
-                  setNotificationsOpen(true)
-                }}
-              >
-                <BellIcon />
-                Notifications
+              <DropdownMenuItem onClick={() => setOpenShortcuts(true)}>
+                <Keyboard />
+                Command Menu
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -161,20 +189,94 @@ export function NavUser({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-      <Dialog open={notificationsOpen} onOpenChange={setNotificationsOpen}>
-        <DialogContent>
-          <DialogTitle>Notifications</DialogTitle>
-          <DialogDescription>
-            <div className="flex flex-col items-center justify-center gap-2 py-8">
-              <div className="inline-flex h-10 w-10 animate-pulse items-center justify-center rounded-full bg-muted/40 text-muted-foreground">
-                <BellIcon />
-              </div>
-              <div className="text-lg font-medium">Coming soon</div>
-              <div className="text-sm text-muted-foreground">Notifications will appear here in future updates.</div>
-            </div>
-          </DialogDescription>
-        </DialogContent>
-      </Dialog>
+      <CommandDialog open={openShortcuts} onOpenChange={setOpenShortcuts}>
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+
+          <CommandGroup heading="Suggestions">
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/manage-projects" }}>
+              <FolderGit2 className="mr-2 h-4 w-4" />
+              <span>Manage Projects</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/manage-admin" }}>
+              <User className="mr-2 h-4 w-4" />
+              <span>Manage Admin</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/settings/seo" }}>
+              <Search className="mr-2 h-4 w-4" />
+              <span>SEO Settings</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/manage-techstack" }}>
+              <Layers className="mr-2 h-4 w-4" />
+              <span>Manage Techstack</span>
+            </CommandItem>
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          <CommandGroup heading="Management">
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/manage-certifications" }}>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              <span>Manage Certifications</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/manage-education" }}>
+              <GraduationCap className="mr-2 h-4 w-4" />
+              <span>Manage Education</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/manage-experience" }}>
+              <Briefcase className="mr-2 h-4 w-4" />
+              <span>Manage Experience</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/manage-contact" }}>
+              <Mail className="mr-2 h-4 w-4" />
+              <span>Contact Messages</span>
+            </CommandItem>
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          <CommandGroup heading="Settings & Integrations">
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/settings/ui" }}>
+              <Palette className="mr-2 h-4 w-4" />
+              <span>UI Features</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/settings/notifications" }}>
+              <Bell className="mr-2 h-4 w-4" />
+              <span>Notification Settings</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/integration" }}>
+              <Puzzle className="mr-2 h-4 w-4" />
+              <span>Integrations Overview</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); window.location.href = "/dashboard/integration/webhooks" }}>
+              <Zap className="mr-2 h-4 w-4" />
+              <span>Webhooks</span>
+            </CommandItem>
+          </CommandGroup>
+
+          <CommandSeparator />
+
+          <CommandGroup heading="System">
+            <CommandItem onSelect={() => { setOpenShortcuts(false); setTheme("light") }}>
+              <Sun className="mr-2 h-4 w-4" />
+              <span>Light Theme</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); setTheme("dark") }}>
+              <Moon className="mr-2 h-4 w-4" />
+              <span>Dark Theme</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); setTheme("system") }}>
+              <Laptop className="mr-2 h-4 w-4" />
+              <span>System Theme</span>
+            </CommandItem>
+            <CommandItem onSelect={() => { setOpenShortcuts(false); openUserProfile?.() }}>
+              <UserCircleIcon className="mr-2 h-4 w-4" />
+              <span>Account Profile</span>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
     </SidebarMenu>
   )
 }

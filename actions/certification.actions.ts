@@ -10,6 +10,7 @@ import { CertificateType, createAndEditCertificateSchema, CreateAndEditCertifica
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { sanitizeObject } from '@/lib/security-utils';
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
@@ -30,11 +31,12 @@ export async function createCertificationAction(values: CreateAndEditCertificate
     await authenticateAndRedirect();
 
     try {
-        createAndEditCertificateSchema.parse(values);
+        const validated = createAndEditCertificateSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const certificate: CertificateType = await prisma.certification.create({
             data: {
-                ...values
+                ...sanitized
             }
         });
 
@@ -156,14 +158,15 @@ export async function updateCertificationAction(
 
     try {
         validateObjectId(id);
-        createAndEditCertificateSchema.parse(values);
+        const validated = createAndEditCertificateSchema.parse(values);
+        const sanitized = sanitizeObject(validated);
 
         const certificate: CertificateType = await prisma.certification.update({
             where: {
                 id,
             },
             data: {
-                ...values,
+                ...sanitized,
             },
         });
         revalidatePath('/dashboard/manage-certifications');
