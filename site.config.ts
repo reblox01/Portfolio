@@ -33,7 +33,7 @@ const YOUR_SOCIAL_LINKS = [
   "<Your other links>",
 ];
 const YOUR_GENDER = "<Your Gender>"; // Optional: Delete or leave blank if you prefer not to specify
-const YOUR_SITE_URL = "https://yourdomain.com"; // Update this with your actual site URL
+const YOUR_SITE_URL = "https://yourdomain.com"; // Update this with your actual site URL (e.g. https://yourname.com) with no trailing slash
 
 
 

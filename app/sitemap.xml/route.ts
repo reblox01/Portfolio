@@ -6,8 +6,8 @@ export async function GET() {
   try {
     const { projects } = await getAllProjectsAction()
 
-    const rawBase = siteConfig.structuredData?.url || siteConfig.meta?.['og:url'] || process.env.SITE_URL
-    const baseUrl = (rawBase || '').replace(/\/$/, '') || ''
+    const rawBase = siteConfig.structuredData?.url || siteConfig.meta?.['og:url'] || process.env.SITE_URL || ''
+    const baseUrl = rawBase.replace(/\/$/, '')
 
     const staticUrls = [
       '',
@@ -32,7 +32,8 @@ export async function GET() {
       .map(
         (url) => {
           // Homepage gets priority 1.0, main pages 0.8, project pages 0.6
-          const isHome = url === baseUrl + '/'
+          // Homepage is exactly the baseUrl
+          const isHome = url === baseUrl
           const isProjectPage = url.includes('/projects/') && url.split('/').length > 4
           const priority = isHome ? '1.0' : isProjectPage ? '0.6' : '0.8'
 
