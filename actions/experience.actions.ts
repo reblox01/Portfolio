@@ -9,7 +9,7 @@ import { revalidatePath } from 'next/cache';
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
-import { sanitizeObject } from '@/lib/security-utils';
+// Removed top-level sanitization import
 
 
 async function authenticateAndRedirect(): Promise<string> {
@@ -31,6 +31,7 @@ export async function createExperienceAction(values: CreateAndEditExperienceType
     await authenticateAndRedirect();
 
     try {
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditExperienceSchema.parse(values);
         const sanitized = sanitizeObject(validated);
 
@@ -160,6 +161,7 @@ export async function updateExperienceAction(
 
     try {
         validateObjectId(id);
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditExperienceSchema.parse(values);
         const sanitized = sanitizeObject(validated);
 

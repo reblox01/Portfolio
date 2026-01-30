@@ -7,7 +7,7 @@ import { siteConfig } from "@/site.config";
 import * as z from "zod";
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
-import { sanitizeObject } from "@/lib/security-utils";
+// Removed top-level sanitization import
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
@@ -86,6 +86,7 @@ export async function upsertPageSeoAction(data: z.infer<typeof pageSeoSchema>) {
 
     try {
         // Validate input
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = pageSeoSchema.parse(data);
         const sanitized = sanitizeObject(validated);
 

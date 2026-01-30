@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
 import { apiRateLimit, getClientIp } from "@/lib/rate-limit"
 import { headers } from "next/headers"
-import { sanitizeObject } from "@/lib/security-utils"
+// Removed top-level sanitization import
 
 export async function getSmtpStatusAction() {
     try {
@@ -91,6 +91,7 @@ export async function updateNotificationSettingsAction(data: {
         const { success } = await apiRateLimit.limit(ip);
         if (!success) throw new Error("Rate limit exceeded");
 
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const sanitized = sanitizeObject(data);
 
         const settings = await prisma.notificationSettings.findFirst()

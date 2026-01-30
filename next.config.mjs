@@ -8,6 +8,7 @@ const nextConfig = {
       },
     ],
   },
+  serverExternalPackages: ["jsdom", "isomorphic-dompurify"],
 };
 
 export default nextConfig;

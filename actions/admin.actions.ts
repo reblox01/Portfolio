@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { createAndEditAdminSchema, CreateAndEditAdminType, AdminType } from '@/lib/types/admin-types';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
-import { sanitizeObject } from '@/lib/security-utils';
+// Removed top-level sanitization import
 
 async function authenticateAndRedirect(): Promise<string> {
     const { userId } = await auth();
@@ -27,6 +27,7 @@ export async function createAdminAction(values: CreateAndEditAdminType): Promise
     const adminUserId = await authenticateAndRedirect();
 
     try {
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditAdminSchema.parse(values);
         const sanitized = sanitizeObject(validated);
 
@@ -87,6 +88,7 @@ export async function updateAdminAction(values: Partial<AdminType>): Promise<Adm
     const userId = await authenticateAndRedirect();
 
     try {
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const sanitized = sanitizeObject(values);
 
         // Find the existing admin to get its ID, assuming there's only one admin per userId

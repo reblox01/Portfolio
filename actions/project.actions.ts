@@ -13,7 +13,7 @@ import { revalidatePath } from 'next/cache';
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
-import { sanitizeObject } from '@/lib/security-utils';
+// Removed top-level sanitization import to prevent jsdom loading on module evaluation
 
 
 async function authenticateAndRedirect(): Promise<string | null> {
@@ -39,6 +39,7 @@ export async function createProjectAction(values: CreateAndEditProjectType): Pro
     await authenticateAndRedirect();
 
     try {
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditProjectSchema.parse(values);
         const sanitized = sanitizeObject(validated);
 
@@ -286,6 +287,7 @@ export async function updateProjectAction(
 
     try {
         validateObjectId(id);
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditProjectSchema.parse(values);
         const sanitized = sanitizeObject(validated);
 

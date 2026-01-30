@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { ContactType, createAndEditContactSchema, CreateAndEditContactType, updateContactSchema } from '@/lib/types/contact-types';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
-import { sanitizeObject } from '@/lib/security-utils';
+// Removed top-level sanitization import
 
 // Function to authenticate the user and redirect if not authenticated
 async function authenticateAndRedirect(): Promise<string> {
@@ -28,6 +28,7 @@ async function authenticateAndRedirect(): Promise<string> {
 export async function createContactAction(values: CreateAndEditContactType): Promise<ContactType | null> {
     await authenticateAndRedirect();
     try {
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditContactSchema.parse(values);
         const sanitized = sanitizeObject(validated);
 
@@ -157,6 +158,7 @@ export async function updateContactAction(
 ): Promise<ContactType | null> {
     await authenticateAndRedirect();
     try {
+        const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = updateContactSchema.parse(values);
         const sanitized = sanitizeObject(validated);
 
