@@ -55,8 +55,8 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     const ua = req.headers.get('user-agent') || '';
     const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '';
 
-    // Allow all crawlers to pass through without authentication
-    if (isCrawler(ua, typeof ip === 'string' ? ip : '')) {
+    // Allow crawlers to pass through ONLY on public routes
+    if (isCrawler(ua, typeof ip === 'string' ? ip : '') && isPublicRoute(req)) {
         return NextResponse.next();
     }
 

@@ -186,7 +186,7 @@ This project follows **OWASP security guidelines** to ensure your data and portf
 
 | Feature | Implementation Details | Security Goal |
 | :--- | :--- | :--- |
-| **XSS Prevention** | **Custom Sanitization Layer**: Every Server Action (Projects, Experience, etc.) passes incoming data through our `sanitizeObject` utility in `@/lib/security-utils.ts` using `isomorphic-dompurify`. | Prevents malicious script injection in portfolio content. |
+| **XSS Prevention** | **Custom Sanitization Layer**: Every Server Action (Projects, Experience, etc.) passes incoming data through our `sanitizeObject` utility in `@/lib/sanitizer.ts` using `isomorphic-dompurify`. | Prevents malicious script injection in portfolio content. |
 | **API Rate Limiting** | **Layered Protection**: Implemented `@/lib/rate-limit.ts` with Upstash Redis. Contact form limited to 3/hr per IP; Admin actions limited to 100/min to prevent brute-force. | Protects against DDoS, spam, and API abuse. |
 | **Route Protection** | **Strict Middleware Policy**: `@/middleware.ts` uses an "allow-list" approach, protecting all `/api/*` routes by default with `auth.protect()` except for public analytics and contact endpoints. | Ensures sensitive management APIs are only accessible to the Admin. |
 | **Input Validation** | **Zod Schema Enforcement**: All data transfers are strictly validated using `.parse()` against Zod schemas in `@/lib/types/` before being processed by the backend. | Prevents malformed data and ensures system integrity. |

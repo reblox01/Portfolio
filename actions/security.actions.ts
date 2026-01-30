@@ -4,11 +4,20 @@ import prisma from "@/db"
 import { auth, currentUser } from "@clerk/nextjs/server"
 import nodemailer from 'nodemailer'
 import { headers } from "next/headers"
+import { apiRateLimit, getClientIp } from "@/lib/rate-limit"
 
 export async function recordLoginAction() {
     try {
+        const { userId } = await auth();
+        if (!userId) throw new Error("Unauthorized");
+
+        const ip = getClientIp(await headers());
+        const { success } = await apiRateLimit.limit(ip);
+        if (!success) throw new Error("Rate limit exceeded");
+
+        // We still need the full user object for email and name
         const user = await currentUser();
-        if (!user) return null;
+        if (!user) throw new Error("User data not found"); // Should not happen if userId exists, but good for type safety
 
         // Rate limit: Check if we logged a login for this user in the last 5 minutes
         const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);

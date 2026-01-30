@@ -4,6 +4,8 @@ import prisma from "@/db";
 import { auth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { apiRateLimit, getClientIp } from "@/lib/rate-limit";
+import { headers } from "next/headers";
 
 export type SortSettingsType = {
     id: string;
@@ -68,16 +70,23 @@ export async function getSortSettingsAction(): Promise<SortSettingsType> {
 }
 
 export async function updateSortSettingsAction(values: Partial<SortSettingsType>): Promise<SortSettingsType | null> {
+    // Authenticate admin
     await authenticateAndRedirect();
 
+    const ip = getClientIp(await headers());
+    const { success } = await apiRateLimit.limit(ip);
+    if (!success) throw new Error("Rate limit exceeded");
+
     try {
+        const { sanitizeObject } = await import('@/lib/sanitizer');
+        const sanitized = sanitizeObject(values);
         const existing = await prisma.sortSettings.findFirst();
 
         let settings;
         if (existing) {
             settings = await prisma.sortSettings.update({
                 where: { id: existing.id },
-                data: values
+                data: sanitized
             });
         } else {
             settings = await prisma.sortSettings.create({

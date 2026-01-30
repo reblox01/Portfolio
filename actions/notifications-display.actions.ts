@@ -3,11 +3,17 @@
 import prisma from "@/db"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
+import { apiRateLimit, getClientIp } from "@/lib/rate-limit"
+import { headers } from "next/headers"
 
 export async function getNotificationsAction() {
     try {
         const { userId } = await auth();
         if (!userId) return { notifications: [] };
+
+        const ip = getClientIp(await headers());
+        const { success } = await apiRateLimit.limit(ip);
+        if (!success) return { notifications: [] };
 
         const notifications = await prisma.notification.findMany({
             orderBy: { createdAt: 'desc' },
@@ -42,6 +48,11 @@ export async function markAsReadAction(notificationId: string) {
         const { userId } = await auth();
         if (!userId) throw new Error("Unauthorized");
 
+        const headersList = await headers();
+        const ip = getClientIp(headersList);
+        const { success } = await apiRateLimit.limit(ip);
+        if (!success) throw new Error("Rate limit exceeded");
+
         await prisma.notification.update({
             where: { id: notificationId },
             data: { read: true }
@@ -59,6 +70,11 @@ export async function markAllAsReadAction() {
     try {
         const { userId } = await auth();
         if (!userId) throw new Error("Unauthorized");
+
+        const headersList = await headers();
+        const ip = getClientIp(headersList);
+        const { success } = await apiRateLimit.limit(ip);
+        if (!success) throw new Error("Rate limit exceeded");
 
         await prisma.notification.updateMany({
             where: { read: false },
@@ -80,12 +96,15 @@ export async function createNotificationAction(data: {
     data?: any;
 }) {
     try {
+        const { sanitizeObject } = await import('@/lib/sanitizer');
+        const sanitized = sanitizeObject(data);
+
         const notification = await prisma.notification.create({
             data: {
-                type: data.type,
-                title: data.title,
-                message: data.message,
-                data: data.data || {}
+                type: sanitized.type,
+                title: sanitized.title,
+                message: sanitized.message,
+                data: sanitized.data || {}
             }
         })
 

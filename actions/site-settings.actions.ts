@@ -3,6 +3,8 @@
 import prisma from "@/db";
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from "next/navigation";
+import { apiRateLimit, getClientIp } from "@/lib/rate-limit";
+import { headers } from "next/headers";
 
 async function authenticateAndRedirect(): Promise<string> {
   const { userId } = await auth();
@@ -33,6 +35,10 @@ export async function getSiteSettingsAction() {
 export async function updateSiteSettingsAction({ customCursor }: { customCursor: boolean }) {
   // Authenticate admin
   await authenticateAndRedirect();
+
+  const ip = getClientIp(await headers());
+  const { success } = await apiRateLimit.limit(ip);
+  if (!success) throw new Error("Rate limit exceeded");
 
   try {
     let settings = await prisma.siteSettings.findFirst();
