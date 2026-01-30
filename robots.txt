@@ -1,4 +1,4 @@
-# robots.txt for <Your Name> Portfolio
+# robots.txt for Sohail Koutari Portfolio
 # Optimized for search engines, AI crawlers, and social platforms
 
 # =====================================================
@@ -16,10 +16,9 @@ Disallow: /register/
 Disallow: /cgi-bin/
 Disallow: /private/
 Disallow: /tmp/
-Disallow: /_next/static/
-Disallow: /404
 # Allow everything else
 Allow: /
+Allow: /_next/static/
 
 # =====================================================
 # GOOGLE BOTS
@@ -169,7 +168,7 @@ Allow: /
 # =====================================================
 # SITEMAP
 # =====================================================
-Sitemap: https://your-name.vercel.app/sitemap.xml
+Sitemap: https://sohailkoutari.com/sitemap.xml
 
 # =====================================================
 # CRAWL DELAY (optional - remove if causing issues)
