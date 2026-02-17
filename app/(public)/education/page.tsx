@@ -1,12 +1,16 @@
 import SpotlightHero from "@/components/spot-light";
+import { Metadata } from "next";
 import { EducationTimeline } from "./_components/EducationTimeline";
 import { getAllEducationAction } from "@/actions/education.actions";
-import { Metadata } from "next";
+import { constructMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-    title: "Education",
-    description: "My academic background, qualifications, and certifications."
-};
+export async function generateMetadata(): Promise<Metadata> {
+    return constructMetadata({
+        path: "/education",
+        defaultTitle: "Education",
+        defaultDescription: "My academic background, qualifications, and certifications."
+    });
+}
 
 const EducationPage = async () => {
     // Fetch published education entries

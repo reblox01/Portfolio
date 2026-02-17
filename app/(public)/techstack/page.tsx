@@ -1,4 +1,5 @@
 import SpotlightHero from "@/components/spot-light";
+import { Metadata } from "next";
 import {
   HydrationBoundary,
   QueryClient,
@@ -7,12 +8,15 @@ import {
 
 import TechStackPageContainer from "./_components/TechStackPageContainer";
 import { getAllTechstacksAction } from "@/actions/techstack.actions";
-import { Metadata } from "next";
+import { constructMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "Tech Stack",
-  description: "Technologies, tools, and platforms used by me. Modern development stack including React, Next.js, Node.js, TypeScript, PostgreSQL, MongoDB, and more. Skills and expertise overview."
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return constructMetadata({
+    path: "/techstack",
+    defaultTitle: "Tech Stack",
+    defaultDescription: "Technologies, tools, and platforms used by myself. Modern development stack including React, Next.js, Node.js, TypeScript, PostgreSQL, MongoDB, and more. Skills and expertise overview."
+  });
+}
 const TechstackPage = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({

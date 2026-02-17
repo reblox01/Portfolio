@@ -22,7 +22,9 @@ export async function constructMetadata({
     const title = page?.title || defaultTitle || siteConfig.name;
     const description = page?.description || defaultDescription || siteConfig.description;
     const keywords = page?.keywords || defaultKeywords || siteConfig.meta.keywords;
-    const noIndex = page?.noIndex || false;
+    // Force index in production unless absolutely necessary
+    const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production';
+    const noIndex = isProduction ? false : (page?.noIndex || false);
 
     // Build full URL for OG tags
     const siteUrl = (

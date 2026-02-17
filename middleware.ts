@@ -61,7 +61,11 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     }
 
     if (isPublicRoute(req)) {
-        return NextResponse.next();
+        const response = NextResponse.next();
+        // SEO: Explicitly allow indexing for public routes
+        // This overrides any service-level 'noindex' headers
+        response.headers.set('X-Robots-Tag', 'all');
+        return response;
     }
 
     await auth.protect();

@@ -1,4 +1,5 @@
 import SpotlightHero from "@/components/spot-light";
+import { Metadata } from "next";
 import {
   HydrationBoundary,
   QueryClient,
@@ -6,12 +7,15 @@ import {
 } from "@tanstack/react-query";
 import CertificationCardContainer from "./_components/CertificationCardContainer";
 import { getAllCertificationsAction } from "@/actions/certification.actions";
-import { Metadata } from "next";
+import { constructMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "Certification",
-  description: "Professional certifications and achievements of me. Validated skills in web development, software engineering, and modern technologies. View credentials and learning journey."
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return constructMetadata({
+    path: "/experience",
+    defaultTitle: "Experience",
+    defaultDescription: "Professional experience and career history of myself. Validated skills in web development, software engineering, and modern technologies. View credentials and learning journey."
+  });
+}
 const CertificationPage = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
