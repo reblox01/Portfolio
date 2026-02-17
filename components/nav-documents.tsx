@@ -55,7 +55,7 @@ export function NavDocuments({
     // hide the inline help when navigating to another page
     setShowMore(false)
   }, [pathname])
-  
+
   const isActive = (path: string) => {
     // Parent is active only on exact match
     return pathname === path || pathname === path + "/"
@@ -78,96 +78,96 @@ export function NavDocuments({
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Documents</SidebarGroupLabel>
       <SidebarMenu>
-      {items.map((item) => {
-        // If this item has children, render as a collapsible with sub-items
-        if (item.children && item.children.length > 0) {
-          return (
-            <Collapsible
-              key={item.name}
-              defaultOpen={isActive(item.url) || isAnyChildActive(item.children)}
-              className="group/collapsible"
-            >
-              <SidebarMenuItem>
-                <div className="relative w-full">
-                  {/* Whole row toggles the submenu */}
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className={isActive(item.url) ? "bg-muted w-full flex items-center gap-2 pr-8" : "w-full flex items-center gap-2 pr-8"}>
-                      <item.icon />
-                      <span>{item.name}</span>
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
+        {items.map((item) => {
+          // If this item has children, render as a collapsible with sub-items
+          if (item.children && item.children.length > 0) {
+            return (
+              <Collapsible
+                key={item.name}
+                defaultOpen={isActive(item.url) || isAnyChildActive(item.children)}
+                className="group/collapsible"
+              >
+                <SidebarMenuItem>
+                  <div className="relative w-full">
+                    {/* Whole row toggles the submenu */}
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton className={isActive(item.url) ? "bg-muted w-full flex items-center gap-2 pr-8" : "w-full flex items-center gap-2 pr-8"}>
+                        <item.icon />
+                        <span>{item.name}</span>
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
 
-                  {/* Chevron reflects open state (visual only) */}
-                  <div className="absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <ChevronToggle />
+                    {/* Chevron reflects open state (visual only) */}
+                    <div className="absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <ChevronToggle />
+                    </div>
                   </div>
-                </div>
 
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {(() => {
-                      const children = item.children ?? []
-                      return children.map((child) => {
-                        const isPrefixOfSibling = children.some(
-                          (s) => s.url !== child.url && s.url.startsWith(child.url + "/")
-                        )
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {(() => {
+                        const children = item.children ?? []
+                        return children.map((child) => {
+                          const isPrefixOfSibling = children.some(
+                            (s) => s.url !== child.url && s.url.startsWith(child.url + "/")
+                          )
 
-                        const childIsActive = isPrefixOfSibling
-                          ? pathname === child.url || pathname === child.url + "/"
-                          : pathname === child.url || pathname.startsWith(child.url + "/")
+                          const childIsActive = isPrefixOfSibling
+                            ? pathname === child.url || pathname === child.url + "/"
+                            : pathname === child.url || pathname.startsWith(child.url + "/")
 
-                        return (
-                          <SidebarMenuSubItem key={child.url}>
-                            <SidebarMenuSubButton asChild isActive={childIsActive}>
+                          return (
+                            <SidebarMenuSubItem key={`${child.url}-${child.name}`}>
+                              <SidebarMenuSubButton asChild isActive={childIsActive}>
                                 <Link href={child.url} className="flex items-center gap-2" onClick={() => { if (isMobile) setOpenMobile(false) }}>
-                                <child.icon />
-                                <span>{child.name}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        )
-                      })
-                    })()}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
-          )
-        }
+                                  <child.icon />
+                                  <span>{child.name}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          )
+                        })
+                      })()}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+            )
+          }
 
-        // default single item
-        return (
-          <SidebarMenuItem key={item.name}>
+          // default single item
+          return (
+            <SidebarMenuItem key={item.name}>
               <SidebarMenuButton asChild className={isActive(item.url) ? "bg-muted" : ""}>
                 <Link href={item.url} onClick={() => { if (isMobile) setOpenMobile(false) }}>
                   <item.icon />
                   <span>{item.name}</span>
                 </Link>
               </SidebarMenuButton>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction
-                  showOnHover
-                  className="rounded-sm data-[state=open]:bg-accent"
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuAction
+                    showOnHover
+                    className="rounded-sm data-[state=open]:bg-accent"
+                  >
+                    <MoreHorizontalIcon />
+                    <span className="sr-only">More</span>
+                  </SidebarMenuAction>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-36 rounded-lg"
+                  side={isMobile ? "bottom" : "right"}
+                  align={isMobile ? "end" : "start"}
                 >
-                  <MoreHorizontalIcon />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-36 rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
-              >
                   <DropdownMenuItem
                     onClick={() => {
                       if (isMobile) setOpenMobile(false)
                       window.location.href = item.url
                     }}
                   >
-                  <FolderIcon />
-                  <span>Open</span>
-                </DropdownMenuItem>
+                    <FolderIcon />
+                    <span>Open</span>
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={async () => {
                       if (isMobile) setOpenMobile(false)
@@ -207,14 +207,14 @@ export function NavDocuments({
                       }
                     }}
                   >
-                  <ShareIcon />
-                  <span>Share</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        )
-      })}
+                    <ShareIcon />
+                    <span>Share</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          )
+        })}
         <SidebarMenuItem>
           <SidebarMenuButton
             className="text-sidebar-foreground/70"

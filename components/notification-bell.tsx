@@ -30,6 +30,7 @@ export function NotificationBell() {
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [unreadCount, setUnreadCount] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
+    const [mounted, setMounted] = useState(false)
     const lastNotifIdRef = useRef<string | null>(null)
 
     const fetchNotifications = async () => {
@@ -62,12 +63,21 @@ export function NotificationBell() {
     }
 
     useEffect(() => {
+        setMounted(true)
         fetchNotifications()
 
         // Poll for new notifications every 30 seconds
         const interval = setInterval(fetchNotifications, 30000)
         return () => clearInterval(interval)
     }, [])
+
+    if (!mounted) {
+        return (
+            <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+            </Button>
+        )
+    }
 
     const handleMarkAsRead = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation()

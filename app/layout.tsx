@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 import { siteConfig } from "@/site.config";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { getSiteSettingsAction } from "@/actions/site-settings.actions";
+import { AIChatbotProvider } from "@/components/ai-chatbot-provider";
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
 export const metadata: Metadata = {
@@ -154,6 +155,7 @@ export default async function RootLayout({
             <HydrationBoundary state={dehydrate(queryClient)}>
               {children}
               <SmoothCursor />
+              <AIChatbotProvider />
             </HydrationBoundary>
           </Providers>
         </body>

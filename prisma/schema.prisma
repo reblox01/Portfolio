@@ -206,3 +206,51 @@ model Admin {
   email        String?
   youtube      String?
 }
+
+model AISettings {
+  id                  String  @id @default(auto()) @map("_id") @db.ObjectId
+  enabled             Boolean @default(false)
+  provider            String  @default("openai") // "openai" | "gemini" | "anthropic" | "perplexity"
+  openaiKey           String? // Encrypted
+  geminiKey           String? // Encrypted
+  anthropicKey        String? // Encrypted
+  perplexityKey       String? // Encrypted - Perplexity AI
+  selectedModel       String  @default("gpt-3.5-turbo")
+  chatbotShape        String  @default("circle")
+  chatbotIconRotation Int     @default(0)
+  chatbotIconSize     Int     @default(56)
+
+  // Custom instruction
+  useCustomInstruction Boolean @default(false)
+  customInstruction    String?
+
+  // Chatbot appearance
+  chatbotName     String  @default("AI Assistant")
+  chatbotGreeting String  @default("Hi! How can I help you?")
+  chatbotPosition String  @default("bottom-right")
+  chatbotLogo     String? // URL to chatbot logo/avatar
+  primaryColor    String  @default("#0ea5e9") // Tailwind sky-500
+  secondaryColor  String  @default("#1e293b") // Tailwind slate-800
+
+  // Page display settings
+  displayMode   String   @default("all") // "all" | "selected"
+  selectedPages String[] @default([]) // e.g., ["/", "/about", "/projects"]
+
+  // Multi-language
+  defaultLanguage    String   @default("en")
+  supportedLanguages String[] @default(["en"])
+
+  // Conversation storage
+  saveConversations Boolean @default(true)
+
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model ChatConversation {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionId   String
+  visitorLang String   @default("en")
+  messages    Json[] // [{role, content, timestamp, language}]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

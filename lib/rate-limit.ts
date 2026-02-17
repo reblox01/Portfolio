@@ -123,6 +123,20 @@ export const visitorRateLimit = {
     },
 };
 
+// Create rate limiter for AI chat
+const aiChatRateLimiter = new InMemoryRateLimiter();
+
+/**
+ * Rate limit for AI chat: 30 messages per minute per IP
+ */
+export const aiChatRateLimit = {
+    limit: (identifier: string) => {
+        const success = aiChatRateLimiter.check(identifier, 30, 60 * 1000); // 30 per minute
+        return Promise.resolve({ success });
+    },
+};
+
+
 /**
  * Get IP address from request headers
  * @param headers - Next.js request headers

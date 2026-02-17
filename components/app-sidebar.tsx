@@ -160,6 +160,7 @@ const data = {
         { name: "Notifications", url: "/dashboard/settings/notifications", icon: BellIcon },
         { name: "Security", url: "#", icon: Shield, disabled: true },
         { name: "API Keys", url: "#", icon: KeyIcon, disabled: true },
+        { name: "AI Chatbot", url: "/dashboard/settings/ai", icon: Bot },
       ],
     },
     {
