@@ -77,10 +77,11 @@ export const HeroParallax = ({
         }}
         className="">
         <motion.div className="flex flex-row-reverse space-x-reverse space-x-20 mb-20">
-          {firstRow.map((product) => (
+          {firstRow.map((product, index) => (
             <ProductCard
               product={product}
               translate={translateX}
+              isPriority={index === 0}
               key={product.title}
             />
           ))}
@@ -90,6 +91,7 @@ export const HeroParallax = ({
             <ProductCard
               product={product}
               translate={translateXReverse}
+              isPriority={false}
               key={product.title}
             />
           ))}
@@ -99,6 +101,7 @@ export const HeroParallax = ({
             <ProductCard
               product={product}
               translate={translateX}
+              isPriority={false}
               key={product.title}
             />
           ))}
@@ -130,6 +133,7 @@ export const Header = ({
 export const ProductCard = ({
   product,
   translate,
+  isPriority = false,
 }: {
   product: {
     title: string;
@@ -138,6 +142,7 @@ export const ProductCard = ({
     thumbnail: string;
   };
   translate: MotionValue<number>;
+  isPriority?: boolean;
 }) => {
   return (
     <motion.div
@@ -156,9 +161,10 @@ export const ProductCard = ({
         className="block group-hover/product:shadow-2xl">
         <Image
           src={product.thumbnail}
-          height="600"
-          width="600"
-          priority
+          height={600}
+          width={600}
+          priority={isPriority}
+          sizes="(min-width: 1024px) 640px, 100vw"
           className="object-cover object-left-top absolute h-full w-full inset-0"
           alt={product.title}
         />

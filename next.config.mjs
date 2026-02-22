@@ -3,6 +3,20 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Cache static assets (JS, CSS, fonts, images) for 1 year — they have content-hashed filenames
+        source: '/_next/static/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        // Cache public folder static files for 30 days
+        source: '/(favicon.*|robots\.txt|sitemap.*|.*\.svg|.*\.png|.*\.jpg|.*\.webp|.*\.ico)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+        ],
+      },
+      {
         // Default: allow indexing for all public-facing pages.
         // This sets the X-Robots-Tag HTTP header at the Next.js/CDN level,
         // which is what Googlebot reads. This must come before the more-specific
@@ -62,7 +76,12 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
       },
     ],
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
   },
+  // Compress responses
+  compress: true,
   serverExternalPackages: ["jsdom"],
 };
 

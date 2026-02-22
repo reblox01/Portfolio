@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 import { siteConfig } from "@/site.config";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { getSiteSettingsAction } from "@/actions/site-settings.actions";

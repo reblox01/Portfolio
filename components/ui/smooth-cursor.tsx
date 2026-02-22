@@ -149,6 +149,17 @@ export function SmoothCursor({
   });
 
   const isCustomCursorEnabled = data?.settings?.customCursor ?? true;
+  const [isCoarsePointer, setIsCoarsePointer] = useState<boolean>(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || isLoading) return;
+    try {
+      const mq = window.matchMedia('(pointer: coarse)');
+      setIsCoarsePointer(mq.matches);
+      const handler = (e: MediaQueryListEvent) => setIsCoarsePointer(e.matches);
+      mq.addEventListener?.('change', handler);
+      return () => mq.removeEventListener?.('change', handler);
+    } catch {}
+  }, [isLoading]);
 
   const cursorX = useSpring(0, springConfig);
   const cursorY = useSpring(0, springConfig);
@@ -164,8 +175,8 @@ export function SmoothCursor({
   });
 
   useEffect(() => {
-    // If custom cursor is disabled, don't do anything
-    if (!isCustomCursorEnabled || isLoading) {
+    // If custom cursor is disabled or on coarse pointer (touch), don't do anything
+    if (!isCustomCursorEnabled || isLoading || isCoarsePointer) {
       return;
     }
 
@@ -240,29 +251,35 @@ export function SmoothCursor({
       });
     };
 
-    // Apply global CSS to hide cursor
-    const style = document.createElement('style');
-    style.textContent = `
-      * {
-        cursor: none !important;
+    // Defer global CSS to hide cursor until the first mousemove to avoid
+    // extra style/paint work during initial load (helps LCP a bit)
+    let style: HTMLStyleElement | null = null;
+    const onFirstMove = (e: MouseEvent) => {
+      if (!style) {
+        style = document.createElement('style');
+        style.textContent = `
+          * { cursor: none !important; }
+          a, button, [role="button"], [type="button"], [type="submit"], [type="reset"] { cursor: none !important; }
+        `;
+        document.head.appendChild(style);
       }
-      a, button, [role="button"], [type="button"], [type="submit"], [type="reset"] {
-        cursor: none !important;
-      }
-    `;
-    document.head.appendChild(style);
+      throttledMouseMove(e);
+      window.removeEventListener('mousemove', onFirstMove);
+      window.addEventListener('mousemove', throttledMouseMove);
+    };
 
-    window.addEventListener("mousemove", throttledMouseMove);
+    window.addEventListener('mousemove', onFirstMove);
 
     return () => {
+      window.removeEventListener('mousemove', onFirstMove);
       window.removeEventListener("mousemove", throttledMouseMove);
-      document.head.removeChild(style);
+      if (style) document.head.removeChild(style);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [cursorX, cursorY, rotation, scale, isCustomCursorEnabled, isLoading]);
+  }, [cursorX, cursorY, rotation, scale, isCustomCursorEnabled, isLoading, isCoarsePointer]);
 
   // Don't render anything if custom cursor is disabled
-  if (!isCustomCursorEnabled || isLoading) {
+  if (!isCustomCursorEnabled || isLoading || isCoarsePointer) {
     return null;
   }
 
