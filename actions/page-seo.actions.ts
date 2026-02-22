@@ -29,7 +29,6 @@ const pageSeoSchema = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
     keywords: z.string().optional(),
-    noIndex: z.boolean().default(false),
 });
 
 // Auto-seed default pages from site.config.ts
@@ -96,9 +95,13 @@ export async function upsertPageSeoAction(data: z.infer<typeof pageSeoSchema>) {
                 title: sanitized.title,
                 description: sanitized.description,
                 keywords: sanitized.keywords,
-                noIndex: sanitized.noIndex,
+                // noIndex is intentionally excluded — indexing is controlled via
+                // next.config.mjs headers, not per-page admin settings.
             },
-            create: sanitized,
+            create: {
+                ...sanitized,
+                noIndex: false, // Always false — never allow admin to noindex public pages
+            },
         });
 
         return { page };

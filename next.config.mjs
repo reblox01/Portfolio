@@ -3,6 +3,23 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Default: allow indexing for all public-facing pages.
+        // This sets the X-Robots-Tag HTTP header at the Next.js/CDN level,
+        // which is what Googlebot reads. This must come before the more-specific
+        // dashboard/auth rules below so those can override it.
+        source: '/((?!dashboard|sign-in|sign-up).*)',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'index, follow' },
+        ],
+      },
+      {
+        // Prevent search engines from indexing admin/auth routes.
+        source: '/(dashboard|sign-in|sign-up)(.*)',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+      {
         source: '/(.*)',
         headers: [
           // Prevent clickjacking — no framing by any site

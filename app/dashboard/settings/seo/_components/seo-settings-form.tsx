@@ -13,7 +13,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
 import {
     Dialog,
     DialogContent,
@@ -30,7 +29,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
+
 
 import { upsertPageSeoAction, deletePageSeoAction } from "@/actions/page-seo.actions"
 
@@ -53,7 +52,6 @@ const formSchema = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
     keywords: z.string().optional(),
-    noIndex: z.boolean().default(false),
 })
 
 export function SeoSettingsForm({ initialPages }: Props) {
@@ -74,7 +72,6 @@ export function SeoSettingsForm({ initialPages }: Props) {
             title: "",
             description: "",
             keywords: "",
-            noIndex: false,
         },
     })
 
@@ -86,7 +83,6 @@ export function SeoSettingsForm({ initialPages }: Props) {
                 title: page.title || "",
                 description: page.description || "",
                 keywords: page.keywords || "",
-                noIndex: page.noIndex,
             })
             setEditingPage(page)
         } else {
@@ -95,7 +91,6 @@ export function SeoSettingsForm({ initialPages }: Props) {
                 title: "",
                 description: "",
                 keywords: "",
-                noIndex: false,
             })
             setEditingPage(null)
         }
@@ -162,7 +157,7 @@ export function SeoSettingsForm({ initialPages }: Props) {
             <div className="space-y-2">
                 <h1 className="text-2xl font-bold tracking-tight">SEO Management</h1>
                 <p className="text-muted-foreground">
-                    Control meta tags and indexing for each page
+                    Customize meta titles, descriptions, and keywords for each page
                 </p>
             </div>
 
@@ -187,7 +182,7 @@ export function SeoSettingsForm({ initialPages }: Props) {
                             <TableRow>
                                 <TableHead>Path</TableHead>
                                 <TableHead>Title</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead>Description</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -196,13 +191,7 @@ export function SeoSettingsForm({ initialPages }: Props) {
                                 <TableRow key={page.id}>
                                     <TableCell className="font-mono text-sm">{page.path}</TableCell>
                                     <TableCell className="max-w-xs truncate">{page.title || "—"}</TableCell>
-                                    <TableCell>
-                                        {page.noIndex ? (
-                                            <Badge variant="destructive">No Index</Badge>
-                                        ) : (
-                                            <Badge variant="default">Indexed</Badge>
-                                        )}
-                                    </TableCell>
+                                    <TableCell className="max-w-xs truncate text-muted-foreground text-sm">{page.description || "—"}</TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
                                             <Button
@@ -234,7 +223,7 @@ export function SeoSettingsForm({ initialPages }: Props) {
                     <DialogHeader>
                         <DialogTitle>{editingPage ? "Edit Page SEO" : "Add Page SEO"}</DialogTitle>
                         <DialogDescription>
-                            Configure meta tags and indexing for this page
+                            Customize meta tags for this page
                         </DialogDescription>
                     </DialogHeader>
 
@@ -319,28 +308,7 @@ export function SeoSettingsForm({ initialPages }: Props) {
                                 )}
                             />
 
-                            <FormField
-                                control={form.control}
-                                name="noIndex"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                                        <div className="space-y-0.5">
-                                            <FormLabel className="text-base">
-                                                No Index
-                                            </FormLabel>
-                                            <FormDescription>
-                                                Prevent search engines from indexing this page
-                                            </FormDescription>
-                                        </div>
-                                        <FormControl>
-                                            <Switch
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                            />
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
+
 
                             <DialogFooter>
                                 <Button type="button" variant="outline" onClick={closeDialog}>
