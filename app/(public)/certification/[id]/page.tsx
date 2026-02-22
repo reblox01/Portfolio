@@ -7,9 +7,19 @@ import {
 import CertificationDetailContainer from "../_components/CertificationDetailContainer";
 import { Metadata } from "next";
 import { getSingleCertificationAction } from "@/actions/certification.actions";
-export const metadata: Metadata = {
-  title: "Certification Info",
-};
+import { constructMetadata } from "@/lib/metadata";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const certification = await getSingleCertificationAction(id);
+  return constructMetadata({
+    path: `/certification/${id}`,
+    defaultTitle: certification?.title || "Certification",
+    defaultDescription: certification
+      ? `${certification.title} issued by ${certification.organizationName}.`
+      : "Professional certification by me.",
+  });
+}
 const CertificationDetailPage = async ({
   params,
 }: {

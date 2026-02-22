@@ -1,0 +1,18 @@
+# robots.txt for Portfolio
+
+# Single User-agent: * block applies to ALL crawlers uniformly.
+# Per-bot blocks (e.g. User-agent: Googlebot) override rather than
+# inherit from *, so listing them with only Allow: / would silently
+# remove the Disallow protections below for those bots.
+User-agent: *
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /sign-in/
+Disallow: /sign-up/
+Disallow: /private/
+Disallow: /tmp/
+Allow: /_next/
+Allow: /
+
+Sitemap: https://<your-domain>.com/sitemap.xml

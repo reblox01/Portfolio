@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
-import DOMPurify from 'isomorphic-dompurify';
+import striptags from 'striptags';
 import { emailRateLimit, getClientIp } from '@/lib/rate-limit';
 
 const prisma = new PrismaClient();
@@ -21,8 +21,10 @@ export async function POST(request: NextRequest) {
 	const origin = request.headers.get("origin");
 	const allowedOrigins = [
 		process.env.NEXT_PUBLIC_APP_URL,
-		"http://localhost:3000",
-		"https://localhost:3000",
+		// Only allow localhost in development — never in production
+		...(process.env.NODE_ENV === 'development'
+			? ['http://localhost:3000', 'https://localhost:3000']
+			: []),
 	].filter(Boolean);
 
 	if (origin && !allowedOrigins.includes(origin)) {
@@ -42,7 +44,8 @@ export async function POST(request: NextRequest) {
 		}
 	} catch (error) {
 		console.error("Rate limit check failed:", error instanceof Error ? error.message : "Unknown error");
-		// Allow request to proceed if rate limiter fails (fail open)
+		// Fail closed: if rate limiter errors, reject the request
+		return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
 	}
 
 	// Validate and sanitize input
@@ -58,10 +61,10 @@ export async function POST(request: NextRequest) {
 	}
 
 	// Sanitize inputs to prevent XSS
-	const cleanEmail = DOMPurify.sanitize(validatedData.email, { ALLOWED_TAGS: [] });
-	const cleanName = DOMPurify.sanitize(validatedData.name, { ALLOWED_TAGS: [] });
-	const cleanSubject = DOMPurify.sanitize(validatedData.subject, { ALLOWED_TAGS: [] });
-	const cleanMessage = DOMPurify.sanitize(validatedData.message, { ALLOWED_TAGS: [] });
+	const cleanEmail = striptags(validatedData.email);
+	const cleanName = striptags(validatedData.name);
+	const cleanSubject = striptags(validatedData.subject);
+	const cleanMessage = striptags(validatedData.message);
 
 	// Fetch SMTP config from the database
 	const contact = await prisma.contact.findFirst(); // you may want to scope this for multi-tenant apps

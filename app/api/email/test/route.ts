@@ -2,10 +2,25 @@ import { type NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import { PrismaClient } from '@prisma/client';
+import { auth } from '@clerk/nextjs/server';
+import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 
 const prisma = new PrismaClient();
 
-export async function POST(_request: NextRequest) {
+export async function POST(request: NextRequest) {
+  // Auth: admin-only endpoint
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Rate limiting
+  const ip = getClientIp(request.headers);
+  const { success } = await apiRateLimit.limit(ip);
+  if (!success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   // Fetch SMTP config from the database
   const contact = await prisma.contact.findFirst();
 

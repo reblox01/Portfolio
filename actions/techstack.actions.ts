@@ -34,7 +34,7 @@ export async function createTechstackAction(values: CreateAndEditTechstackType):
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditTechstackType.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const techstack: Techstack = await prisma.techstack.create({
             data: {
@@ -154,7 +154,7 @@ export async function updateTechstackAction(
         validateObjectId(id);
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditTechstackType.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const techtstack: Techstack = await prisma.techstack.update({
             where: {

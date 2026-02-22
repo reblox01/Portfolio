@@ -66,11 +66,25 @@ export function safeEncryptApiKey(plaintext: string | null | undefined): string 
 }
 
 /**
- * Safely decrypt API key, returning null if input is null/undefined
+ * Safely decrypt API key, returning null if input is null/undefined or decryption fails.
+ * Decryption can fail when ENCRYPTION_KEY has changed since the value was stored
+ * (ERR_OSSL_BAD_DECRYPT). Returning null lets the UI prompt the user to re-enter
+ * the key rather than crashing the entire settings page.
  * @param ciphertext - Encrypted string or null
- * @returns Decrypted plaintext or null
+ * @returns Decrypted plaintext, or null if missing/corrupted/wrong-key
  */
 export function safeDecryptApiKey(ciphertext: string | null | undefined): string | null {
     if (!ciphertext) return null;
-    return decryptApiKey(ciphertext);
+    try {
+        return decryptApiKey(ciphertext);
+    } catch (error) {
+        // Bad decrypt typically means ENCRYPTION_KEY changed after the value was stored.
+        // Return null so callers treat it as "no key set" and prompt re-entry.
+        console.warn(
+            'safeDecryptApiKey: decryption failed (key mismatch or corrupted data). ' +
+            'The stored value will be treated as empty. Re-save the key to fix this.',
+            error instanceof Error ? error.message : error
+        );
+        return null;
+    }
 }

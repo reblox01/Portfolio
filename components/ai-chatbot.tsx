@@ -189,7 +189,7 @@ export function AIChatbot({
                     ref={buttonRef}
                     onClick={() => setIsOpen(true)}
                     className={cn(
-                        "fixed bottom-4 sm:bottom-6 z-50 flex items-center justify-center transition-all hover:scale-110 border-none outline-none ring-0",
+                        "fixed bottom-24 md:bottom-6 sm:bottom-6 z-50 flex items-center justify-center transition-all hover:scale-110 border-none outline-none ring-0",
                         positionClasses
                     )}
                     style={{
@@ -218,7 +218,7 @@ export function AIChatbot({
             {isOpen && (
                 <div
                     className={cn(
-                        "fixed bottom-4 sm:bottom-6 z-50 flex h-[500px] w-[90vw] max-w-[400px] flex-col rounded-2xl border border-border bg-background shadow-2xl overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in",
+                        "fixed bottom-24 md:bottom-6 sm:bottom-6 z-[9999] flex h-[500px] w-[90vw] max-w-[400px] flex-col rounded-2xl border border-border bg-background shadow-2xl overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in",
                         positionClasses
                     )}
                 >

@@ -41,7 +41,7 @@ export async function createProjectAction(values: CreateAndEditProjectType): Pro
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditProjectSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const project: Project = await prisma.project.create({
             data: {
@@ -289,7 +289,7 @@ export async function updateProjectAction(
         validateObjectId(id);
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditProjectSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const project: Project = await prisma.project.update({
             where: {

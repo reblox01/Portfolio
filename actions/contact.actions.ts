@@ -30,7 +30,7 @@ export async function createContactAction(values: CreateAndEditContactType): Pro
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditContactSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const contactRaw = await prisma.contact.create({
             data: {
@@ -160,7 +160,7 @@ export async function updateContactAction(
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = updateContactSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         // For updates, we'll handle the password logic here
         const existingContact = await prisma.contact.findUnique({

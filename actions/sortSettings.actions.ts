@@ -79,7 +79,7 @@ export async function updateSortSettingsAction(values: Partial<SortSettingsType>
 
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
-        const sanitized = sanitizeObject(values);
+        const sanitized = await sanitizeObject(values);
         const existing = await prisma.sortSettings.findFirst();
 
         let settings;

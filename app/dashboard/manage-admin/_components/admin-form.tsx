@@ -69,14 +69,22 @@ export function AdminForm({ initialData }: Props) {
     }
 
     startTransition(async () => {
-      const ok = initialData
+      const ok: any = initialData
         ? await updateAdminAction(values as Partial<AdminType>)
         : await createAdminAction(values as CreateAndEditAdminType)
+
       if (!ok) {
         setError("Failed to save admin")
         return
       }
+
+      if (ok.error) {
+        setError("Error: " + ok.error);
+        return;
+      }
+
       router.push("/dashboard/manage-admin")
+      router.refresh()
     })
   }
 

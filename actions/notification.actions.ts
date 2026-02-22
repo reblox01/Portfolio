@@ -92,7 +92,7 @@ export async function updateNotificationSettingsAction(data: {
         if (!success) throw new Error("Rate limit exceeded");
 
         const { sanitizeObject } = await import('@/lib/sanitizer');
-        const sanitized = sanitizeObject(data);
+        const sanitized = await sanitizeObject(data);
 
         const settings = await prisma.notificationSettings.findFirst()
 

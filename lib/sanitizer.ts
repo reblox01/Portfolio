@@ -1,15 +1,19 @@
-import DOMPurify from 'isomorphic-dompurify';
+import striptags from 'striptags';
 
 /**
  * Sanitizes a string to prevent XSS attacks.
  * Removes all HTML tags by default.
  * @param input - The string to sanitize
- * @param options - DOMPurify configuration options
+ * @param options - striptags configuration (allowed tags)
  * @returns Sanitized string
  */
-export function sanitizeInput(input: string, options: any = { ALLOWED_TAGS: [] }): string {
+export async function sanitizeInput(input: string, options: any = { ALLOWED_TAGS: [] }): Promise<string> {
     if (!input) return input;
-    return (DOMPurify.sanitize(input, options) as unknown) as string;
+
+    // Map DOMPurify ALLOWED_TAGS to striptags tags if provided
+    const tags = options.ALLOWED_TAGS || [];
+
+    return striptags(input, tags);
 }
 
 /**
@@ -18,20 +22,26 @@ export function sanitizeInput(input: string, options: any = { ALLOWED_TAGS: [] }
  * @param obj - The object to sanitize
  * @returns A new object with sanitized string properties
  */
-export function sanitizeObject<T>(obj: T): T {
+export async function sanitizeObject<T>(obj: T): Promise<T> {
     if (!obj || typeof obj !== 'object') return obj;
 
     if (Array.isArray(obj)) {
-        return obj.map(item => sanitizeObject(item)) as unknown as T;
+        const sanitizedArray = await Promise.all(obj.map(item => sanitizeObject(item)));
+        return sanitizedArray as unknown as T;
     }
 
     const sanitized = { ...obj } as any;
 
     for (const key in sanitized) {
         if (typeof sanitized[key] === 'string') {
-            sanitized[key] = sanitizeInput(sanitized[key]);
+            // Skip sanitizing URLs and emails which might get mangled by aggressive HTML sanitization
+            if (['email', 'github', 'linkedIn', 'twitter', 'facebook', 'instagram', 'discord', 'whatsapp', 'youtube', 'gitlab', 'imageUrl', 'resumeUrl'].includes(key)) {
+                sanitized[key] = sanitized[key];
+            } else {
+                sanitized[key] = await sanitizeInput(sanitized[key]);
+            }
         } else if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
-            sanitized[key] = sanitizeObject(sanitized[key]);
+            sanitized[key] = await sanitizeObject(sanitized[key]);
         }
     }
 

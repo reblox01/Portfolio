@@ -1,6 +1,8 @@
 import { getAdminDetail } from "@/actions/admin.actions"
 import { AdminForm } from "../_components/admin-form"
 
+export const dynamic = "force-dynamic";
+
 export default async function EditAdminPage() {
   const admin = await getAdminDetail()
   return (

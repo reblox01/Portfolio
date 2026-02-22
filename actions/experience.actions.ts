@@ -33,7 +33,7 @@ export async function createExperienceAction(values: CreateAndEditExperienceType
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditExperienceSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const raw = await prisma.experience.create({
             data: {
@@ -163,7 +163,7 @@ export async function updateExperienceAction(
         validateObjectId(id);
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditExperienceSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const raw = await prisma.experience.update({
             where: {

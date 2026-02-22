@@ -20,7 +20,7 @@ export async function GET() {
       'contact',
     ]
 
-    const urls = staticUrls.map((u) => `${baseUrl}/${u}`)
+    const urls = staticUrls.map((u) => (u === '' ? baseUrl : `${baseUrl}/${u}`))
 
     const projectUrls = (projects || []).map((p: any) => `${baseUrl}/projects/${p.id}`)
 

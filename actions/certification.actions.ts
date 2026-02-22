@@ -33,7 +33,7 @@ export async function createCertificationAction(values: CreateAndEditCertificate
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditCertificateSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const certificate: CertificateType = await prisma.certification.create({
             data: {
@@ -161,7 +161,7 @@ export async function updateCertificationAction(
         validateObjectId(id);
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditCertificateSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const certificate: CertificateType = await prisma.certification.update({
             where: {

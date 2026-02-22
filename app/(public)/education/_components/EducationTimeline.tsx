@@ -85,7 +85,15 @@ export function EducationTimeline({ educationList }: { educationList: EducationT
                         <div className="bg-card p-4 rounded-lg border shadow-sm">
                             <div className="font-semibold text-lg mb-1">{item.degree}</div>
                             <div className="text-primary mb-3">{item.fieldOfStudy}</div>
-                            {item.description && <p className="text-sm text-muted-foreground mb-4">{item.description}</p>}
+                            {item.description && (
+                                <div
+                                    className="text-sm text-muted-foreground mb-4 prose prose-sm dark:prose-invert max-w-none 
+                                                prose-p:m-0 prose-ul:m-0 prose-li:m-0 prose-headings:m-0"
+                                    dangerouslySetInnerHTML={{
+                                        __html: DOMPurify.sanitize(item.description)
+                                    }}
+                                />
+                            )}
                             {/* Achievements Tags */}
                             {item.achievements && item.achievements.length > 0 && (
                                 <div className="flex flex-wrap gap-2">

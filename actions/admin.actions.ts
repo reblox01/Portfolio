@@ -29,7 +29,7 @@ export async function createAdminAction(values: CreateAndEditAdminType): Promise
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditAdminSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const checkAdminExists: AdminType[] = await prisma.admin.findMany({
             where: {
@@ -89,20 +89,17 @@ export async function updateAdminAction(values: Partial<AdminType>): Promise<Adm
 
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
-        const sanitized = sanitizeObject(values);
+        const sanitized = await sanitizeObject(values);
 
-        // Find the existing admin to get its ID, assuming there's only one admin per userId
-        const existingAdmin = await prisma.admin.findFirst({
-            where: {
-                adminUserId: userId,
-            },
-        });
+        // Find the existing admin to get its ID. There should only be one admin in the DB.
+        const existingAdmin = await prisma.admin.findFirst();
 
         if (!existingAdmin) {
             throw new Error("Admin not found.");
         }
 
         const { skills, ...otherValues } = sanitized as any;
+        console.log("Sanitization complete, updating admin record...", existingAdmin.id);
 
         const admin: AdminType = await prisma.admin.update({
             where: {
@@ -115,8 +112,12 @@ export async function updateAdminAction(values: Partial<AdminType>): Promise<Adm
                 ...(sanitized.resumeUrl !== undefined && { resumeUrl: sanitized.resumeUrl || '' })
             },
         });
+
+        console.log("Admin updated successfully!");
+        revalidatePath('/dashboard/manage-admin');
         return admin;
-    } catch (error) {
-        return null;
+    } catch (error: any) {
+        console.error("Update Admin Error:", error);
+        return { error: error instanceof Error ? error.message : "Unknown server error" } as any;
     }
 }

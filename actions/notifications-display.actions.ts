@@ -97,7 +97,7 @@ export async function createNotificationAction(data: {
 }) {
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
-        const sanitized = sanitizeObject(data);
+        const sanitized = await sanitizeObject(data);
 
         const notification = await prisma.notification.create({
             data: {

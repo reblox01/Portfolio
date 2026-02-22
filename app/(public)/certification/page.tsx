@@ -11,9 +11,9 @@ import { constructMetadata } from "@/lib/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructMetadata({
-    path: "/experience",
-    defaultTitle: "Experience",
-    defaultDescription: "Professional experience and career history of myself. Validated skills in web development, software engineering, and modern technologies. View credentials and learning journey."
+    path: "/certification",
+    defaultTitle: "Certifications",
+    defaultDescription: "Professional certifications and achievements of me. Certified expertise in web development, cloud platforms, and modern software engineering."
   });
 }
 const CertificationPage = async () => {

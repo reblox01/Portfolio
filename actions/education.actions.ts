@@ -34,7 +34,7 @@ export async function createEducationAction(values: CreateAndEditEducationType):
     try {
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditEducationSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const raw = await prisma.education.create({
             data: {
@@ -170,7 +170,7 @@ export async function updateEducationAction(
         validateObjectId(id);
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = createAndEditEducationSchema.parse(values);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const raw = await prisma.education.update({
             where: {

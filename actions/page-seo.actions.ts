@@ -88,7 +88,7 @@ export async function upsertPageSeoAction(data: z.infer<typeof pageSeoSchema>) {
         // Validate input
         const { sanitizeObject } = await import('@/lib/sanitizer');
         const validated = pageSeoSchema.parse(data);
-        const sanitized = sanitizeObject(validated);
+        const sanitized = await sanitizeObject(validated);
 
         const page = await prisma.pageSEO.upsert({
             where: { path: sanitized.path },

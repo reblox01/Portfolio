@@ -19,52 +19,14 @@ const isPublicRoute = createRouteMatcher([
     "/robots.txt",
 ]);
 
-// Comprehensive bot detection for search engines, AI crawlers, and social platforms
-const BOT_UA_REGEX = /googlebot|google-inspectiontool|storebot-google|googleother|google-extended|bingbot|bingpreview|msnbot|slurp|duckduckbot|baiduspider|yandex|yandexbot|sogou|exabot|facebot|facebookexternalhit|ia_archiver|twitterbot|whatsapp|telegram|skype|linkedinbot|pinterest|pinterestbot|applebot|semrushbot|ahrefsbot|mj12bot|dotbot|petalbot|bytespider|gptbot|chatgpt-user|oai-searchbot|claudebot|anthropic-ai|claude-web|perplexitybot|cohere-ai|youbot|ccbot|diffbot|rogerbot|seznambot|mojeekbot|discordbot|slackbot|embedly|quora|outbrain|flipboardproxy|tumblr|newsbot|mediapartners-google|adsbot-google|apis-google|feedfetcher-google|crawler|spider|bot\/|robot|scraper|archiver|indexer/i;
-
-// Check if request is from a search engine, AI crawler, or social platform
-function isCrawler(userAgent: string, ip?: string): boolean {
-    // Check user agent against comprehensive regex
-    if (BOT_UA_REGEX.test(userAgent)) {
-        return true;
-    }
-
-    // Check for crawler and AI patterns in user agent
-    const crawlerPatterns = [
-        // Major Search Engines
-        'google', 'bing', 'yahoo', 'duckduck', 'baidu', 'yandex', 'sogou', 'naver', 'seznam',
-        // AI Assistants & Crawlers
-        'gpt', 'chatgpt', 'openai', 'claude', 'anthropic', 'perplexity', 'cohere', 'you.com',
-        'meta-externalagent', 'bytedance', 'gemini', 'bard',
-        // SEO Tools
-        'semrush', 'ahrefs', 'moz', 'majestic', 'screaming', 'sitebulb',
-        // Social Platforms
-        'facebook', 'twitter', 'linkedin', 'pinterest', 'instagram', 'tiktok', 'snapchat',
-        'discord', 'slack', 'telegram', 'whatsapp', 'skype',
-        // Generic patterns
-        'search', 'crawler', 'spider', 'bot', 'indexer', 'fetch', 'preview',
-        // Browsers in headless mode
-        'headless', 'phantom', 'puppeteer', 'playwright', 'selenium'
-    ];
-
-    const ua = userAgent.toLowerCase();
-    return crawlerPatterns.some(pattern => ua.includes(pattern));
-}
-
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-    const ua = req.headers.get('user-agent') || '';
-    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '';
-
-    // Allow crawlers to pass through ONLY on public routes
-    if (isCrawler(ua, typeof ip === 'string' ? ip : '') && isPublicRoute(req)) {
-        return NextResponse.next();
-    }
-
     if (isPublicRoute(req)) {
         const response = NextResponse.next();
-        // SEO: Explicitly allow indexing for public routes
-        // This overrides any service-level 'noindex' headers
-        response.headers.set('X-Robots-Tag', 'all');
+        // SEO: Explicitly allow indexing for all public routes.
+        // This must apply to crawlers (Googlebot) too — the previous early-return
+        // for crawlers bypassed this header, causing X-Robots-Tag: noindex to
+        // reach Google from upstream/Next.js metadata processing.
+        response.headers.set('X-Robots-Tag', 'index, follow');
         return response;
     }
 
