@@ -19,13 +19,18 @@ const isPublicRoute = createRouteMatcher([
     "/robots.txt",
 ]);
 
+// Known SEO audit / crawler bots that should access public pages without
+// being caught by Clerk's auth handshake. These bots only ever hit public
+// routes, so bypassing Clerk here has no security impact.
+const SEO_BOT_PATTERN = /Sitechecker|AhrefsBot|SemrushBot|DotBot|MJ12bot|bingbot|BingPreview|Screaming\s?Frog/i;
+
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-    if (isPublicRoute(req)) {
+    const ua = req.headers.get('user-agent') || '';
+    const isSeoBot = SEO_BOT_PATTERN.test(ua);
+
+    if (isPublicRoute(req) || isSeoBot) {
         const response = NextResponse.next();
-        // SEO: Explicitly allow indexing for all public routes.
-        // This must apply to crawlers (Googlebot) too — the previous early-return
-        // for crawlers bypassed this header, causing X-Robots-Tag: noindex to
-        // reach Google from upstream/Next.js metadata processing.
+        // SEO: Explicitly allow indexing for all public routes and known crawlers.
         response.headers.set('X-Robots-Tag', 'index, follow');
         return response;
     }
