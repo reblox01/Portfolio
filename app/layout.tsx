@@ -129,26 +129,6 @@ export default async function RootLayout({
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJsonLd }} />
           {/* Professional service organization data */}
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: organizationJsonLd }} />
-          {/* Open Graph / Twitter meta (defaults from siteConfig.meta) */}
-          {/* Use process.env.SITE_URL at runtime when available to build full URLs */}
-          {(() => {
-            const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || siteConfig.structuredData?.url || siteConfig.meta["og:url"] || "").replace(/\/$/, "")
-            const ogImage = siteConfig.meta["og:image"]?.startsWith("/") ? `${siteUrl}${siteConfig.meta["og:image"]}` : siteConfig.meta["og:image"]
-            const ogUrl = siteUrl || siteConfig.meta["og:url"] || ""
-            return (
-              <>
-                <meta property="og:title" content={siteConfig.meta["og:title"]} />
-                <meta property="og:description" content={siteConfig.meta["og:description"]} />
-                <meta property="og:image" content={ogImage} />
-                <meta property="og:url" content={ogUrl} />
-                <meta name="twitter:card" content={siteConfig.meta["twitter:card"]} />
-                <meta name="twitter:title" content={siteConfig.meta["twitter:title"]} />
-                <meta name="twitter:description" content={siteConfig.meta["twitter:description"]} />
-                <meta name="twitter:image" content={ogImage} />
-                <link rel="canonical" href={ogUrl} />
-              </>
-            )
-          })()}
         </head>
         <body className={inter.className}>
           <Providers>

@@ -45,8 +45,8 @@ export async function constructMetadata({
     const isHomePage = path === "/";
     const isSiteNameOnly = title === siteConfig.name;
 
-    const titleObj = (isHomePage && isSiteNameOnly) || title === siteConfig.name
-        ? { absolute: siteConfig.name }
+    const titleObj = isHomePage
+        ? { absolute: title }
         : title;
 
     return {

@@ -14,8 +14,8 @@ import { constructMetadata } from "@/lib/metadata";
 export async function generateMetadata(): Promise<Metadata> {
   return constructMetadata({
     path: "/",
-    defaultTitle: siteConfig.name,
-    defaultDescription: "Explore my portfolio, a skilled Full Stack Developer specializing in React, Next.js, Node.js, TypeScript, and modern web technologies. View projects, experience, and get in touch.",
+    defaultTitle: "Sohail Koutari | Full Stack Developer",
+    defaultDescription: "Portfolio of Sohail Koutari — Full Stack Developer specializing in React, Next.js, Node.js & TypeScript. View projects, experience, and get in touch.",
   });
 }
 
