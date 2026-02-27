@@ -26,18 +26,26 @@ export async function GET() {
 
     const allUrls = [...urls, ...projectUrls]
 
-    const lastmod = new Date().toISOString()
+    // Static pages use a fixed date (last significant site update).
+    // Dynamic lastmod on every request misleads crawlers and wastes crawl budget.
+    const staticLastmod = '2026-02-27'
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${allUrls
       .map(
         (url) => {
-          // Homepage gets priority 1.0, main pages 0.8, project pages 0.6
-          // Homepage is exactly the baseUrl
           const isHome = url === baseUrl
           const isProjectPage = url.includes('/projects/') && url.split('/').length > 4
           const priority = isHome ? '1.0' : isProjectPage ? '0.6' : '0.8'
+          const changefreq = isHome ? 'weekly' : isProjectPage ? 'monthly' : 'monthly'
+          // Project pages use their own updatedAt from the DB; static pages use fixed date
+          const project = isProjectPage
+            ? (projects || []).find((p: any) => url.endsWith(p.id))
+            : null
+          const lastmod = project?.updatedAt
+            ? new Date(project.updatedAt).toISOString().split('T')[0]
+            : staticLastmod
 
-          return `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${priority}</priority>\n  </url>`
+          return `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
         }
       )
       .join('\n')}\n</urlset>`
