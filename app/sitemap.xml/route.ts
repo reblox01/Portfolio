@@ -38,11 +38,11 @@ export async function GET() {
           const priority = isHome ? '1.0' : isProjectPage ? '0.6' : '0.8'
           const changefreq = isHome ? 'weekly' : isProjectPage ? 'monthly' : 'monthly'
           // Project pages use their own updatedAt from the DB; static pages use fixed date
-          const project = isProjectPage
+          const project: any = isProjectPage
             ? (projects || []).find((p: any) => url.endsWith(p.id))
             : null
-          const lastmod = project?.updatedAt
-            ? new Date(project.updatedAt).toISOString().split('T')[0]
+          const lastmod = project?.createdAt
+            ? new Date(project.createdAt).toISOString().split('T')[0]
             : staticLastmod
 
           return `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
