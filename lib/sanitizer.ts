@@ -25,6 +25,10 @@ export async function sanitizeInput(input: string, options: any = { ALLOWED_TAGS
 export async function sanitizeObject<T>(obj: T): Promise<T> {
     if (!obj || typeof obj !== 'object') return obj;
 
+    if (obj instanceof Date) {
+        return obj as unknown as T;
+    }
+
     if (Array.isArray(obj)) {
         const sanitizedArray = await Promise.all(obj.map(item => sanitizeObject(item)));
         return sanitizedArray as unknown as T;
