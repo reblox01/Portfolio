@@ -16,6 +16,7 @@ This project is optimized for fast load times, strong accessibility, and modern 
 - User-friendly interface for managing portfolio content
 - Customizable design and layout
 - Full-stack capabilities
+- AI-powered chatbot with multi-provider support (OpenAI, Gemini, Anthropic, OpenRouter)
 
 ## Getting Started
 
@@ -180,6 +181,49 @@ Take your portfolio to the **next level** with our powerful Site Settings featur
 3. 🎛️ Toggle features ON/OFF according to your preference
 4. 🚀 Watch your portfolio transform instantly!
 
+## AI Chatbot - Multi-Provider Innovation
+
+This portfolio features a **fully integrated AI chatbot** that visitors can interact with directly on your site. It's not just a widget — it's a smart assistant powered by your choice of AI provider.
+
+### Supported AI Providers
+
+| Provider | Key Prefix | Models |
+| :--- | :--- | :--- |
+| **OpenAI** | `sk-...` | GPT-4, GPT-4 Turbo, GPT-3.5 Turbo |
+| **Google Gemini** | `AI...` | Gemini 2.5 Flash, Gemini 2.5 Pro, Gemini 1.5 Pro |
+| **Anthropic Claude** | `sk-ant-...` | Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Sonnet |
+| **OpenRouter** | `sk-or-...` | 200+ models (Claude, GPT-4, Gemini, Llama, Mixtral, etc.) — dynamically fetched |
+
+### Key Features
+
+- **Dynamic Model Selection** — OpenRouter models are fetched live from their API after key validation. No hardcoded lists.
+- **Auto-Save API Keys** — Keys auto-save 1s after you stop typing. No manual save needed.
+- **Encrypted Storage** — All API keys are encrypted with AES-256-CBC before database storage. Never exposed to the browser.
+- **Custom Instructions** — Define system instructions to control chatbot personality and knowledge scope.
+- **Multi-Language Support** — Configure supported languages; the AI responds in the visitor's preferred language.
+- **Conversation Storage** — Optionally save chat history in MongoDB for review and analytics.
+- **Per-Page Display** — Show the chatbot on all pages or only selected ones.
+- **Custom Appearance** — Configure chatbot name, greeting, position, colors, logo, and shape (circle, square, hexagon, star, etc.).
+- **Rate Limited** — 30 messages/min per IP to prevent abuse.
+- **OWASP Compliant** — Input validation via Zod, sanitized responses via ReactMarkdown, authenticated server actions.
+
+### How It Works
+
+1. Go to **Dashboard > Integration > AI Assistant**
+2. Enter your API key for any supported provider
+3. For OpenRouter: click "Fetch Models" to load all available models dynamically
+4. Pick a model, customize instructions and appearance
+5. Enable the chatbot — it appears on your portfolio instantly
+
+### OpenRouter Setup (Access 200+ Models)
+
+[OpenRouter](https://openrouter.ai) gives you access to models from OpenAI, Anthropic, Google, Meta, Mistral and more through a single API key.
+
+1. Create an account at [openrouter.ai](https://openrouter.ai)
+2. Generate an API key (`sk-or-...`)
+3. Paste it in the dashboard — models auto-populate
+4. Select any model and start chatting
+
 ## 🔒 Security - OWASP Compliant 🛡️
 
 This project follows **OWASP security guidelines** to ensure your data and portfolio remain safe from common vulnerabilities.
@@ -192,6 +236,7 @@ This project follows **OWASP security guidelines** to ensure your data and portf
 | **Input Validation** | **Zod Schema Enforcement**: All data transfers are strictly validated using `.parse()` against Zod schemas in `@/lib/types/` before being processed by the backend. | Prevents malformed data and ensures system integrity. |
 | **Database Security** | **Type-Safe ORM**: Exclusively uses **Prisma ORM** for all database interactions, which inherently utilizes parameterized queries. | Completely eliminates SQL Injection (SQLi) attack vectors. |
 | **Secrets Management** | **Secure Environment**: All sensitive credentials (SMTP, Clerk, MongoDB) are handled via `process.env` and never exposed in the client-side code or git history. | Prevents exposure of sensitive API keys and credentials. |
+| **AI API Key Encryption** | **AES-256-CBC Encryption**: All AI provider API keys (OpenAI, Gemini, Anthropic, OpenRouter) are encrypted at rest before database storage using `@/lib/encryption.ts`. Keys are never returned to the client — only used server-side. | Protects AI provider credentials from database breaches and XSS exfiltration. |
 
 
 ## Deploy on vercel
@@ -226,6 +271,7 @@ After setting up the application, you can start customizing your portfolio. Here
 
 - **Admin Login**: Access the admin dashboard and logging in with your credentials.
 - **Manage Portfolio Content**: Use the admin dashboard to add, edit, or remove portfolio items such as projects, techstack, certification, admin info or any other content you want to showcase.
+- **AI Chatbot**: Configure an AI-powered chatbot under **Dashboard > Integration > AI Assistant**. Supports OpenAI, Gemini, Anthropic, and OpenRouter with dynamic model selection.
 - **Customize Design**: Modify the frontend components and styles to customize the look and feel of your portfolio.
 - **Extend Functionality**: Feel free to extend the functionality of the portfolio by adding new features or integrating with external services.
 

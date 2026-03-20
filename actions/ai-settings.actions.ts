@@ -18,11 +18,11 @@ async function authenticateAndRedirect(): Promise<string> {
 // Validation schemas (OWASP compliance)
 const aiSettingsUpdateSchema = z.object({
     enabled: z.boolean().optional(),
-    provider: z.enum(["openai", "gemini", "anthropic", "perplexity"]).optional(),
+    provider: z.enum(["openai", "gemini", "anthropic", "openrouter"]).optional(),
     openaiKey: z.string().min(20).max(200).regex(/^[a-zA-Z0-9_-]+$/).or(z.literal("***masked***")).optional().or(z.literal("")).or(z.null()),
     geminiKey: z.string().min(20).max(200).regex(/^[a-zA-Z0-9_-]+$/).or(z.literal("***masked***")).optional().or(z.literal("")).or(z.null()),
     anthropicKey: z.string().min(20).max(200).regex(/^[a-zA-Z0-9_-]+$/).or(z.literal("***masked***")).optional().or(z.literal("")).or(z.null()),
-    perplexityKey: z.string().min(20).max(200).regex(/^[a-zA-Z0-9_-]+$/).or(z.literal("***masked***")).optional().or(z.literal("")).or(z.null()),
+    openrouterKey: z.string().min(20).max(200).regex(/^[a-zA-Z0-9_-]+$/).or(z.literal("***masked***")).optional().or(z.literal("")).or(z.null()),
     selectedModel: z.string().min(1).max(100).optional(),
     chatbotShape: z.string().optional(),
     chatbotIconRotation: z.number().min(0).max(360).optional(),
@@ -69,7 +69,7 @@ export async function getAISettingsAction() {
                 openaiKey: safeDecryptApiKey(settings.openaiKey),
                 geminiKey: safeDecryptApiKey(settings.geminiKey),
                 anthropicKey: safeDecryptApiKey(settings.anthropicKey),
-                perplexityKey: safeDecryptApiKey(settings.perplexityKey),
+                openrouterKey: safeDecryptApiKey(settings.openrouterKey),
             }
         };
     } catch (error) {
@@ -122,12 +122,12 @@ export async function updateAISettingsAction(data: z.infer<typeof aiSettingsUpda
             delete updateData.anthropicKey;
         }
 
-        if (validated.perplexityKey && validated.perplexityKey !== '***masked***') {
-            updateData.perplexityKey = encryptApiKey(validated.perplexityKey);
-        } else if (validated.perplexityKey === null) {
-            updateData.perplexityKey = null;
+        if (validated.openrouterKey && validated.openrouterKey !== '***masked***') {
+            updateData.openrouterKey = encryptApiKey(validated.openrouterKey);
+        } else if (validated.openrouterKey === null) {
+            updateData.openrouterKey = null;
         } else {
-            delete updateData.perplexityKey;
+            delete updateData.openrouterKey;
         }
 
         if (settings) {
@@ -148,7 +148,7 @@ export async function updateAISettingsAction(data: z.infer<typeof aiSettingsUpda
                 openaiKey: safeDecryptApiKey(settings.openaiKey),
                 geminiKey: safeDecryptApiKey(settings.geminiKey),
                 anthropicKey: safeDecryptApiKey(settings.anthropicKey),
-                perplexityKey: safeDecryptApiKey(settings.perplexityKey),
+                openrouterKey: safeDecryptApiKey(settings.openrouterKey),
             }
         };
     } catch (error) {
@@ -163,7 +163,7 @@ export async function updateAISettingsAction(data: z.infer<typeof aiSettingsUpda
 /**
  * Test API key connection (admin only)
  */
-export async function testAIConnectionAction(provider: "openai" | "gemini" | "anthropic" | "perplexity") {
+export async function testAIConnectionAction(provider: "openai" | "gemini" | "anthropic" | "openrouter") {
     await authenticateAndRedirect();
 
     const ip = getClientIp(await headers());
@@ -189,8 +189,8 @@ export async function testAIConnectionAction(provider: "openai" | "gemini" | "an
             case "anthropic":
                 apiKey = safeDecryptApiKey(settings.anthropicKey);
                 break;
-            case "perplexity":
-                apiKey = safeDecryptApiKey(settings.perplexityKey);
+            case "openrouter":
+                apiKey = safeDecryptApiKey(settings.openrouterKey);
                 break;
         }
 
@@ -244,30 +244,22 @@ export async function testAIConnectionAction(provider: "openai" | "gemini" | "an
                 // Anthropic doesn't have a simple "list models" like OpenAI, but we can return the one we tested or hardcoded ones if needed.
                 // For now, let's just return success as before, or list known ones.
                 return { success: true, message: "Anthropic connection successful!", models: ["claude-3-5-sonnet-20241022", "claude-3-opus-20240229", "claude-3-sonnet-20240229"] };
-            } else if (provider === "perplexity") {
-                const response = await fetch("https://api.perplexity.ai/chat/completions", {
-                    method: "POST",
+            } else if (provider === "openrouter") {
+                const response = await fetch("https://openrouter.ai/api/v1/auth/key", {
                     headers: {
                         "Authorization": `Bearer ${apiKey}`,
-                        "content-type": "application/json",
                     },
-                    body: JSON.stringify({
-                        model: "llama-3.1-sonar-small-128k-online",
-                        messages: [{ role: "user", content: "test" }],
-                        max_tokens: 10,
-                    }),
                 });
                 if (!response.ok) {
                     if (response.status === 401) {
-                        return { error: "Invalid Perplexity API key" };
+                        return { error: "Invalid OpenRouter API key" };
                     }
-                    return { error: `Perplexity API error (${response.status})` };
+                    return { error: `OpenRouter API error (${response.status})` };
                 }
-                // Return common Perplexity models as a list
                 return {
                     success: true,
-                    message: "Perplexity connection successful!",
-                    models: ["llama-3.1-sonar-small-128k-online", "llama-3.1-sonar-large-128k-online", "llama-3.1-sonar-huge-128k-online"]
+                    message: "OpenRouter connection successful!",
+                    models: []
                 };
             }
         } catch (networkError) {
@@ -279,6 +271,80 @@ export async function testAIConnectionAction(provider: "openai" | "gemini" | "an
     } catch (error) {
         console.error("Error testing AI connection:", error);
         return { error: "Failed to test connection" };
+    }
+}
+
+/**
+ * Fetch available models from OpenRouter (admin only)
+ * Validates the API key and returns the full model list
+ */
+export async function fetchOpenRouterModelsAction(apiKeyFromInput?: string) {
+    await authenticateAndRedirect();
+
+    const ip = getClientIp(await headers());
+    const { success } = await apiRateLimit.limit(ip);
+    if (!success) return { error: "Rate limit exceeded" };
+
+    try {
+        let apiKey: string | null = null;
+
+        if (apiKeyFromInput && apiKeyFromInput !== '***masked***') {
+            // Use the key directly from the form input (not yet saved)
+            apiKey = apiKeyFromInput;
+        } else {
+            // Fall back to DB (for when key is already saved)
+            const settings = await prisma.aISettings.findFirst();
+            if (!settings) {
+                return { error: "No AI settings found" };
+            }
+            apiKey = safeDecryptApiKey(settings.openrouterKey);
+        }
+
+        if (!apiKey) {
+            return { error: "No OpenRouter API key configured" };
+        }
+
+        // Step 1: Validate key via OpenRouter auth endpoint
+        const authRes = await fetch("https://openrouter.ai/api/v1/auth/key", {
+            headers: { "Authorization": `Bearer ${apiKey}` },
+        });
+
+        if (!authRes.ok) {
+            if (authRes.status === 401) {
+                return { error: "Invalid OpenRouter API key" };
+            }
+            return { error: `OpenRouter auth error (${authRes.status})` };
+        }
+
+        // Step 2: Fetch available models (public endpoint)
+        const modelsRes = await fetch("https://openrouter.ai/api/v1/models");
+        if (!modelsRes.ok) {
+            return { error: "Failed to fetch models from OpenRouter" };
+        }
+
+        const modelsData = await modelsRes.json();
+
+        // Step 3: Filter to text-output models, map to our format
+        const models = modelsData.data
+            .filter((m: any) =>
+                m.architecture?.output_modalities?.includes("text") &&
+                !m.id.includes(":free")
+            )
+            .map((m: any) => ({
+                id: m.id,
+                name: m.name,
+                description: `${(m.context_length / 1000).toFixed(0)}K context`,
+            }))
+            .slice(0, 200);
+
+        return {
+            success: true,
+            message: "OpenRouter connected! Select a model below.",
+            models,
+        };
+    } catch (error) {
+        console.error("Error fetching OpenRouter models:", error);
+        return { error: "Network error: Unable to reach OpenRouter" };
     }
 }
 

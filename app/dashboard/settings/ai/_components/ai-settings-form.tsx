@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import * as z from "zod"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 import { Eye, EyeOff, Check, X, Upload, Link as LinkIcon, Loader2, Crop as CropIcon, Info } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -24,7 +24,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import Cropper from "react-easy-crop"
 import { Point, Area } from "react-easy-crop"
 
-import { updateAISettingsAction, testAIConnectionAction, uploadChatbotLogoAction } from "@/actions/ai-settings.actions"
+import { updateAISettingsAction, testAIConnectionAction, uploadChatbotLogoAction, fetchOpenRouterModelsAction } from "@/actions/ai-settings.actions"
 import { ChatbotPreview } from "./chatbot-preview"
 import { getCroppedImg } from "@/lib/crop-image"
 import { cn } from "@/lib/utils"
@@ -36,7 +36,7 @@ type AISettings = {
     openaiKey: string | null
     geminiKey: string | null
     anthropicKey: string | null
-    perplexityKey: string | null
+    openrouterKey: string | null
     selectedModel: string
     useCustomInstruction: boolean
     customInstruction: string | null
@@ -62,11 +62,11 @@ type Props = {
 
 const formSchema = z.object({
     enabled: z.boolean(),
-    provider: z.enum(["openai", "gemini", "anthropic", "perplexity"]),
+    provider: z.enum(["openai", "gemini", "anthropic", "openrouter"]),
     openaiKey: z.string().optional().nullable(),
     geminiKey: z.string().optional().nullable(),
     anthropicKey: z.string().optional().nullable(),
-    perplexityKey: z.string().optional().nullable(),
+    openrouterKey: z.string().optional().nullable(),
     selectedModel: z.string(),
     useCustomInstruction: z.boolean(),
     customInstruction: z.string().optional().nullable(),
@@ -121,22 +121,23 @@ const MODELS = {
         { value: "claude-3-opus-20240229", label: "Claude 3 Opus", description: "Strong performance" },
         { value: "claude-3-sonnet-20240229", label: "Claude 3 Sonnet", description: "Balanced speed and intelligence" },
     ],
-    perplexity: [
-        { value: "llama-3.1-sonar-small-128k-online", label: "Sonar Small 128K", description: "Fast with online search" },
-        { value: "llama-3.1-sonar-large-128k-online", label: "Sonar Large 128K", description: "Powerful with online search" },
-        { value: "llama-3.1-sonar-huge-128k-online", label: "Sonar Huge 128K", description: "Most capable with online search" },
-    ],
+    openrouter: [] as { value: string; label: string; description: string }[],
 }
 
 export function AISettingsForm({ initialData }: Props) {
     const router = useRouter()
-    const [showOpenAI, setShowOpenAI] = useState(false)
-    const [showGemini, setShowGemini] = useState(false)
-    const [showAnthropic, setShowAnthropic] = useState(false)
-    const [showPerplexity, setShowPerplexity] = useState(false)
+    const [hiddenKeys, setHiddenKeys] = useState<Set<string>>(new Set())
+    const toggleKeyVisible = (key: string) => {
+        setHiddenKeys(prev => {
+            const next = new Set(prev)
+            if (next.has(key)) next.delete(key)
+            else next.add(key)
+            return next
+        })
+    }
     const [testing, setTesting] = useState<string | null>(null)
     const [isUploading, setIsUploading] = useState(false)
-    const [availableModels, setAvailableModels] = useState<{ provider: string; models: string[] } | null>(null)
+    const [availableModels, setAvailableModels] = useState<{ provider: string; models: string[]; modelDetails?: { id: string; name: string; description: string }[] } | null>(null)
 
     // Cropping State
     const [imageSrc, setImageSrc] = useState<string | null>(null)
@@ -153,7 +154,7 @@ export function AISettingsForm({ initialData }: Props) {
             openaiKey: initialData?.openaiKey ?? null,
             geminiKey: initialData?.geminiKey ?? null,
             anthropicKey: initialData?.anthropicKey ?? null,
-            perplexityKey: initialData?.perplexityKey ?? null,
+            openrouterKey: initialData?.openrouterKey ?? null,
             selectedModel: initialData?.selectedModel ?? "gpt-3.5-turbo",
             useCustomInstruction: initialData?.useCustomInstruction ?? false,
             customInstruction: initialData?.customInstruction ?? null,
@@ -182,7 +183,69 @@ export function AISettingsForm({ initialData }: Props) {
     const chatbotIconRotation = form.watch("chatbotIconRotation")
     const chatbotIconSize = form.watch("chatbotIconSize")
 
-    async function testConnection(provider: "openai" | "gemini" | "anthropic" | "perplexity") {
+    // Auto-save API keys after 1s of no typing
+    const autoSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const prevKeysRef = useRef<Record<string, string | null>>({})
+
+    useEffect(() => {
+        const keyFields: Array<{ field: string; provider: string }> = [
+            { field: "openaiKey", provider: "openai" },
+            { field: "geminiKey", provider: "gemini" },
+            { field: "anthropicKey", provider: "anthropic" },
+            { field: "openrouterKey", provider: "openrouter" },
+        ]
+        for (const { field } of keyFields) {
+            const current = form.getValues(field as any)
+            const prev = prevKeysRef.current[field]
+            if (current !== prev) {
+                prevKeysRef.current[field] = current
+                if (autoSaveRef.current) clearTimeout(autoSaveRef.current)
+                autoSaveRef.current = setTimeout(async () => {
+                    const values = form.getValues()
+                    const data: any = {
+                        enabled: values.enabled,
+                        provider: values.provider,
+                        selectedModel: values.selectedModel,
+                        chatbotName: values.chatbotName,
+                        chatbotGreeting: values.chatbotGreeting,
+                        chatbotPosition: values.chatbotPosition,
+                        chatbotLogo: values.chatbotLogo,
+                        primaryColor: values.primaryColor,
+                        secondaryColor: values.secondaryColor,
+                        displayMode: values.displayMode,
+                        defaultLanguage: values.defaultLanguage,
+                        supportedLanguages: values.supportedLanguages,
+                        saveConversations: values.saveConversations,
+                        useCustomInstruction: values.useCustomInstruction,
+                        customInstruction: values.customInstruction,
+                        chatbotShape: values.chatbotShape,
+                        chatbotIconRotation: values.chatbotIconRotation,
+                        chatbotIconSize: values.chatbotIconSize,
+                    }
+                    const selectedPages = values.selectedPages ? values.selectedPages.split(",").map((p: string) => p.trim()).filter(Boolean) : []
+                    const supportedLanguages = values.supportedLanguages ? values.supportedLanguages.split(",").map((l: string) => l.trim()).filter(Boolean) : ["en"]
+                    data.selectedPages = selectedPages
+                    data.supportedLanguages = supportedLanguages
+                    for (const { field: f } of keyFields) {
+                        const val = form.getValues(f as any)
+                        data[f] = val && val !== '***masked***' ? val : null
+                    }
+                    try {
+                        const result = await updateAISettingsAction(data)
+                        if (!result.error) router.refresh()
+                    } catch {}
+                }, 1000)
+                break
+            }
+        }
+        return () => { if (autoSaveRef.current) clearTimeout(autoSaveRef.current) }
+    }, [form.watch("openaiKey"), form.watch("geminiKey"), form.watch("anthropicKey"), form.watch("openrouterKey")])
+
+    async function testConnection(provider: "openai" | "gemini" | "anthropic" | "openrouter") {
+        if (provider === "openrouter") {
+            await fetchOpenRouterModels()
+            return
+        }
         setTesting(provider)
         setAvailableModels(null)
         try {
@@ -197,6 +260,33 @@ export function AISettingsForm({ initialData }: Props) {
             }
         } catch (error) {
             toast.error("Failed to test connection")
+        } finally {
+            setTesting(null)
+        }
+    }
+
+    async function fetchOpenRouterModels() {
+        setTesting("openrouter")
+        setAvailableModels(null)
+        const inputKey = form.getValues("openrouterKey")
+        try {
+            const result = await fetchOpenRouterModelsAction(
+                inputKey && inputKey !== '***masked***' ? inputKey : undefined
+            )
+            if (result.error) {
+                toast.error(result.error)
+            } else {
+                toast.success(result.message || "Models loaded!")
+                if (result.models) {
+                    setAvailableModels({
+                        provider: "openrouter",
+                        models: result.models.map((m: any) => m.id),
+                        modelDetails: result.models,
+                    })
+                }
+            }
+        } catch (error) {
+            toast.error("Failed to fetch OpenRouter models")
         } finally {
             setTesting(null)
         }
@@ -273,9 +363,15 @@ export function AISettingsForm({ initialData }: Props) {
     const secondaryColor = form.watch("secondaryColor")
 
     const currentModels = useMemo(() => {
+        if (provider === "openrouter" && availableModels?.provider === "openrouter" && availableModels.modelDetails) {
+            return availableModels.modelDetails.map(m => ({
+                value: m.id,
+                label: m.name,
+                description: m.description,
+            }));
+        }
         const hardcoded = MODELS[provider as keyof typeof MODELS] || [];
-        if (availableModels?.provider === provider) {
-            // Filter out models that are already in the hardcoded list to avoid duplicates
+        if (availableModels?.provider === provider && provider !== "openrouter") {
             const dynamic = availableModels.models
                 .filter(m => !hardcoded.some(h => h.value === m))
                 .map(m => ({
@@ -641,26 +737,26 @@ export function AISettingsForm({ initialData }: Props) {
                                                     <div className="relative flex-1">
                                                         <FormControl>
                                                             <Input
-                                                                type={showOpenAI ? "text" : "password"}
-                                                                placeholder="sk-..."
+                                                                type={!hiddenKeys.has("openaiKey") ? "password" : "text"}
+                                                                placeholder={field.value === '***masked***' ? "••••••••••••••••" : "sk-..."}
                                                                 {...field}
-                                                                value={field.value || ""}
+                                                                value={field.value === '***masked***' ? "" : (field.value || "")}
                                                                 disabled={isSubmitting}
                                                             />
                                                         </FormControl>
                                                         <button
                                                             type="button"
-                                                            onClick={() => setShowOpenAI(!showOpenAI)}
+                                                            onClick={() => toggleKeyVisible("openaiKey")}
                                                             className="absolute right-2 top-1/2 -translate-y-1/2"
                                                         >
-                                                            {showOpenAI ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                                            {hiddenKeys.has("openaiKey") ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                                         </button>
                                                     </div>
                                                     <Button
                                                         type="button"
                                                         variant="outline"
                                                         onClick={() => testConnection("openai")}
-                                                        disabled={isSubmitting || testing === "openai" || !field.value}
+                                                        disabled={isSubmitting || testing === "openai" || !field.value || field.value === '***masked***'}
                                                     >
                                                         {testing === "openai" ? "Testing..." : "Test"}
                                                     </Button>
@@ -699,26 +795,26 @@ export function AISettingsForm({ initialData }: Props) {
                                                     <div className="relative flex-1">
                                                         <FormControl>
                                                             <Input
-                                                                type={showGemini ? "text" : "password"}
-                                                                placeholder="AI..."
+                                                                type={!hiddenKeys.has("geminiKey") ? "password" : "text"}
+                                                                placeholder={field.value === '***masked***' ? "••••••••••••••••" : "AI..."}
                                                                 {...field}
-                                                                value={field.value || ""}
+                                                                value={field.value === '***masked***' ? "" : (field.value || "")}
                                                                 disabled={isSubmitting}
                                                             />
                                                         </FormControl>
                                                         <button
                                                             type="button"
-                                                            onClick={() => setShowGemini(!showGemini)}
+                                                            onClick={() => toggleKeyVisible("geminiKey")}
                                                             className="absolute right-2 top-1/2 -translate-y-1/2"
                                                         >
-                                                            {showGemini ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                                            {hiddenKeys.has("geminiKey") ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                                         </button>
                                                     </div>
                                                     <Button
                                                         type="button"
                                                         variant="outline"
                                                         onClick={() => testConnection("gemini")}
-                                                        disabled={isSubmitting || testing === "gemini" || !field.value}
+                                                        disabled={isSubmitting || testing === "gemini" || !field.value || field.value === '***masked***'}
                                                     >
                                                         {testing === "gemini" ? "Testing..." : "Test"}
                                                     </Button>
@@ -757,26 +853,26 @@ export function AISettingsForm({ initialData }: Props) {
                                                     <div className="relative flex-1">
                                                         <FormControl>
                                                             <Input
-                                                                type={showAnthropic ? "text" : "password"}
-                                                                placeholder="sk-ant-..."
+                                                                type={!hiddenKeys.has("anthropicKey") ? "password" : "text"}
+                                                                placeholder={field.value === '***masked***' ? "••••••••••••••••" : "sk-ant-..."}
                                                                 {...field}
-                                                                value={field.value || ""}
+                                                                value={field.value === '***masked***' ? "" : (field.value || "")}
                                                                 disabled={isSubmitting}
                                                             />
                                                         </FormControl>
                                                         <button
                                                             type="button"
-                                                            onClick={() => setShowAnthropic(!showAnthropic)}
+                                                            onClick={() => toggleKeyVisible("anthropicKey")}
                                                             className="absolute right-2 top-1/2 -translate-y-1/2"
                                                         >
-                                                            {showAnthropic ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                                            {hiddenKeys.has("anthropicKey") ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                                         </button>
                                                     </div>
                                                     <Button
                                                         type="button"
                                                         variant="outline"
                                                         onClick={() => testConnection("anthropic")}
-                                                        disabled={isSubmitting || testing === "anthropic" || !field.value}
+                                                        disabled={isSubmitting || testing === "anthropic" || !field.value || field.value === '***masked***'}
                                                     >
                                                         {testing === "anthropic" ? "Testing..." : "Test"}
                                                     </Button>
@@ -804,57 +900,89 @@ export function AISettingsForm({ initialData }: Props) {
                                         )}
                                     />
 
-                                    {/* Perplexity */}
+                                    {/* OpenRouter */}
                                     <FormField
                                         control={form.control}
-                                        name="perplexityKey"
+                                        name="openrouterKey"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Perplexity AI API Key</FormLabel>
+                                                <FormLabel>OpenRouter API Key</FormLabel>
                                                 <div className="flex gap-2">
                                                     <div className="relative flex-1">
                                                         <FormControl>
                                                             <Input
-                                                                type={showPerplexity ? "text" : "password"}
-                                                                placeholder="pplx-..."
+                                                                type={!hiddenKeys.has("openrouterKey") ? "password" : "text"}
+                                                                placeholder={field.value === '***masked***' ? "••••••••••••••••" : "sk-or-..."}
                                                                 {...field}
-                                                                value={field.value || ""}
+                                                                value={field.value === '***masked***' ? "" : (field.value || "")}
                                                                 disabled={isSubmitting}
+                                                                onPaste={(e) => {
+                                                                    const pasted = e.clipboardData.getData("text")
+                                                                    if (pasted.startsWith("sk-or-")) {
+                                                                        setTimeout(() => fetchOpenRouterModels(), 100)
+                                                                    }
+                                                                }}
+                                                                onBlur={() => {
+                                                                    const val = form.getValues("openrouterKey")
+                                                                    if (val && val.startsWith("sk-or-") && val.length >= 20 && !availableModels) {
+                                                                        fetchOpenRouterModels()
+                                                                    }
+                                                                }}
                                                             />
                                                         </FormControl>
                                                         <button
                                                             type="button"
-                                                            onClick={() => setShowPerplexity(!showPerplexity)}
+                                                            onClick={() => toggleKeyVisible("openrouterKey")}
                                                             className="absolute right-2 top-1/2 -translate-y-1/2"
                                                         >
-                                                            {showPerplexity ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                                            {hiddenKeys.has("openrouterKey") ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                                         </button>
                                                     </div>
                                                     <Button
                                                         type="button"
                                                         variant="outline"
-                                                        onClick={() => testConnection("perplexity")}
-                                                        disabled={isSubmitting || testing === "perplexity" || !field.value}
+                                                        onClick={() => fetchOpenRouterModels()}
+                                                        disabled={isSubmitting || testing === "openrouter" || (!field.value && field.value !== '***masked***')}
                                                     >
-                                                        {testing === "perplexity" ? "Testing..." : "Test"}
+                                                        {testing === "openrouter" ? (
+                                                            <>
+                                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                Loading...
+                                                            </>
+                                                        ) : "Fetch Models"}
                                                     </Button>
                                                 </div>
-                                                {availableModels?.provider === "perplexity" && (
-                                                    <div className="mt-2 space-y-2">
-                                                        <p className="text-xs font-semibold">Suggested Models:</p>
-                                                        <ScrollArea className="h-24 w-full rounded-md border p-2">
-                                                            <div className="flex flex-wrap gap-1">
-                                                                {availableModels.models.map((m) => (
-                                                                    <Badge key={m} variant="secondary" className="text-[10px] cursor-pointer" onClick={() => {
-                                                                        form.setValue("selectedModel", m as any, { shouldDirty: true });
-                                                                        toast.success(`Selected model: ${m}`);
-                                                                    }}>
-                                                                        {m}
-                                                                    </Badge>
+                                                {testing === "openrouter" && (
+                                                    <p className="text-xs text-muted-foreground mt-1">
+                                                        Validating key and fetching models...
+                                                    </p>
+                                                )}
+                                                {availableModels?.provider === "openrouter" && availableModels.modelDetails && (
+                                                    <div className="mt-3 space-y-2">
+                                                        <p className="text-xs font-semibold text-green-600">
+                                                            Key valid — {availableModels.modelDetails.length} models available
+                                                        </p>
+                                                        <Select
+                                                            onValueChange={(val) => {
+                                                                form.setValue("selectedModel", val, { shouldDirty: true })
+                                                            }}
+                                                            value={form.getValues("selectedModel")}
+                                                            disabled={isSubmitting}
+                                                        >
+                                                            <SelectTrigger className="max-w-full truncate">
+                                                                <SelectValue placeholder="Choose a model..." className="truncate" />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="max-h-[300px]">
+                                                                {availableModels.modelDetails.map((m) => (
+                                                                    <SelectItem key={m.id} value={m.id}>
+                                                                        <div className="flex flex-col gap-0.5 max-w-[400px]">
+                                                                            <span className="font-medium truncate">{m.name}</span>
+                                                                            <span className="text-xs text-muted-foreground truncate">{m.description}</span>
+                                                                        </div>
+                                                                    </SelectItem>
                                                                 ))}
-                                                            </div>
-                                                        </ScrollArea>
-                                                        <p className="text-[10px] text-muted-foreground italic">Tip: Click a model name to select it.</p>
+                                                            </SelectContent>
+                                                        </Select>
                                                     </div>
                                                 )}
                                                 <FormMessage />
@@ -888,7 +1016,7 @@ export function AISettingsForm({ initialData }: Props) {
                                                         <SelectItem value="openai">OpenAI</SelectItem>
                                                         <SelectItem value="gemini">Google Gemini</SelectItem>
                                                         <SelectItem value="anthropic">Anthropic Claude</SelectItem>
-                                                        <SelectItem value="perplexity">Perplexity AI</SelectItem>
+                                                        <SelectItem value="openrouter">OpenRouter</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
@@ -911,15 +1039,15 @@ export function AISettingsForm({ initialData }: Props) {
                                                     <SelectContent>
                                                         {currentModels.map((model) => (
                                                             <SelectItem key={model.value} value={model.value}>
-                                                                <div className="flex flex-col gap-0.5 items-start">
+                                                                <div className="flex flex-col gap-0.5 items-start max-w-[400px]">
                                                                     <div className="flex items-center gap-2">
-                                                                        <span className="font-medium">{model.label}</span>
+                                                                        <span className="font-medium truncate">{model.label}</span>
                                                                         {model.description?.includes("Discovered") && (
                                                                             <Badge variant="outline" className="text-[9px] px-1 h-3.5 leading-none">New</Badge>
                                                                         )}
                                                                     </div>
                                                                     {model.description && (
-                                                                        <span className="text-xs text-muted-foreground">{model.description}</span>
+                                                                        <span className="text-xs text-muted-foreground truncate">{model.description}</span>
                                                                     )}
                                                                 </div>
                                                             </SelectItem>

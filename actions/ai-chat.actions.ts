@@ -47,8 +47,8 @@ export async function sendChatMessageAction(data: z.infer<typeof chatMessageSche
             case "anthropic":
                 apiKey = safeDecryptApiKey(settings.anthropicKey);
                 break;
-            case "perplexity":
-                apiKey = safeDecryptApiKey(settings.perplexityKey);
+            case "openrouter":
+                apiKey = safeDecryptApiKey(settings.openrouterKey);
                 break;
         }
 
@@ -160,8 +160,8 @@ async function callAIProvider(
             return await callGemini(apiKey, model, message, systemInstruction + languagePrompt);
         case "anthropic":
             return await callAnthropic(apiKey, model, message, systemInstruction + languagePrompt);
-        case "perplexity":
-            return await callPerplexity(apiKey, model, message, systemInstruction + languagePrompt);
+        case "openrouter":
+            return await callOpenRouter(apiKey, model, message, systemInstruction + languagePrompt);
         default:
             throw new Error("Unsupported AI provider");
     }
@@ -267,10 +267,10 @@ async function callAnthropic(apiKey: string, model: string, message: string, sys
 }
 
 /**
- * Call Perplexity AI API
+ * Call OpenRouter API
  */
-async function callPerplexity(apiKey: string, model: string, message: string, systemInstruction: string): Promise<string> {
-    const response = await fetch('https://api.perplexity.ai/chat/completions', {
+async function callOpenRouter(apiKey: string, model: string, message: string, systemInstruction: string): Promise<string> {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -288,7 +288,7 @@ async function callPerplexity(apiKey: string, model: string, message: string, sy
     });
 
     if (!response.ok) {
-        throw new Error(`Perplexity API error: ${response.statusText}`);
+        throw new Error(`OpenRouter API error: ${response.statusText}`);
     }
 
     const data = await response.json();
