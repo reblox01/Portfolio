@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ContactType } from "@/lib/types/contact-types"
 import { Button } from "@/components/ui/button"
@@ -74,15 +75,24 @@ export const columns: ColumnDef<ContactType>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const contact = row.original
-
-      const router = useRouter()
+      const [isPending, startTransition] = React.useTransition()
+      const { refreshData } = (table.options.meta as any) || {}
 
       const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this contact information?")) {
-          await deleteContactAction(contact.id)
-          window.location.reload()
+        if (window.confirm("Are you sure you want to delete this contact entry?")) {
+          startTransition(async () => {
+            try {
+              const res = await deleteContactAction(contact.id);
+              if (res) {
+                if (refreshData) await refreshData();
+                else window.location.reload();
+              }
+            } catch (error) {
+              console.error("Delete error:", error)
+            }
+          })
         }
       }
 
@@ -102,10 +112,11 @@ export const columns: ColumnDef<ContactType>[] = [
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={handleDelete}
-              className="text-destructive hover:text-destructive"
+              onSelect={handleDelete}
+              disabled={isPending}
+              className="text-destructive focus:text-destructive"
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

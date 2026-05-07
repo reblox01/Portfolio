@@ -19,17 +19,17 @@ export default function ManageTechStackPage() {
   const [sortType, setSortType] = React.useState<string>("newest");
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const refreshData = async () => {
-    setIsLoading(true);
+  const refreshData = React.useCallback(async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
     const res = await getAllTechstacksAction();
     setTechstacks(res.techstacks || []);
     setSortType(res.sortType || "newest");
     setIsLoading(false);
-  };
+  }, []);
 
   React.useEffect(() => {
-    refreshData();
-  }, []);
+    refreshData(true);
+  }, [refreshData]);
 
   const handleBulkDelete = async (ids: string[]) => {
     const success = await bulkDeleteTechstackAction(ids);
@@ -107,6 +107,7 @@ export default function ManageTechStackPage() {
         columns={columns as any}
         data={techstacks}
         onReorder={handleReorder}
+        meta={{ refreshData }}
         bulkActions={(selectedIds) => (
           <BulkActionsToolbar
             selectedIds={selectedIds}

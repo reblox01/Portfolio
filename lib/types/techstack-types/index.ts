@@ -8,6 +8,9 @@ export type Techstack = {
     category: string;
     url: string;
     techstackType: string;
+    isPublished: boolean;
+    displayOrder?: number | null;
+    createdAt: Date;
 }
 export enum TechType {
     Skills = 'skills',

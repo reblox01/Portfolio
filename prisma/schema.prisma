@@ -83,6 +83,7 @@ model Techstack {
   url           String
   techstackType String
   imageUrl      String
+  isPublished   Boolean  @default(true)
   displayOrder  Int? // For custom ordering
   createdAt     DateTime @default(now())
 }
@@ -210,11 +211,11 @@ model Admin {
 model AISettings {
   id                  String  @id @default(auto()) @map("_id") @db.ObjectId
   enabled             Boolean @default(false)
-  provider            String  @default("openai") // "openai" | "gemini" | "anthropic" | "perplexity"
+  provider            String  @default("openai") // "openai" | "gemini" | "anthropic" | "openrouter"
   openaiKey           String? // Encrypted
   geminiKey           String? // Encrypted
   anthropicKey        String? // Encrypted
-  perplexityKey       String? // Encrypted - Perplexity AI
+  openrouterKey       String? // Encrypted - OpenRouter
   selectedModel       String  @default("gpt-3.5-turbo")
   chatbotShape        String  @default("circle")
   chatbotIconRotation Int     @default(0)

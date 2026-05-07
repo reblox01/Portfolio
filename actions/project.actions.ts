@@ -258,6 +258,7 @@ export async function toggleProjectPublishAction(
     await authenticateAndRedirect();
 
     try {
+        console.log(`[ACTION] Toggling publish for project ${id}. Current status: ${currentStatus}`);
         validateObjectId(id);
         const project: Project = await prisma.project.update({
             where: {

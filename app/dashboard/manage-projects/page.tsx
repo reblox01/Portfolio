@@ -19,17 +19,17 @@ export default function ManageProjectsPage() {
   const [sortType, setSortType] = React.useState<string>("newest");
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const refreshData = async () => {
-    setIsLoading(true);
+  const refreshData = React.useCallback(async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
     const res = await getAllProjectsAction();
     setProjects(res.projects || []);
     setSortType(res.sortType || "newest");
     setIsLoading(false);
-  };
+  }, []);
 
   React.useEffect(() => {
-    refreshData();
-  }, []);
+    refreshData(true);
+  }, [refreshData]);
 
   const handleBulkDelete = async (ids: string[]) => {
     const success = await bulkDeleteProjectsAction(ids);
@@ -124,6 +124,7 @@ export default function ManageProjectsPage() {
         columns={columns as any}
         data={projects}
         onReorder={handleReorder}
+        meta={{ refreshData }}
         bulkActions={(selectedIds) => (
           <BulkActionsToolbar
             selectedIds={selectedIds}

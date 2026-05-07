@@ -18,17 +18,17 @@ export default function ManageExperiencePage() {
   const [sortType, setSortType] = React.useState<string>("newest");
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const refreshData = async () => {
-    setIsLoading(true);
+  const refreshData = React.useCallback(async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
     const res = await getAllExperienceAction();
     setExperience(res.experience || []);
     setSortType(res.sortType || "newest");
     setIsLoading(false);
-  };
+  }, []);
 
   React.useEffect(() => {
-    refreshData();
-  }, []);
+    refreshData(true);
+  }, [refreshData]);
 
   const handleBulkDelete = async (ids: string[]) => {
     const success = await bulkDeleteExperienceAction(ids);
@@ -115,6 +115,7 @@ export default function ManageExperiencePage() {
         columns={columns as any}
         data={experience}
         onReorder={handleReorder}
+        meta={{ refreshData }}
         bulkActions={(selectedIds) => (
           <BulkActionsToolbar
             selectedIds={selectedIds}

@@ -189,3 +189,29 @@ export async function bulkDeleteTechstackAction(ids: string[]): Promise<boolean>
         return false;
     }
 }
+
+export async function toggleTechstackPublishAction(
+    id: string,
+    currentStatus: boolean
+): Promise<Techstack | null> {
+    await authenticateAndRedirect();
+
+    try {
+        validateObjectId(id);
+        const tech: Techstack = await prisma.techstack.update({
+            where: {
+                id,
+            },
+            data: {
+                isPublished: !currentStatus,
+            },
+        });
+        revalidatePath('/dashboard/manage-techstack');
+        revalidatePath('/techstack');
+        return tech;
+    } catch (error) {
+        console.error("Error toggling techstack publish:", error instanceof Error ? error.message : "Unknown error");
+        return null;
+    }
+}
+

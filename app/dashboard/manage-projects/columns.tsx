@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
@@ -18,11 +19,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Edit, Trash2, Eye, ArrowUpCircle, ArrowDownCircle } from "lucide-react"
+import { MoreHorizontal, Edit, Trash2, Eye, ArrowUpCircle, ArrowDownCircle, Loader2, GripVertical } from "lucide-react"
 import { TableSelectionHeader, TableSelectionCell } from "@/components/ui/table-selection"
+import { useDraggableRow } from "@/components/data-table"
 
+const DragHandle = () => {
+  const draggable = useDraggableRow();
+  if (!draggable) return null;
+
+  return (
+    <div
+      {...draggable.attributes}
+      {...draggable.listeners}
+      className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded transition-colors"
+    >
+      <GripVertical className="h-4 w-4 text-muted-foreground" />
+    </div>
+  )
+}
 
 export const columns: ColumnDef<Project>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: () => <DragHandle />,
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     id: "select",
     header: ({ table }) => (
@@ -70,54 +93,75 @@ export const columns: ColumnDef<Project>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const project = row.original
-      const router = useRouter()
+      const [isPending, startTransition] = React.useTransition()
+      const { refreshData } = (table.options.meta as any) || {}
 
-      const handleDelete = async () => {
+      const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         if (window.confirm("Are you sure you want to delete this project?")) {
-          await deleteProjectAction(project.id);
-          router.refresh();
+          startTransition(async () => {
+            try {
+              const res = await deleteProjectAction(project.id);
+              if (res) {
+                if (refreshData) await refreshData();
+                else window.location.reload();
+              }
+            } catch (error) {
+              console.error("Delete error:", error)
+            }
+          })
         }
       }
 
-      const handleToggle = async () => {
-        await toggleProjectPublishAction(project.id, project.isPublished)
-        router.refresh()
+      const handleTogglePublish = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        startTransition(async () => {
+          try {
+            const res = await toggleProjectPublishAction(project.id, project.isPublished);
+            if (res) {
+              if (refreshData) await refreshData();
+              else window.location.reload();
+            }
+          } catch (error) {
+            console.error("Toggle error:", error)
+          }
+        })
       }
 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-muted">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-[160px]">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/dashboard/manage-projects/${project.id}`}>
+              <Link href={`/dashboard/manage-projects/${project.id}`} className="flex items-center">
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleToggle}>
-              {project.isPublished ? (
-                <>
-                  <ArrowDownCircle className="mr-2 h-4 w-4 text-orange-500" />
-                  Unpublish
-                </>
+            <DropdownMenuItem 
+              onClick={handleTogglePublish}
+              disabled={isPending}
+            >
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : project.isPublished ? (
+                <ArrowDownCircle className="mr-2 h-4 w-4 text-orange-500" />
               ) : (
-                <>
-                  <ArrowUpCircle className="mr-2 h-4 w-4 text-green-500" />
-                  Publish
-                </>
+                <ArrowUpCircle className="mr-2 h-4 w-4 text-green-500" />
               )}
+              {project.isPublished ? "Unpublish" : "Publish"}
             </DropdownMenuItem>
             {project.liveURL && (
               <DropdownMenuItem asChild>
-                <a href={project.liveURL} target="_blank" rel="noopener noreferrer">
+                <a href={project.liveURL} target="_blank" rel="noopener noreferrer" className="flex items-center">
                   <Eye className="mr-2 h-4 w-4" />
                   View Live
                 </a>
@@ -127,8 +171,13 @@ export const columns: ColumnDef<Project>[] = [
             <DropdownMenuItem
               onClick={handleDelete}
               className="text-destructive focus:text-destructive"
+              disabled={isPending}
             >
-              <Trash2 className="mr-2 h-4 w-4" />
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="mr-2 h-4 w-4" />
+              )}
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -1,13 +1,39 @@
+"use client";
 import { getAllContactsAction } from "@/actions/contact.actions"
 import { DataTable } from "./data-table"
 import { columns } from "./columns"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Plus } from "lucide-react"
+import * as React from "react"
 
-export default async function ManageContactPage() {
-  const { contacts } = await getAllContactsAction()
+export default function ManageContactPage() {
+  const [contacts, setContacts] = React.useState<any[]>([])
+  const [isLoading, setIsLoading] = React.useState(true)
+
+  const refreshData = React.useCallback(async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
+    const res = await getAllContactsAction();
+    setContacts(res.contacts || []);
+    setIsLoading(false);
+  }, []);
+
+  React.useEffect(() => {
+    refreshData(true);
+  }, [refreshData]);
+
   const hasExistingEntry = contacts && contacts.length > 0
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <div className="flex items-center justify-between space-y-2">
+          <div className="h-8 w-48 bg-primary/10 animate-pulse rounded-md" />
+        </div>
+        <div className="rounded-md border h-24 bg-muted/50 animate-pulse" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -35,7 +61,11 @@ export default async function ManageContactPage() {
         </div>
       </div>
 
-      <DataTable columns={columns} data={contacts || []} />
+      <DataTable 
+        columns={columns} 
+        data={contacts || []} 
+        meta={{ refreshData }}
+      />
     </div>
   )
 }

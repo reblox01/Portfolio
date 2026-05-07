@@ -1,11 +1,12 @@
 "use client"
 
+import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Techstack } from "@/lib/types/techstack-types"
 import { Button } from "@/components/ui/button"
-import { deleteTechstackAction } from "@/actions/techstack.actions"
+import { deleteTechstackAction, toggleTechstackPublishAction } from "@/actions/techstack.actions"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
@@ -17,11 +18,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Edit, Trash2 } from "lucide-react"
+import { MoreHorizontal, Edit, Trash2, ArrowUpCircle, ArrowDownCircle, Loader2, GripVertical } from "lucide-react"
 import { TableSelectionHeader, TableSelectionCell } from "@/components/ui/table-selection"
+import { useDraggableRow } from "@/components/data-table"
 
+const DragHandle = () => {
+  const draggable = useDraggableRow();
+  if (!draggable) return null;
+
+  return (
+    <div
+      {...draggable.attributes}
+      {...draggable.listeners}
+      className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded transition-colors"
+    >
+      <GripVertical className="h-4 w-4 text-muted-foreground" />
+    </div>
+  )
+}
 
 export const columns: ColumnDef<Techstack>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: () => <DragHandle />,
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     id: "select",
     header: ({ table }) => (
@@ -76,15 +99,45 @@ export const columns: ColumnDef<Techstack>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const tech = row.original
-      const router = useRouter()
+      const [isPending, startTransition] = React.useTransition()
+      const { refreshData } = (table.options.meta as any) || {}
 
-      const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this technology?")) {
-          await deleteTechstackAction(tech.id);
-          router.refresh();
+      const handleDelete = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (window.confirm("Are you sure you want to delete this tech stack entry?")) {
+          startTransition(async () => {
+            try {
+              const res = await deleteTechstackAction(tech.id);
+              if (res) {
+                if (refreshData) await refreshData();
+                else window.location.reload();
+              }
+            } catch (error) {
+              console.error("Delete error:", error)
+            }
+          })
         }
+      }
+
+      const handleTogglePublish = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        startTransition(async () => {
+          try {
+            const res = await toggleTechstackPublishAction(tech.id, tech.isPublished);
+            if (res) {
+              if (refreshData) await refreshData();
+              else window.location.reload();
+            }
+          } catch (error) {
+            console.error("Toggle error:", error)
+          }
+        })
       }
 
       return (
@@ -103,12 +156,30 @@ export const columns: ColumnDef<Techstack>[] = [
                 Edit
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={handleTogglePublish}
+              disabled={isPending}
+            >
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : tech.isPublished ? (
+                <ArrowDownCircle className="mr-2 h-4 w-4" />
+              ) : (
+                <ArrowUpCircle className="mr-2 h-4 w-4" />
+              )}
+              {tech.isPublished ? "Unpublish" : "Publish"}
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleDelete}
               className="text-destructive focus:text-destructive"
+              disabled={isPending}
             >
-              <Trash2 className="mr-2 h-4 w-4" />
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="mr-2 h-4 w-4" />
+              )}
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -117,3 +188,4 @@ export const columns: ColumnDef<Techstack>[] = [
     },
   },
 ]
+

@@ -38,6 +38,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -45,7 +46,16 @@ interface DataTableProps<TData, TValue> {
   bulkActions?: (selectedIds: string[]) => React.ReactNode
   onReorder?: (newOrder: TData[]) => void
   searchKey?: string
+  meta?: any
 }
+
+const DraggableRowContext = React.createContext<{
+  attributes: any;
+  listeners: any;
+  isDragging?: boolean;
+} | null>(null);
+
+export const useDraggableRow = () => React.useContext(DraggableRowContext);
 
 interface DraggableRowProps<TData> {
   row: Row<TData>
@@ -66,20 +76,20 @@ function DraggableRow<TData>({ row }: DraggableRowProps<TData>) {
   }
 
   return (
-    <TableRow
-      ref={setNodeRef}
-      style={style}
-      data-state={row.getIsSelected() && "selected"}
-      className="group/row"
-      {...attributes}
-      {...listeners}
-    >
-      {row.getVisibleCells().map((cell) => (
-        <TableCell key={cell.id}>
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </TableCell>
-      ))}
-    </TableRow>
+    <DraggableRowContext.Provider value={{ attributes, listeners, isDragging }}>
+      <TableRow
+        ref={setNodeRef}
+        style={style}
+        data-state={row.getIsSelected() && "selected"}
+        className={cn("group/row", isDragging && "bg-muted/50")}
+      >
+        {row.getVisibleCells().map((cell) => (
+          <TableCell key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    </DraggableRowContext.Provider>
   )
 }
 
@@ -89,6 +99,7 @@ export function DataTable<TData, TValue>({
   bulkActions,
   onReorder,
   searchKey,
+  meta,
 }: DataTableProps<TData, TValue>) {
   const [data, setData] = React.useState(initialData)
   const [rowSelection, setRowSelection] = React.useState({})
@@ -110,6 +121,7 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    meta,
     state: {
       rowSelection,
       sorting,
@@ -120,7 +132,11 @@ export function DataTable<TData, TValue>({
 
   // DnD Sensors
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before starting drag
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
