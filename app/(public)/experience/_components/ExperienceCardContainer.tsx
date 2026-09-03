@@ -12,10 +12,18 @@ const ExperienceCardContainer = () => {
   });
 
   const experiences = data?.experience || [];
-  if (isPending) return <h2 className="text-xl">Please wait...</h2>;
+  if (isPending) {
+    return (
+      <div className="max-w-7xl p-4 mx-auto gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 animate-pulse">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-64 bg-slate-800/40 rounded-xl border border-slate-700/50"></div>
+        ))}
+      </div>
+    );
+  }
 
   if (experiences.length <= 0)
-    return <h1 className="text-xl text-center">No experiences found!</h1>;
+    return <h1 className="text-xl text-center py-10">No experiences found!</h1>;
 
   return (
     <div className="max-w-7xl p-4 mx-auto gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">

@@ -20,6 +20,7 @@ demo.png
 # misc
 .DS_Store
 *.pem
+new-portfolio/
 
 # debug
 npm-debug.log*

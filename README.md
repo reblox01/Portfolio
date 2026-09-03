@@ -72,15 +72,31 @@ SITE_URL=https://your-domain.com
 
 Before running the application, you need to set up environment variables and configure external services. Follow these steps:
 
-1. **MongoDB Configuration**:
+1. **Neon PostgreSQL Database Configuration**:
 
-   - Go to [MongoDB](https://www.mongodb.com/) and create a new database.
-   - Obtain the connection URL for your database and enclose it with double quotes.
-   - Add the connection URL to the `.env` file under the `DATABASE_URL` variable like so:
+   - Sign up or log in to [Neon PostgreSQL](https://neon.tech/).
+   - Create a new database project.
+   - Obtain your **Pooled connection URL** and **Direct connection URL**.
+   - Add them to your `.env` file:
 
+     ```env
+     DATABASE_URL="postgresql://user:password@ep-xxx-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+     DIRECT_URL="postgresql://user:password@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require"
      ```
-     DATABASE_URL="mongodb+srv://your-db-url"
+
+   - Sync schema and generate Prisma Client:
+
+     ```bash
+     npx prisma generate
+     npx prisma db push
      ```
+
+> [!IMPORTANT]
+> **Migrating from previous MongoDB versions to Neon PostgreSQL**:
+> If you are upgrading an existing deployment that used MongoDB:
+> 1. Set `DATABASE_URL` (pooled) and `DIRECT_URL` (direct) in your `.env` / Vercel Environment Variables.
+> 2. Run `npx prisma generate && npx prisma db push` to generate the new Prisma Client and initialize PostgreSQL tables.
+> 3. **Data Transfer**: Set `MONGODB_BACKUP_URL="mongodb+srv://..."` in your `.env` with your previous MongoDB connection string and run `node scripts/migrate-mongo-to-neon.js` to automatically copy all your projects, certifications, experiences, educations, techstacks, contacts, and SEO records directly into Neon PostgreSQL.
 
 2. **Cloudinary Configuration**:
 

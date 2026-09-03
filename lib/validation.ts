@@ -1,14 +1,12 @@
 import { z } from 'zod';
 
 /**
- * Validates MongoDB ObjectId format
- * @param id - The ID to validate
- * @returns true if valid, false otherwise
+ * Validates ID format (compatible with CUID, UUID, or legacy MongoDB ObjectIds)
  */
-export const objectIdSchema = z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ID format");
+export const objectIdSchema = z.string().min(1, "Invalid ID format");
 
 /**
- * Validates an array of MongoDB ObjectIds
+ * Validates an array of IDs
  */
 export const objectIdArraySchema = z.array(objectIdSchema).min(1, "At least one ID required");
 

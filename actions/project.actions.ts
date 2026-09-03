@@ -161,7 +161,7 @@ export async function getRandomProjectsAction(): Promise<{
         return projects;
     } catch (error) {
         console.error('Error fetching and mapping random projects:', error);
-        throw error;
+        return [];
     }
 }
 

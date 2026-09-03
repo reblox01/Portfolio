@@ -24,29 +24,40 @@ const TechStackPageContainer = () => {
   const techstacks = data?.techstacks || [];
 
   const skills =
-    data?.techstacks.filter(
+    techstacks.filter(
       (item) => item?.techstackType === TechType.Skills
     ) || [];
   const devTools =
-    data?.techstacks.filter(
+    techstacks.filter(
       (item) => item?.techstackType === TechType.DevTools
     ) || [];
 
   const platforms =
-    data?.techstacks.filter((item) => item?.techstackType === TechType.Platforms) ||
+    techstacks.filter((item) => item?.techstackType === TechType.Platforms) ||
     [];
   const multimedia =
-    data?.techstacks.filter((item) => item?.techstackType === TechType.Multimedia) ||
+    techstacks.filter((item) => item?.techstackType === TechType.Multimedia) ||
     [];
   const system =
-    data?.techstacks.filter(
+    techstacks.filter(
       (item) => item?.techstackType === TechType.System
     ) || [];
 
-  if (isPending) return <h2 className="text-xl">Please wait...</h2>;
+  if (isPending) {
+    return (
+      <div className="max-w-7xl mx-auto p-4 animate-pulse space-y-6">
+        <div className="h-10 w-48 bg-slate-800/50 rounded-lg"></div>
+        <div className="gap-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-32 bg-slate-800/40 rounded-xl border border-slate-700/50"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (techstacks.length <= 0)
-    return <h1 className="text-xl text-center">No techstack found!</h1>;
+    return <h1 className="text-xl text-center py-10">No techstack found!</h1>;
 
   return (
     <div className="max-w-7xl mx-auto">

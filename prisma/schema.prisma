@@ -1,20 +1,18 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Project {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(cuid())
   title        String
   oneLiner     String
   logo         String
@@ -31,7 +29,7 @@ model Project {
 }
 
 model Certification {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  id               String   @id @default(cuid())
   title            String
   organizationName String
   completionDate   DateTime
@@ -45,7 +43,7 @@ model Certification {
 }
 
 model Experience {
-  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
+  id                 String    @id @default(cuid())
   positionName       String
   companyName        String
   companyLocation    String
@@ -60,7 +58,7 @@ model Experience {
 }
 
 model Education {
-  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  id           String    @id @default(cuid())
   degree       String // "Bachelor of Science", "Master's", etc.
   fieldOfStudy String // "Computer Science", "Software Engineering", etc.
   institution  String // University/School name
@@ -77,7 +75,7 @@ model Education {
 }
 
 model Techstack {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String   @id @default(cuid())
   title         String
   category      String
   url           String
@@ -89,7 +87,7 @@ model Techstack {
 }
 
 model Contact {
-  id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  id               String  @id @default(cuid())
   email            String
   smtpEmail        String?
   emailPassword    String?
@@ -105,7 +103,7 @@ model Contact {
 }
 
 model SortSettings {
-  id                    String @id @default(auto()) @map("_id") @db.ObjectId
+  id                    String @id @default(cuid())
   // Sort types: "newest" | "oldest" | "custom"
   projectSortType       String @default("newest")
   certificationSortType String @default("newest")
@@ -124,12 +122,12 @@ model SortSettings {
 }
 
 model SiteSettings {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  id           String  @id @default(cuid())
   customCursor Boolean @default(true)
 }
 
 model PageSEO {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(cuid())
   path        String   @unique // e.g., "/", "/about", "/projects"
   title       String?
   description String?
@@ -140,7 +138,7 @@ model PageSEO {
 }
 
 model NotificationSettings {
-  id                       String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                       String   @id @default(cuid())
   emailContact             Boolean  @default(true)
   emailContact_method      String   @default("browser") // "email" | "browser" | "both"
   emailMarketing           Boolean  @default(false)
@@ -157,7 +155,7 @@ model NotificationSettings {
 }
 
 model Notification {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(cuid())
   type      String // "contact_form", "security_alert", "system_update", etc.
   title     String
   message   String
@@ -168,7 +166,7 @@ model Notification {
 
 // Visitor metrics for analytics charts (daily aggregation)
 model Visitor {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  id      String   @id @default(cuid())
   date    DateTime @unique
   desktop Int      @default(0)
   mobile  Int      @default(0)
@@ -177,7 +175,7 @@ model Visitor {
 
 // Hourly visitor tracking for detailed 24h analytics
 model HourlyVisitor {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  id       String   @id @default(cuid())
   datetime DateTime @unique
   hour     Int // 0-23
   desktop  Int      @default(0)
@@ -186,7 +184,7 @@ model HourlyVisitor {
 }
 
 model Admin {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  id           String  @id @default(cuid())
   adminUserId  String
   name         String
   imageUrl     String
@@ -209,7 +207,7 @@ model Admin {
 }
 
 model AISettings {
-  id                  String  @id @default(auto()) @map("_id") @db.ObjectId
+  id                  String  @id @default(cuid())
   enabled             Boolean @default(false)
   provider            String  @default("openai") // "openai" | "gemini" | "anthropic" | "openrouter"
   openaiKey           String? // Encrypted
@@ -248,7 +246,7 @@ model AISettings {
 }
 
 model ChatConversation {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(cuid())
   sessionId   String
   visitorLang String   @default("en")
   messages    Json[] // [{role, content, timestamp, language}]
