@@ -1,4 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse, type NextRequest, type NextFetchEvent } from "next/server";
+
+// Force Node.js runtime — Edge Runtime crashes on Vercel with Clerk handshake
+export const runtime = "nodejs";
 
 // Public routes that should not require authentication
 const isPublicRoute = createRouteMatcher([
@@ -14,15 +18,28 @@ const isPublicRoute = createRouteMatcher([
     '/sign-up(.*)',
     '/api/email',
     '/api/track-visit',
+    '/api/ai-chat',
     '/sitemap.xml',
     '/robots.txt',
 ]);
 
-export default clerkMiddleware(async (auth, req) => {
+const clerkFn = clerkMiddleware(async (auth, req) => {
     if (!isPublicRoute(req)) {
         await auth.protect();
     }
 });
+
+export default async function middleware(req: NextRequest, event: NextFetchEvent) {
+    try {
+        return await clerkFn(req, event);
+    } catch {
+        // Stale session cookie (rotated keys) — let public routes through, redirect protected to sign-in
+        if (isPublicRoute(req)) {
+            return NextResponse.next();
+        }
+        return NextResponse.redirect(new URL('/sign-in', req.url));
+    }
+}
 
 export const config = {
     matcher: [
@@ -32,3 +49,4 @@ export const config = {
         '/(api|trpc)(.*)',
     ],
 };
+
