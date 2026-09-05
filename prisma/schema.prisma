@@ -123,7 +123,7 @@ model SortSettings {
 
 model SiteSettings {
   id           String  @id @default(cuid())
-  customCursor Boolean @default(true)
+  customCursor Boolean @default(false)
 }
 
 model PageSEO {

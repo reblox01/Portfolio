@@ -32,7 +32,7 @@ export function SiteSettingsForm({ initialData }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      customCursor: initialData?.customCursor ?? true,
+      customCursor: initialData?.customCursor ?? false,
     },
   })
 

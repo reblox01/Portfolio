@@ -148,7 +148,7 @@ export function SmoothCursor({
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const isCustomCursorEnabled = data?.settings?.customCursor ?? true;
+  const isCustomCursorEnabled = data?.settings?.customCursor ?? false;
   const [isCoarsePointer, setIsCoarsePointer] = useState<boolean>(false);
   useEffect(() => {
     if (typeof window === 'undefined' || isLoading) return;
