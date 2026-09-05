@@ -49,9 +49,12 @@ function filterResponse(response: string): string {
     const LEAK_PATTERNS = [
         /\b(my instructions|i was told to|i am programmed|i am designed|my system prompt|my rules)\b/i,
         /\b(I cannot|I'm not able to|I'm not allowed to) (help with that|assist with that|do that)\b/i,
-        // If response is too long or looks like code/instructions
-        /^.{2000,}/s,
     ];
+
+    // If response is too long or looks like code/instructions
+    if (response.length > 2000) {
+        return "I'm here to help with portfolio-related questions. Please ask about skills, experience, projects, or contact information.";
+    }
 
     for (const pattern of LEAK_PATTERNS) {
         if (pattern.test(response)) {
