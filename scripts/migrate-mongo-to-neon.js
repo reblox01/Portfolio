@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
 const { PrismaClient } = require('@prisma/client');
 const dns = require('dns');
@@ -9,7 +10,11 @@ try {
     console.log("Could not set custom DNS servers:", e.message);
 }
 
-const mongoUri = process.env.MONGODB_BACKUP_URL || "mongodb+srv://0x8D:8g4SMjXfZF21vczq@cluster0.wmnbpil.mongodb.net/test";
+const mongoUri = process.env.MONGODB_BACKUP_URL;
+if (!mongoUri) {
+    console.error("MONGODB_BACKUP_URL not set. Add it to .env with your MongoDB connection string.");
+    process.exit(1);
+}
 const prisma = new PrismaClient();
 
 async function migrate() {
