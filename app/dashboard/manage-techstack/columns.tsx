@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { Techstack } from "@/lib/types/techstack-types"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { deleteTechstackAction, toggleTechstackPublishAction } from "@/actions/techstack.actions"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -98,6 +99,21 @@ export const columns: ColumnDef<Techstack>[] = [
     header: "Type",
   },
   {
+    accessorKey: "isPublished",
+    header: "Status",
+    cell: ({ row }) => {
+      const isPublished = row.original.isPublished
+      return (
+        <Badge
+          variant={isPublished ? "default" : "secondary"}
+          className={isPublished ? "bg-green-500/10 text-green-500 hover:bg-green-500/10 border-green-500/20" : ""}
+        >
+          {isPublished ? "Published" : "Draft"}
+        </Badge>
+      )
+    },
+  },
+  {
     id: "actions",
     cell: ({ row, table }) => {
       const tech = row.original
@@ -188,4 +204,3 @@ export const columns: ColumnDef<Techstack>[] = [
     },
   },
 ]
-

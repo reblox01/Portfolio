@@ -14,14 +14,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return constructMetadata({
     path: "/techstack",
     defaultTitle: "Tech Stack",
-    defaultDescription: "Technologies, tools, and platforms used by myself. Modern development stack including React, Next.js, Node.js, TypeScript, PostgreSQL, MongoDB, and more. Skills and expertise overview."
+    defaultDescription: "Technologies, tools, and platforms used by Sohail Koutari. Modern development stack including React, Next.js, Node.js, TypeScript, PostgreSQL, MongoDB, and more. Skills and expertise overview."
   });
 }
 const TechstackPage = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["techstacks"],
-    queryFn: () => getAllTechstacksAction(),
+    queryKey: ["techstacks", "published"],
+    queryFn: () => getAllTechstacksAction(true),
   });
   return (
     <>

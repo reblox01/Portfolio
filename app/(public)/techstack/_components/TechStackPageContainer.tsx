@@ -18,8 +18,8 @@ const headerVariants = {
 
 const TechStackPageContainer = () => {
   const { data, isPending } = useQuery({
-    queryKey: ["techstacks"],
-    queryFn: () => getAllTechstacksAction(),
+    queryKey: ["techstacks", "published"],
+    queryFn: () => getAllTechstacksAction(true),
   });
   const techstacks = data?.techstacks || [];
 

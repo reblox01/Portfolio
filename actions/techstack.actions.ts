@@ -10,6 +10,7 @@ import { revalidatePath } from 'next/cache';
 import { validateObjectId, validateObjectIds } from '@/lib/validation';
 import { apiRateLimit, getClientIp } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { getSortSettingsAction } from "./sortSettings.actions";
 // Removed top-level sanitization import
 
 
@@ -43,6 +44,7 @@ export async function createTechstackAction(values: CreateAndEditTechstackType):
         });
 
         revalidatePath('/dashboard/manage-techstack');
+        revalidatePath('/techstack');
         return techstack;
     } catch (error) {
         console.log(error);
@@ -50,10 +52,7 @@ export async function createTechstackAction(values: CreateAndEditTechstackType):
     }
 }
 
-
-import { getSortSettingsAction } from "./sortSettings.actions";
-
-export async function getAllTechstacksAction(): Promise<{
+export async function getAllTechstacksAction(publishedOnly: boolean = false): Promise<{
     techstacks: Techstack[];
     sortType: string;
 }> {
@@ -76,6 +75,7 @@ export async function getAllTechstacksAction(): Promise<{
         }
 
         const techstacks: Techstack[] = await prisma.techstack.findMany({
+            where: publishedOnly ? { isPublished: true } : {},
             orderBy: orderBy
         })
         return { techstacks, sortType };
@@ -99,6 +99,7 @@ export async function reorderTechstackAction(items: { id: string; displayOrder: 
         );
 
         revalidatePath('/dashboard/manage-techstack');
+        revalidatePath('/techstack');
         return true;
     } catch (error) {
         console.error("Error reordering techstack:", error instanceof Error ? error.message : "Unknown error");
@@ -138,6 +139,7 @@ export async function deleteTechstackAction(id: string): Promise<Techstack | nul
             },
         });
         revalidatePath('/dashboard/manage-techstack');
+        revalidatePath('/techstack');
         return techstack;
     } catch (error) {
         console.error("Error deleting techstack:", error instanceof Error ? error.message : "Unknown error");
@@ -165,6 +167,7 @@ export async function updateTechstackAction(
             },
         });
         revalidatePath('/dashboard/manage-techstack');
+        revalidatePath('/techstack');
         return techtstack;
     } catch (error) {
         console.error("Error updating techstack:", error instanceof Error ? error.message : "Unknown error");
@@ -183,6 +186,7 @@ export async function bulkDeleteTechstackAction(ids: string[]): Promise<boolean>
             }
         });
         revalidatePath('/dashboard/manage-techstack');
+        revalidatePath('/techstack');
         return true;
     } catch (error) {
         console.error("Bulk delete error:", error instanceof Error ? error.message : "Unknown error");
@@ -214,4 +218,3 @@ export async function toggleTechstackPublishAction(
         return null;
     }
 }
-

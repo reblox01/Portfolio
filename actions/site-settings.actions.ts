@@ -20,7 +20,7 @@ export async function getSiteSettingsAction() {
     if (!settings) {
       settings = await prisma.siteSettings.create({
         data: {
-          customCursor: true
+          customCursor: false
         }
       });
     }
