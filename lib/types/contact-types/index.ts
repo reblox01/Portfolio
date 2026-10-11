@@ -22,7 +22,7 @@ export const createAndEditContactSchema = z.object({
     email: z.string()
         .min(1, { message: "Email is required." })
         .email({ message: "Invalid email address." }),
-    smtpEmail: z.string().email({ message: "Invalid SMTP email address." }).optional().default("") ,
+    smtpEmail: z.union([z.string().email({ message: "Invalid SMTP email address." }), z.literal("")]).optional().default(""),
     phone: z.string().min(3, {
         message: "Phone number is required and must be at least 3 characters.",
     }),
@@ -41,9 +41,8 @@ export const createAndEditContactSchema = z.object({
 
 // Schema for updates that allows empty password (keeps existing one)
 export const updateContactSchema = z.object({
-    email: z.string()
-        .min(1, { message: "Email is required." })
-        .email({ message: "Invalid email address." }),
+    email: z.union([z.string().email({ message: "Invalid email address." }), z.literal("")]).optional().default(""),
+    smtpEmail: z.union([z.string().email({ message: "Invalid SMTP email address." }), z.literal("")]).optional().default(""),
     phone: z.string().optional().default(""),
     emailPassword: z.string().optional().default(""),
     address: z.string().optional().default(""),
