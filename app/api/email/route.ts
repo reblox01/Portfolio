@@ -19,15 +19,34 @@ const emailSchema = z.object({
 export async function POST(request: NextRequest) {
 	// CSRF Protection: Verify origin
 	const origin = request.headers.get("origin");
-	const allowedOrigins = [
-		process.env.NEXT_PUBLIC_APP_URL,
-		// Only allow localhost in development — never in production
-		...(process.env.NODE_ENV === 'development'
-			? ['http://localhost:3000', 'https://localhost:3000']
-			: []),
-	].filter(Boolean);
+	// Build the allowlist from the site URLs configured for this app.
+	// NEXT_PUBLIC_SITE_URL is canonical (see lib/metadata.ts and
+	// app/layout.tsx); SITE_URL and NEXT_PUBLIC_APP_URL are fallbacks.
+	// Each configured URL contributes its exact origin plus the www /
+	// non-www counterpart, so both forms of the site pass. Trailing
+	// slashes are stripped before comparing.
+	const allowedOrigins = new Set<string>();
+	for (const rawUrl of [process.env.NEXT_PUBLIC_SITE_URL, process.env.SITE_URL, process.env.NEXT_PUBLIC_APP_URL]) {
+		if (!rawUrl) continue;
+		const normalized = rawUrl.replace(/\/+$/, '');
+		allowedOrigins.add(normalized);
+		try {
+			const parsed = new URL(normalized);
+			const altHost = parsed.hostname.startsWith('www.')
+				? parsed.hostname.slice(4)
+				: `www.${parsed.hostname}`;
+			allowedOrigins.add(`${parsed.protocol}//${altHost}`);
+		} catch {
+			// Malformed env value: the exact string above still applies.
+		}
+	}
+	// Only allow localhost in development — never in production
+	if (process.env.NODE_ENV === 'development') {
+		allowedOrigins.add('http://localhost:3000');
+		allowedOrigins.add('https://localhost:3000');
+	}
 
-	if (origin && !allowedOrigins.includes(origin)) {
+	if (origin && !allowedOrigins.has(origin)) {
 		return NextResponse.json({ error: "Forbidden - Invalid origin" }, { status: 403 });
 	}
 
