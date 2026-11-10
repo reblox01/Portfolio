@@ -59,7 +59,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ disabled, onChange, onRemove, v
         )}
       </div>
 
-      <CldUploadWidget onUpload={onUpload} uploadPreset={process.env.NEXT_PUBLIC_UPLOAD_PRESET}>
+      <CldUploadWidget onSuccess={onUpload} uploadPreset={process.env.NEXT_PUBLIC_UPLOAD_PRESET}>
         {({ open }) => {
           const onClick = () => open()
           return (

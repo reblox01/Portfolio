@@ -154,7 +154,7 @@ export async function updateAISettingsAction(data: z.infer<typeof aiSettingsUpda
     } catch (error) {
         console.error("Error updating AI settings:", error);
         if (error instanceof z.ZodError) {
-            return { error: "Invalid input data: " + error.errors.map(e => e.message).join(", ") };
+            return { error: "Invalid input data: " + error.issues.map(e => e.message).join(", ") };
         }
         return { error: "Failed to update AI settings" };
     }

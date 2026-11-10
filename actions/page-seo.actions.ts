@@ -107,7 +107,7 @@ export async function upsertPageSeoAction(data: z.infer<typeof pageSeoSchema>) {
         return { page };
     } catch (error) {
         if (error instanceof z.ZodError) {
-            return { error: error.errors[0].message };
+            return { error: error.issues[0].message };
         }
         console.error("Error upserting page SEO:", error);
         return { error: "Failed to update page SEO" };
